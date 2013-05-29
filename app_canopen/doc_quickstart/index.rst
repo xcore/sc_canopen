@@ -165,7 +165,7 @@ After changing to the device to Operating mode,
  ``[ID = 7E4, D1 = 5B, D2 = CD, D3 = AB]`` 
  The product code read is ``0xABCB`` (Index = 0x1018, sub-index = 2 of object dictionary) as defined in the EDS file.
    
-         .. figure:: images/lss_productcode_response.png
+         .. figure:: images/lss_read_productcode_response.png
             :align: center
        
    Product code response message
@@ -234,7 +234,7 @@ TPDO Data (transmit Process data objects)
     The response to this message will be
     ``[ID = 280, D1 = 0xFF]``
     
-         .. figure:: images/tpdo1_message.png
+         .. figure:: images/tpdo1_response.png
             :align: center
          
     Button1 value
@@ -488,10 +488,10 @@ This is an Error message as a read is attempted from WO index (index = 0x1009, s
 
     After sending the data, we receive the third segment of data. The message is as shown below:
 
-      .. figure:: images/sdo_1008_seg_3seg_upload_rsponse.png
+      .. figure:: images/sdo_1008_seg_3seg_upload_response.png
          :align: center
             
-     SDO Third segment Upload Response for index 0x1008
+     SDO Third segment Upload Response for index 0x1008 
 
 Next Steps
 ++++++++++
