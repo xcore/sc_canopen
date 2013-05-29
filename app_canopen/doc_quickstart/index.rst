@@ -137,8 +137,8 @@ After changing to the device to Operating mode,
       Send the following LSS message to read Vendor ID from the object dictionary. 
       ``[ID = 7E5, DLC = 8, D1 = 5A, D2-D8 = 0]``.
       
-    .. figure:: images/lss_read_vendorid_cmd.png
-       :align: center
+         .. figure:: images/lss_read_vendorid_cmd.png
+            :align: center
        
    LSS Read Vendor id message 
    
@@ -146,8 +146,8 @@ After changing to the device to Operating mode,
    ``[ID = 7E4, D1 = 5A, D2 = 34, D3 = 12]``
    The vendor id read is ``0x1234`` (Index = 0x1018, sub-index = 1 of object dictionary) as defined in the EDS file.
    
-    .. figure:: images/lss_vendorid_response.png
-       :align: center
+        .. figure:: images/lss_vendorid_response.png
+           :align: center
        
    VendorID response message
  
@@ -156,8 +156,8 @@ After changing to the device to Operating mode,
        Send the following LSS message from the application, to see the Product Code.
        ``[ID = 7E5, DLC = 8, D1 = 5B, D2-D8 = 0]``
        
-    .. figure:: images/lss_read_productcode_cmd.png
-       :align: center
+          .. figure:: images/lss_read_productcode_cmd.png
+             :align: center
         
     LSS Read Product code message 
  
@@ -165,8 +165,8 @@ After changing to the device to Operating mode,
  ``[ID = 7E4, D1 = 5B, D2 = CD, D3 = AB]`` 
  The product code read is ``0xABCB`` (Index = 0x1018, sub-index = 2 of object dictionary) as defined in the EDS file.
    
-    .. figure:: images/lss_productcode_response.png
-       :align: center
+         .. figure:: images/lss_productcode_response.png
+            :align: center
        
    Product code response message
    
@@ -175,8 +175,8 @@ After changing to the device to Operating mode,
       Send the following LSS message from the application, to see the Revision Number Code.
       ``[ID = 7E5, DLC = 8, D1 = 5C, D2-D8 = 0]``
       
-    .. figure:: images/lss_read_revnumber_cmd.png
-       :align: center
+         .. figure:: images/lss_read_revnumber_cmd.png
+            :align: center
          
     LSS Read Revision number message 
     
@@ -184,8 +184,8 @@ After changing to the device to Operating mode,
     ``[ID = 7E4, D1 = 5C, D2 = BB, D3 =AA]``
     The revision number read is ``0xAABB`` (Index = 0x1018, sub0index = 3 of object dictionary) as defined in the EDS file.
 
-   .. figure:: images/lss_revnumber_response.png
-      :align: center
+        .. figure:: images/lss_revnumber_response.png
+           :align: center
        
    Revision number response message
 
@@ -194,8 +194,8 @@ After changing to the device to Operating mode,
       Send the following LSS message from the application, to see the Serial Number.
       ``[ID = 7E5, DLC = 8, D1 = 5D, D2-D8 = 0]``
       
-   .. figure:: images/lss_read_sernumber_cmd.png
-      :align: center
+         .. figure:: images/lss_read_sernumber_cmd.png
+            :align: center
          
     LSS Read Serial number message 
     
@@ -203,8 +203,8 @@ After changing to the device to Operating mode,
     ``[ID = 7E4, D1 = 5D, D2 = 11, D3 = 11]``
     The product code read is ``0x1111`` (Index = 0x1018, sub-index = 4 of object dictionary) as defined in the EDS file.
   
-    .. figure:: images/lss_read_sernumber_response.png
-       :align: center
+         .. figure:: images/lss_read_sernumber_response.png
+            :align: center
          
     Serial number response message 
 
@@ -216,8 +216,8 @@ TPDO Data (transmit Process data objects)
       The application dens the Temperature sensor data to CANopen stack every 5 seconds for transmission. The communication parameter for this TPDO is 255 which indicate Async transfer. The CANopen stack sends this TPDO outside the SYNC timer window.
       The following screenshot shows the message (ID = 180) with temperature ADC reading in [D1 and D2]. Place your finger on the temperature sensor (marked as RT1 on GPIO sliceCARD) and check if the value is being changed. This gives the current changed ADC value of temperature sensor.
 
-    .. figure:: images/tpdo0_response.png
-       :align: center
+         .. figure:: images/tpdo0_response.png
+            :align: center
          
     Temperature Sensor reading
 
@@ -226,16 +226,16 @@ TPDO Data (transmit Process data objects)
       To observer this message, press Button 1 on GPIO card and then send the following SYNC message.
       ``[ID = 80, DLC = 0]``
       
-    .. figure:: images/sync_message.png
-       :align: center
+         .. figure:: images/sync_message.png
+            :align: center
          
     SYNC message
     
     The response to this message will be
     ``[ID = 280, D1 = 0xFF]``
     
-   .. figure:: images/tpdo1_message.png
-      :align: center
+         .. figure:: images/tpdo1_message.png
+            :align: center
          
     Button1 value
 
@@ -245,8 +245,8 @@ TPDO Data (transmit Process data objects)
       To get the "Button 2" status, send the following SYNC messages 5 times.
       ``[ID = 80, DLC = 0]``
 
-   .. figure:: images/sync_message.png
-      :align: center
+         .. figure:: images/sync_message.png
+            :align: center
          
     SYNC message
     
@@ -254,8 +254,8 @@ TPDO Data (transmit Process data objects)
  ``[ID = 380, D1 =0]`` indicting the status of "Button 2". 
  
  
-    .. figure:: images/button2_initial.png
-       :align: center
+        .. figure:: images/button2_initial.png
+           :align: center
           
     Button 2 reading
     
@@ -263,8 +263,8 @@ TPDO Data (transmit Process data objects)
  ``[ID = 380, D1 = 0xFF]``
  
  
-    .. figure:: images/button2_pressed.png
-       :align: center
+       .. figure:: images/button2_pressed.png
+          :align: center
           
     Button 2 reading after button is pressed
 
@@ -275,8 +275,8 @@ RPDO (receive Process Data Objects):
       Send the following message RPDO to toggle LED0
       ``[ID = 200, DLC = 1, D1 = 01]``
       
-   .. figure:: images/rpdo0_message.png
-      :align: center
+      .. figure:: images/rpdo0_message.png
+         :align: center
           
     LED0 toggles with the RPDO message
     
@@ -290,16 +290,16 @@ RPDO (receive Process Data Objects):
       The communication parameter is set as 10. After reception of this RPDO, the CANopen stack waits for 10 SYNC messages before updating the object dictionary. So the LED2 will toggle only after 10 SYNC messages.
       ``[ID = 400, DLC = 1, D1 = 01]``
       
-   .. figure:: images/rpdo2_message.png
-      :align: center
+         .. figure:: images/rpdo2_message.png
+            :align: center
           
     RPDO2 message
     
 LED2 state does not change after this message. Send the following message (SYNC) 10 times to toggle LED2.
 ``[ID = 80, DLC = 0]``
 
-   .. figure:: images/sync_message.png
-      :align: center
+         .. figure:: images/sync_message.png
+            :align: center
          
     SYNC message
 
@@ -307,8 +307,8 @@ LED2 state does not change after this message. Send the following message (SYNC)
       The communication parameter is set to 0. Which indicates the PDO communication is acyclic and synchronous. Send the following message (RPDO3) message
       ``[ID = 500, DLC = 1, D1 = 01]``
 
-   .. figure:: images/rpdo3_message.png
-      :align: center
+         .. figure:: images/rpdo3_message.png
+            :align: center
           
     RPDO3 message
 
@@ -316,8 +316,8 @@ NO change in the state of LED3 is observed
 Send the following message (SYNC) to toggle LED3
 ``[ID = 80, DLC = 0]``
 
-   .. figure:: images/sync_message.png
-      :align: center
+         .. figure:: images/sync_message.png
+            :align: center
          
     SYNC message
 
@@ -328,15 +328,15 @@ SDO Data communication (service data objects)
       Send the following data to read the data at 0x1000 sub index 0. 
       ``[ID = 600, DLC = 8, D1 = 40, D2 = 00, D3 = 10, D4 = 00, D5-D8 = 0]``
  
-   .. figure:: images/sdo_1000_exp_upload_rqst.png
-      :align: center
+         .. figure:: images/sdo_1000_exp_upload_rqst.png
+            :align: center
          
     SDO Upload Request for index 0x1000
     
     The data read is ``0x070191`` (Index = 0x1000, sub-index = 0 of object dictionary) as EDS file.
     
-   .. figure:: images/sdo_1000_exp_response.png
-      :align: center
+         .. figure:: images/sdo_1000_exp_response.png
+            :align: center
          
     SDO Upload Response for index 0x1000
 
@@ -345,8 +345,8 @@ SDO Data communication (service data objects)
       ``[ID = 600, DLC = 8, D1 = 23, D2 = 00, D3 = 10, D4 = 00, D5 =01, D6 = 02, D7 = 03, D8 = 04]``
       
     
-   .. figure:: images/sdo_1000_exp_download.png
-      :align: center
+         .. figure:: images/sdo_1000_exp_download.png
+            :align: center
          
     SDO Download Request for index 0x1000
 
@@ -356,8 +356,8 @@ The response to this message will be
 This is an Error message as a write attempt to RO data (index = 0x1000, sub-index = 0) as defined in the EDS file.
 
    
-  .. figure:: images/sdo_1000_exp_dwnld_response.png
-     :align: center
+        .. figure:: images/sdo_1000_exp_dwnld_response.png
+           :align: center
          
    SDO Download Response for index 0x1000
 
@@ -365,8 +365,8 @@ This is an Error message as a write attempt to RO data (index = 0x1000, sub-inde
       Send the following data to read data at 0x1006 sub index 0.
       ``[ID = 600, DLC = 8, D1 = 40, D2 = 06, D3 = 10, D4 = 00, D5 =00, D6 = 00, D7 = 00, D8 = 00]`` as shown below:
       
-      .. figure:: images/sdo_1006_expd_upload_rqst.png
-         :align: center
+         .. figure:: images/sdo_1006_expd_upload_rqst.png
+            :align: center
           
     SDO Upload Request for index 0x1006
     
@@ -374,16 +374,16 @@ This is an Error message as a write attempt to RO data (index = 0x1000, sub-inde
  ``[ID = 580, D1 = 43, D2 = 63, D3 = 10, D4 = 30]``
  The data read is ``0x03`` (index = 0x1006, sub-index = 0) as defined in the EDS file.
  
-   .. figure:: images/sdo_1006_expd_response_initial.png
-     :align: center
+         .. figure:: images/sdo_1006_expd_response_initial.png
+            :align: center
            
     SDO Upload Response for index 0x1006
  
  Send the following message to write the data at 0x1006 sub index 0.
 ``[ID = 600, DLC = 8, D1 = 23, D2 = 06, D3 = 10, D4 = 00, D5 =01, D6 = 02, D7 = 03, D8 = 04]``
 
-   .. figure:: images/sdo_1006_expd_dwnld_request.png
-      :align: center
+         .. figure:: images/sdo_1006_expd_dwnld_request.png
+            :align: center
            
     SDO Download Request for index 0x1006
 
@@ -391,24 +391,24 @@ This is an Error message as a write attempt to RO data (index = 0x1000, sub-inde
     ``[ID = 580, D1 = 60, D2 = 60, D3 = 10]``
     This is ACK message.
 
-   .. figure:: images/sdo_1006_expd_dwnld_request_ack.png
-      :align: center
+         .. figure:: images/sdo_1006_expd_dwnld_request_ack.png
+            :align: center
            
     SDO Download Request ACK for index 0x1006
 
 Send the following data to read the data written by the previous command. 
 [ID = 600, DLC = 8, D1 = 40, D2 = 06, D3 = 10, D4 = 00, D5 =00, D6 = 00, D7 = 00, D8 = 00]
 
-   .. figure:: images/sdo_1006_expd_upload_request_.png
-      :align: center
+         .. figure:: images/sdo_1006_expd_upload_request_.png
+            :align: center
            
     SDO Upload Request for index 0x1006
 
 The response to this message will be
 ``[ID = 580, D1 = 43, D2 = 6, D3 = 10, D4 = 0, D5 = 1, D6 = 2, D7 = 3, D8 = 4]``
 
-   .. figure:: images/sdo_1006_expd_upload_response.png
-      :align: center
+         .. figure:: images/sdo_1006_expd_upload_response.png
+            :align: center
            
     SDO Upload Response for index 0x1006
 
@@ -417,8 +417,8 @@ The response to this message will be
       Send the following message to read from index 0x1009 sub-index = 0 
       ``[ID = 600, DLC = 8, D1 = 40, D2 = 09, D3 = 10, D4 = 00, D5 =00, D6 = 00, D7 = 00, D8 = 00]``
             
-   .. figure:: images/sdo_1009_expd_upload_request.png
-      :align: center
+         .. figure:: images/sdo_1009_expd_upload_request.png
+            :align: center
            
     SDO Upload Request for index 0x1009
     
@@ -426,8 +426,8 @@ The response to this message will be
 ``[ID = 80, DLC = 8, D1 = 0, D2 = 0, D3 = 10, D4-D8 = 0]``
 This is an Error message as a read is attempted from WO index (index = 0x1009, sub-index = 0) as defined in the EDS file.
 
-   .. figure:: images/sdo_1009_expd_upload_response.png
-      :align: center
+         .. figure:: images/sdo_1009_expd_upload_response.png
+            :align: center
            
     SDO Upload Response for index 0x1009
 
@@ -435,15 +435,15 @@ This is an Error message as a read is attempted from WO index (index = 0x1009, s
       Send the following data to read the data at 0x1008 sub index 0.
       ``[ID = 600, DLC = 8, D1 = 40, D2 = 08, D3 = 10, D4 = 00, D5 =00, D6 = 00, D7 = 00, D8 = 00]`` as shown below:
  
-    .. figure:: images/sdo_1008_seg_upload_request.png
-       :align: center
+         .. figure:: images/sdo_1008_seg_upload_request.png
+            :align: center
             
      SDO Upload Request for index 0x1008
     
      After sending the data, we receive the message acknowledgement with command 41 indicating the data is more than 4 bytes and segmented transfer is initiated. The message is as shown below:
 
-    .. figure:: images/sdo_1008_seg_response_initial.png
-       :align: center
+        .. figure:: images/sdo_1008_seg_response_initial.png
+           :align: center
             
      SDO Upload Response for index 0x1008
       
@@ -451,45 +451,45 @@ This is an Error message as a read is attempted from WO index (index = 0x1009, s
     Now, to read the first segment of data, we send the request as shown below: 
     ``[ID = 600, DLC = 8, D1 = 60, D2 = 00, D3 = 00, D4 = 00, D5 =00, D6 = 00, D7 = 00, D8 = 00]`` as shown below:
    
-   .. figure:: images/sdo_1008_seg_1seg_upload_req.png
-      :align: center
+       .. figure:: images/sdo_1008_seg_1seg_upload_req.png
+          :align: center
             
      SDO Upload First segment Upload Request for index 0x1008
 
    After sending the data, we receive the first segment of data. The message is as shown below:
    
-   .. figure:: images/sdo_1008_seg_upload_1seg_response.png
-      :align: center
+      .. figure:: images/sdo_1008_seg_upload_1seg_response.png
+         :align: center
             
      SDO Upload First segment Upload Response for index 0x1008
    
    Now, to read the second segment of data, we send the request as shown below: 
    ``[ID = 600, DLC = 8, D1 = 70, D2 = 00, D3 = 00, D4 = 00, D5 =00, D6 = 00, D7 = 00, D8 = 00]`` as shown below:
    
-   .. figure:: images/sdo_1008_seg_2seg_upload_req.png
-      :align: center
+      .. figure:: images/sdo_1008_seg_2seg_upload_req.png
+         :align: center
             
      SDO Second segment Upload Request for index 0x1008
      
     After sending the data, we receive the second segment of data. The message is as shown below:
    
-   .. figure:: images/sdo_1008_seg_2seg_upload_response.png
-      :align: center
+      .. figure:: images/sdo_1008_seg_2seg_upload_response.png
+         :align: center
             
      SDO Second segment Upload Response for index 0x1008
 
     Now, to read the third segment of data, we send the request as shown below: 
     ``[ID = 600, DLC = 8, D1 = 60, D2 = 00, D3 = 00, D4 = 00, D5 =00, D6 = 00, D7 = 00, D8 = 00]`` as shown below:
     
-   .. figure:: images/sdo_1008_seg_3seg_upload_req.png
-      :align: center
+      .. figure:: images/sdo_1008_seg_3seg_upload_req.png
+         :align: center
             
      SDO Third segment Upload Request for index 0x1008
 
     After sending the data, we receive the third segment of data. The message is as shown below:
 
-   .. figure:: images/sdo_1008_seg_3seg_upload_rsponse.png
-      :align: center
+      .. figure:: images/sdo_1008_seg_3seg_upload_rsponse.png
+         :align: center
             
      SDO Third segment Upload Response for index 0x1008
 
