@@ -3,18 +3,11 @@
 API
 ====
 
-Server functions
+Client functions
 ----------------
+These are the functions that are called from the application and are included in ``canopen_client.h``.
 
-.. doxygenfunction:: modbus_rtu_server
+.. doxygenfunction:: canopen_client_send_data_to_canopen_stack
 
-Modbus commands & Status
-------------------------
+.. doxygenfunction:: canopen_client_receive_data_from_canopen_stack
 
-.. doxygenenum:: modbus_rtu_cmd_t_
-
-.. doxygenenum:: modbus_rtu_diag_subfn_t_
-
-.. doxygenenum:: modbus_rtu_device_status_t_
-
-.. doxygenenum:: modbus_rtu_exception_t_
