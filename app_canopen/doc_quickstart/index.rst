@@ -1,41 +1,41 @@
 CANopen Quickstart Guide
 ===========================
 
-.. _Slicekit_CANopen_Quickstart:
+.. _sliceKIT_CANopen_Quickstart:
 
 CANopen app : Quick Start Guide
 ----------------------------------
 
-This simple demonstration of xTimeComposer Studio functionality uses the ``XA-SK-ISBUS`` and ``XA-SK-GPIO`` sliceCARDs together with the xSOFTip ``module_canopen`` to demonstrate how the module communicates using device profiles DS301 and DS401:
+This simple demonstration of CANopen Component in xTIMEcomposer Studio uses the ``XA-SK-ISBUS`` and ``XA-SK-GPIO`` sliceCARDs together with the xSOFTip ``module_canopen`` to demonstrate how the module communicates using device profiles DS301 and DS401(CiA Standard):
 
    * Turn GPIO sliceCARD LEDs ON and OFF.
-   * Read ADC vale from the Temperature sensor on the GPIO slcieCARD.
+   * Read ADC vale from the Temperature sensor on the GPIO sliceCARD.
    * Read button press from the GPIO sliceCARD. 
 
 
 Hardware Setup
 ++++++++++++++
 
-The XP-SKC-L2 Slicekit Core board has four slots with edge connectors: ``SQUARE``, ``CIRCLE``,``TRIANGLE`` and ``STAR``. 
+The XP-SKC-L2 sliceKIT Core board has four slots with edge connectors: ``SQUARE``, ``CIRCLE``, ``TRIANGLE`` and ``STAR``. 
 
 To setup up the system:
 
-   #. Connect XA-SK-ISBUS Slice Card to the XP-SKC-L2 Slicekit Core board using the connector marked with the ``TRIANGLE``.
-   #. Connect XA-SK-GPIO Slice Card to the XP-SKC-L2 Slicekit Core board using the connector marked with the ``SQUARE``.
-   #. Connect the XTAG Adapter to Slicekit Core board, and connect XTAG-2 to the Adapter. 
-   #. Connect the XTAG-2 to host PC. Note that the USB cable is not provided with the Slicekit starter kit.
+   #. Connect XA-SK-ISBUS sliceCARD to the XP-SKC-L2 sliceKIT Core board using the connector marked with the ``TRIANGLE``.
+   #. Connect XA-SK-GPIO sliceCARD to the XP-SKC-L2 sliceKIT Core board using the connector marked with the ``SQUARE``.
+   #. Connect the XTAG Adapter to sliceKIT Core board, and connect XTAG-2 to the Adapter. 
+   #. Connect the XTAG-2 to host PC. Note that the USB cable is not provided with the sliceKIT starter kit.
    #. Set the ``XMOS LINK`` to ``ON`` on the XTAG Adapter.
-   #. Switch on the power supply to the Slicekit Core board.
-   #. Connect the XA-SK-ISBUS to the CANdo USB interface (or any CANbus master) via a DE-9 pass through cable.
-   #. Set the jumpers on the ISBUS slice for CAN mode; P7 short between pins 1 and 2(leaving 3 unconnected), P6 short between 2 and 11, 3 and 12, 7 and 16. See hardware setup image for clarification.
+   #. Switch on the power supply to the sliceKIT Core board.
    #. Install the CANdo application on a Windows machine (or any CAN bus master) and connect the CANdo dongle to that machine.
+   #. Connect the XA-SK-ISBUS to the CANdo USB interface (or any CANbus master) via a DE-9 pass through cable.
    #. Connect the CANdo analyzer cable (usb cable) to the host machine.
-	 #. Within the CANdo application:
-         #. Click the ``CAN Setup`` tab and set the baud rate to 500k.
-         #. Click ``View -> Options`` then ensure the ``Display On `CAN View` Page`` is checked. Then click ``OK``.
-         #. Switch to the ``CAN View`` tab.
-         #. Click the green run button.
-
+   	 #. Within the CANdo application:
+            #. Click the ``CAN Setup`` tab and set the baud rate to 500k.
+            #. Click ``View -> Options`` then ensure the ``Display On `CAN View` Page`` is checked. Then click ``OK``.
+            #. Switch to the ``CAN View`` tab.
+            #. Click the green run button.
+   #. Set the jumpers on the ISBUS sliceCARD for CAN mode; P7 short between pins 1 and 2(leaving 3 unconnected), P6 short between 2 and 11, 3 and 12, 7 and 16. See hardware setup image for clarification.
+      
 
 .. figure:: images/hardware_setup.png
    :align: center
@@ -46,32 +46,32 @@ To setup up the system:
 Import and Build the Application
 ++++++++++++++++++++++++++++++++
 
-   #. Open xTimeComposer and open the edit perspective (Window->Open Perspective->XMOS Edit).
-   #. Locate the ``'Slicekit CANopen'`` item in the xSOFTip pane on the bottom left of the window and drag it into the Project Explorer window in the xTimeComposer. This will also cause the modules on which this application depends (in this case, module_canopen) to be imported as well. 
-   #. Click on the app_canopen item in the Explorer pane then click on the build icon (hammer) in xTimeComposer. Check the console window to verify that the application has built successfully.
+   #. Open xTIMEcomposer and open the edit perspective (Window->Open Perspective->XMOS Edit).
+   #. Locate the ``'sliceKIT CANopen'`` item in the xSOFTip pane on the bottom left of the window and drag it into the Project Explorer window in the xTIMEcomposer. This will also cause the modules on which this application depends (in this case, module_canopen) to be imported as well. 
+   #. Click on the app_canopen item in the Explorer pane then click on the build icon (hammer) in xTIMEcomposer. Check the console window to verify that the application has built successfully.
 
-For help in using xTimeComposer, try the xTimeComposer tutorials, which you can find by selecting Help->Tutorials from the xTimeComposer menu.
+For help in using xTIMEcomposer, try the xTIMEcomposer tutorials, which you can find by selecting Help->Tutorials from the xTIMEcomposer menu.
 
-Note that the Developer Column in the xTimeComposer on the right hand side of your screen provides information on the xSOFTip components you are using. Select the ``CANopen`` component in the xSOFTip Browser, and you will see its description together with links to more documentation for this component. Once you have briefly explored this component, you can return to this quickstart guide by re-selecting  ``'Slicekit CANOpen Demo'`` in the xSOFTip Browser and clicking once more on the Quickstart  link for the ``CANopen Demo Quickstart``.
+Note that the Developer Column in the xTIMEcomposer on the right hand side of your screen provides information on the xSOFTip components you are using. Select the ``CANopen`` component in the xSOFTip Browser, and you will see its description together with links to more documentation for this component. Once you have briefly explored this component, you can return to this quickstart guide by re-selecting  ``'sliceKIT CANOpen Demo'`` in the xSOFTip Browser and clicking once more on the Quickstart  link for the ``CANopen Demo Quickstart``.
     
-EDS settings Used in the Demo(Example Settings):
-++++++++++++++++++++++++++++++++++++++++++++++++
+EDS settings Used in the Demo (Example Settings):
++++++++++++++++++++++++++++++++++++++++++++++++++
    
    #. Heartbeat set to one second. Transmits current state on the CAN network every second.
-   #. TPDO0 set to data asynchronously and transmits the Temperature sensor reading on GPIO Board (mapped to 0x6100 sub index 01).
-   #. TPDO1 set to acyclic transmission. Whenever Button 1is pressed on GPIO Board, and transmits is done is done after a sync message (mapped to 0x6400 sub index 01).
-   #. TPDO2 set for cyclic transmission. The button 2 value is sent after every 5 SYNC messages (mapped to 0x6100 sub index 01).
-   #. RPDO0 controls LED0 on GPIO board (mapped to 0x6400 sub-index 01). The LED toggles on reception of this PDO message.
-   #. RPDO1 controls LED1 on GPIO board (mapped to 0x6400 sub-index 02). The LED toggles on reception of this RPDO message.
-   #. RPDO2 controls LED2 on GPIO board (mapped to 0x6400 sub-index 03). After receiving this, the LED2 will toggle only after 10 SYNC messages are received.
-   #. RPDO3 controls LED3 on GPIO board (mapped to 0x6400 sub-index 04). After receiving this PDO message, the LED will toggle only after SYNC message is received. 
+   #. TPDO0 set to data asynchronously and transmits the ADC value of Temperature sensor reading on GPIO Board (mapped to 0x6100 sub-index 01).
+   #. TPDO1 set to acyclic transmission. Whenever Button 1is pressed on GPIO Board, and transmits is done is done after a sync message (mapped to 0x6400 sub-index 01).
+   #. TPDO2 set for cyclic transmission. The button 2 value is sent after every 5 SYNC messages (mapped to 0x6100 sub-index 01).
+   #. RPDO0 controls LED0 on GPIO board (mapped to 0x6200 sub-index 01). The LED toggles on reception of this PDO message.
+   #. RPDO1 controls LED1 on GPIO board (mapped to 0x6200 sub-index 02). The LED toggles on reception of this RPDO message.
+   #. RPDO2 controls LED2 on GPIO board (mapped to 0x6200 sub-index 03). After receiving this, the LED2 will toggle only after 10 SYNC messages are received.
+   #. RPDO3 controls LED3 on GPIO board (mapped to 0x6200 sub-index 04). After receiving this PDO message, the LED will toggle only after SYNC message is received. 
 
    
 Run the Application
 +++++++++++++++++++
   Import module_can, module_i2c_master, module_mutual_thread_comm and module_canopen to the workspace. Build the application by clicking on the app_canopen folder in the project explorer.
 
-Now that the application has been compiled, the next step is to run it on the Slicekit Core Board using the tools to load the application over JTAG (via the XTAG2 and Xtag Adaptor card) into the xCORE multicore microcontroller.
+Now that the application has been compiled, the next step is to run it on the sliceKIT Core Board using the tools to load the application over JTAG (via the XTAG2 and Xtag Adaptor card) into the xCORE multicore microcontroller.
 
    #. Right click on the application binary and select run configurations window 
       Select ``xscope`` tab 
@@ -92,7 +92,8 @@ Open the CANdoISO application and see the boot up message is displayed with node
 HEARTBEAT MESSSAGE
 ..................
 
-You can observe the periodic Heartbeat messages on the analyzer ``[ID = 700, D1=7F (Pre operational state)]``.  
+You can observe the periodic Heartbeat messages on the analyzer 
+``[ID = 700, D1=7F (Pre operational state)]``.  
 
       
       .. figure:: images/heartbeat.png
@@ -100,18 +101,22 @@ You can observe the periodic Heartbeat messages on the analyzer ``[ID = 700, D1=
       
    Heartbeat Message received from CANopen node
 
+   With the heartbeat emssage wyou will receive the TPDO0 message which is current ADC value of temperature sensor.
+   The message starts with ID 180 as shown: ``[ID = 180, DLC = 2, D1 = 01, D1 = AB]`` 
+
 OPERATING MODE CHANGE 
 .....................
 
-Send the following NMT message to change the state to Operational. Change the State to Operational bys ending the following message
-``[ID = 0, DLC = 2, D1 = 1, D2 = 0]``
+Send the following NMT message to change the state to Operational. 
+``[ID = 0, DLC = 2, D1 = 1, D2 = 0]`` and press button ``Now`` button as shown in the snapshot
 
    .. figure:: images/operating_mode_change.png
       :align: center
       
    Operating mode change Message on CANopen node
    
-After sending this message, the heartbeat message will show the new state ``[ID = 700, D1 = 5 (operational)]``. 
+After sending this message, the heartbeat message will show the new state 
+``[ID = 700, D1 = 5 (operational)]``. 
 The following screen shot shows the heartbeat messages after sending NMT message to change state:
 
    .. figure:: images/operation_mode.png
@@ -119,7 +124,7 @@ The following screen shot shows the heartbeat messages after sending NMT message
       
    Heartbeat message showing Operation mode 
 
-The following NMT messages can be used to move to other states
+The following NMT messages (example messages)can be used to move to other states 
    #. Message to set to Stopped state:
       ``[ID = 0, DLC = 2, D1 = 3, D2 = 0]``
        After sending this message to the node the node stops sending the heart beat messages.
@@ -130,7 +135,7 @@ The following NMT messages can be used to move to other states
 LSS (Layer Service Settings) MESSAGES
 ......................................
 
-After changing to the device to Operating mode,
+After changing the device to Operating mode,
 
    #. LSS Read Vendor ID:
    
@@ -208,12 +213,12 @@ After changing to the device to Operating mode,
          
     Serial number response message 
 
-TPDO Data (transmit Process data objects)
+TPDO Data (Transmit Process Data Objects)
 .........................................
 
    #. TPDO0 Temperature sensor:
       
-      The application dens the Temperature sensor data to CANopen stack every 5 seconds for transmission. The communication parameter for this TPDO is 255 which indicate Async transfer. The CANopen stack sends this TPDO outside the SYNC timer window.
+      The application sends the ADC value read from the Temperature sensor to CANopen stack every 5 seconds. The communication parameter for this TPDO is 255 which indicate Async transfer. The CANopen stack sends this TPDO outside the SYNC timer window.
       The following screenshot shows the message (ID = 180) with temperature ADC reading in [D1 and D2]. Place your finger on the temperature sensor (marked as RT1 on GPIO sliceCARD) and check if the value is being changed. This gives the current changed ADC value of temperature sensor.
 
          .. figure:: images/tpdo0_response.png
@@ -268,7 +273,7 @@ TPDO Data (transmit Process data objects)
           
     Button 2 reading after button is pressed
 
-RPDO (receive Process Data Objects):
+RPDO (Receive Process Data Objects):
 ...................................
 
    #. RPDO0 LED0:
@@ -321,7 +326,7 @@ Send the following message (SYNC) to toggle LED3
          
     SYNC message
 
-SDO Data communication (service data objects)
+SDO Data communication (Service Data Objects)
 .............................................
 
    #. SDO expedited upload: 
@@ -496,7 +501,7 @@ This is an Error message as a read is attempted from WO index (index = 0x1009, s
 Next Steps
 ++++++++++
 
-   #. You can change the parameter of the EDS file and generate an object_dictionary.h file and include it in your application to change the settings and objects of the CANOpen device.
+   #. You can change the parameter of the EDS file and generate an object_dictionary.h file and include it in your application to change the settings and objects of the CANopen device.
       The name of the EDS file should be ``CO_EDS_401.eds`` to generate an ``object_dictionary.h`` file from a python script.
       The object dictionary generator (python script) is available in the object_dictionary_generator folder of the repository.
 
@@ -506,5 +511,5 @@ Look at the Code
    #. Examine the application code. In xTIMEcomposer navigate to the ``src`` directory under ``app_canopen`` and double click on the app_canopen.xc file within it. The file will open in the central editor window.
    #. Find the main function and note that it runs the ``canopen_manager`` function on a single logical core, and a second ``application`` function on a second logical core and a ``can_server`` function on other logical core.
 
-:ref:`Slicekit_CANopen_Quickstart`
+:ref:`sliceKIT_CANopen_Quickstart`
    

@@ -16,13 +16,12 @@
 /*---------------------------------------------------------------------------
  include files
  ---------------------------------------------------------------------------*/
+#include "canopen.h"
 #include "can.h"
 #include "emcy.h"
-#include "canopen.h"
-#include <xccompat.h>
 #include "od.h"
 #include "sdo.h"
-
+#include <xccompat.h>
 
 /*---------------------------------------------------------------------------
  Send Emergency message on to the CAN newtork

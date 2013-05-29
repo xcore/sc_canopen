@@ -18,10 +18,9 @@
  ---------------------------------------------------------------------------*/
 #include "can.h"
 #include "canopen.h"
-#include <xccompat.h>
 #include "pdo.h"
 #include "od.h"
-
+#include <xccompat.h>
 
 /*---------------------------------------------------------------------------
  Send Heartbeat message on to the CAN network

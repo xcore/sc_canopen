@@ -165,7 +165,7 @@ void sdo_upload_segmented_data(chanend c_rx_tx,
   frame.extended = 0;
   frame.remote = 0;
   frame.dlc = 8;
-  frame.data[0] = 0x00 | (sdo_toggle << 4); //have a look if 0x60 or 0x00:TODO
+  frame.data[0] = 0x00 | (sdo_toggle << 4);
   can_send_frame(c_rx_tx, frame);
 }
 

@@ -125,11 +125,12 @@ void application(streaming chanend c_application)
       case c_application:> pdo_number:
       {
         char temp_data;
-        char length,data;
+        char length,data[1];
+        canopen_client_receive_data_from_canopen_stack(c_application, length,data);
         if((pdo_number >= 0) && (pdo_number <= 3))
         {
           p_led :> temp_data;
-          p_led <: (unsigned)(temp_data ^ (1 << pdo_number));
+          p_led <:  (unsigned) ((temp_data ^ (1 << pdo_number)));
         }
       }
       break;
