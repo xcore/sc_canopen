@@ -29,7 +29,7 @@ To setup up the system:
    #. Install the CANdo application on a Windows machine (or any CAN bus master) and connect the CANdo dongle to that machine.
    #. Connect the XA-SK-ISBUS to the CANdo USB interface (or any CANbus master) via a DE-9 pass through cable.
    #. Connect the CANdo analyzer cable (usb cable) to the host machine.
-   	 Within the CANdo application:
+   	 Within the CANdo application.
          #. Click the ``CAN Setup`` tab and set the baud rate to 500k.
          #. Click ``View -> Options`` then ensure the ``Display On `CAN View` Page`` is checked. Then click ``OK``.
          #. Switch to the ``CAN View`` tab.
@@ -76,7 +76,7 @@ Now that the application has been compiled, the next step is to run it on the sl
    #. Right click on the application binary and select run configurations window 
       Select ``xscope`` tab 
       Select ``offline scope`` option and then click on run button. 
-      This console will now display ‘Reading Temperature..’ every five seconds.
+      This console will now display ï¿½Reading Temperature..ï¿½ every five seconds.
 
 BOOTUP MESSAGE
 ..............
@@ -101,8 +101,6 @@ You can observe the periodic Heartbeat messages on the analyzer
       
    Heartbeat Message received from CANopen node
 
-   With the heartbeat emssage wyou will receive the TPDO0 message which is current ADC value of temperature sensor.
-   The message starts with ID 180 as shown: ``[ID = 180, DLC = 2, D1 = 01, D1 = AB]`` 
 
 OPERATING MODE CHANGE 
 .....................
@@ -124,6 +122,9 @@ The following screen shot shows the heartbeat messages after sending NMT message
       
    Heartbeat message showing Operation mode 
 
+With the heartbeat message you will receive the TPDO0 message which is current ADC value of temperature sensor.
+The message starts with ID 180 as shown: ``[ID = 180, DLC = 2, D1 = 01, D1 = AB]``. 
+   
 The following NMT messages (example messages)can be used to move to other states 
    #. Message to set to Stopped state:
       ``[ID = 0, DLC = 2, D1 = 3, D2 = 0]``
