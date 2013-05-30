@@ -32,14 +32,14 @@
  Function prototypes
  ---------------------------------------------------------------------------*/
 static void
-    receive_rpdo_message(unsigned char canopen_state,
-                         char pdo_number,
-                         can_frame frame,
-                         NULLABLE_ARRAY_OF(rx_sync_mesages, sync_messages_rx),
-                         NULLABLE_ARRAY_OF(tx_sync_timer, sync_timer),
-                         REFERENCE_PARAM(char, error_index_pointer),
-                         chanend c_rx_tx,
-                         streaming chanend c_application);
+receive_rpdo_message(unsigned char canopen_state,
+                     char pdo_number,
+                     can_frame frame,
+                     NULLABLE_ARRAY_OF(rx_sync_mesages, sync_messages_rx),
+                     NULLABLE_ARRAY_OF(tx_sync_timer, sync_timer),
+                     REFERENCE_PARAM(char, error_index_pointer),
+                     chanend c_rx_tx,
+                     streaming chanend c_application);
 
 static void
     receive_tpdo_rtr_request(can_frame frame,
@@ -49,11 +49,11 @@ static void
                              chanend c_rx_tx);
 
 static void
-    lss_state_machine(can_frame frame,
-                      char lss_configuration_mode,
-                      chanend c_rx_tx,
-                      REFERENCE_PARAM(char, canopen_state),
-                      REFERENCE_PARAM(unsigned char, error_index_pointer));
+lss_state_machine(can_frame frame,
+                  char lss_configuration_mode,
+                  chanend c_rx_tx,
+                  REFERENCE_PARAM(char, canopen_state),
+                  REFERENCE_PARAM(unsigned char, error_index_pointer));
 
 /*---------------------------------------------------------------------------
  CANOpen Manager communicates with CAN module and application core
@@ -141,460 +141,424 @@ void canopen_manager(chanend c_rx_tx, streaming chanend c_application)
     select
     {
       case can_rx_frame(c_rx_tx, frame):
-      switch(frame.id)
       {
-        case NMT_MESSAGE: //receive NMT message and change state accordingly
-        if(frame.dlc != NMT_MESSAGE_LENGTH)
+        unsigned char temp_case;
+        if ((frame.id >= RPDO_0_MESSAGE) && (frame.id <= (RPDO_0_MESSAGE + 100
+            * (CANOPEN_NUMBER_OF_RPDOS_SUPPORTED))))
         {
-          emcy_send_emergency_message(c_rx_tx,
-              ERR_TYPE_COMMUNICATION_ERROR,
-              PROTOCOL_ERROR_GENERIC,
-              error_index_pointer,
-              canopen_state);
+          receive_rpdo_message(canopen_state,
+                               ((frame.id - RPDO_0_MESSAGE) / 100),
+                               frame,
+                               sync_messages_rx,
+                               sync_timer,
+                               error_index_pointer,
+                               c_rx_tx,
+                               c_application);
+        }
+        else if ((frame.id >= TPDO_0_MESSAGE) && (frame.id <= (TPDO_0_MESSAGE
+            + 100 * (CANOPEN_NUMBER_OF_TPDOS_SUPPORTED))))
+        {
+          receive_tpdo_rtr_request(frame,
+                                   ((frame.id - TPDO_0_MESSAGE) / 100),
+                                   sync_timer,
+                                   tpdo_inhibit_time_values,
+                                   c_rx_tx); //TPDO RTR request
         }
         else
         {
-          if((frame.data[1] == 0) || (frame.data[1] == CANOPEN_NODE_ID)) //check if message is for this node or broadcast message
+          switch(frame.id)
           {
-            if((frame.data[0] == INITIALIZATION) ||
-                (frame.data[0] == PRE_OPERATIONAL) ||
-                (frame.data[0] == OPERATIONAL) ||
-                (frame.data[0] == STOPPED) ||
-                (frame.data[0] == RESET_COMMUNICATION) ||
-                (frame.data[0] == RESET_NODE))
-            {
-              canopen_state=frame.data[0];
-            }
-          }
-        }
-        break;
-
-        case RLSS_MESSAGE: // LSS messsages
-        if(frame.dlc != LSS_MESSAGE_LENGTH)
-        {
-          emcy_send_emergency_message(c_rx_tx,
-              ERR_TYPE_COMMUNICATION_ERROR,
-              PROTOCOL_ERROR_GENERIC,
-              error_index_pointer,
-              canopen_state);
-        }
-        else
-        {
-          lss_state_machine(frame, lss_configuration_mode,c_rx_tx, canopen_state, error_index_pointer);
-        }
-        break;
-
-        case SYNC:
-        if(canopen_state == OPERATIONAL)
-        {
-          if(frame.dlc != SYNC_MESSAGE_LENGTH)
-          {
-            emcy_send_emergency_message(c_rx_tx,
-                ERR_TYPE_COMMUNICATION_ERROR,
-                SYNC_DATA_LENGTH_ERROR,
-                error_index_pointer,
-                canopen_state);
-          }
-          else
-          {
-            sync_window_timer:>sync_time_start;
-            pdo_number = 0;
-            while(pdo_number != CANOPEN_NUMBER_OF_RPDOS_SUPPORTED)
-            {
-              unsigned rtr_check;
-              rtr_check = pdo_find_cob_id(sync_timer[pdo_number].comm_parameter);
-              if(rtr_check != -1)
-              {
-                rtr_check = ((rtr_check >> 30) &0x3);
-                sync_pdo_data_transmit(pdo_number, rtr_check, sync_window_timer,
-                    sync_time_start, sync_time_current,
-                    sync_window_length, time_difference_sync,
-                    sync_timer, tpdo_inhibit_time_values,
-                    c_rx_tx);
-                pdo_number++;
-              }
-            }//tpdos
-
-            pdo_number = 0;
-            while(pdo_number != CANOPEN_NUMBER_OF_TPDOS_SUPPORTED)
-            {
-              sync_pdo_data_receive(pdo_number,
-                  sync_messages_rx,
-                  sync_window_timer,
-                  sync_time_current,
-                  sync_time_start,
-                  sync_window_length,
-                  c_application);
-              pdo_number++;
-            }//rpdos
-          }
-        }
-        break;
-
-        case NG_HEARTBEAT:
-        if(( canopen_state == PRE_OPERATIONAL) ||
-            ( canopen_state == OPERATIONAL) ||
-            ( canopen_state == STOPPED))
-        {
-          if(!heart_beat_active)
-          {
-            node_guard_timer:>ng_time;
-            if(frame.dlc != HEARTBEAT_MESSAGE_LENGTH)
+            case NMT_MESSAGE: //receive NMT message and change state accordingly
+            if(frame.dlc != NMT_MESSAGE_LENGTH)
             {
               emcy_send_emergency_message(c_rx_tx,
                   ERR_TYPE_COMMUNICATION_ERROR,
                   PROTOCOL_ERROR_GENERIC,
-                  error_index_pointer, canopen_state);
+                  error_index_pointer,
+                  canopen_state);
             }
             else
             {
-              if(frame.remote == TRUE)
-              nmt_send_nodeguard_message(c_rx_tx, frame, hb_toggle, canopen_state);
+              if((frame.data[1] == 0) || (frame.data[1] == CANOPEN_NODE_ID)) //check if message is for this node or broadcast message
+
+              {
+                if((frame.data[0] == INITIALIZATION) ||
+                    (frame.data[0] == PRE_OPERATIONAL) ||
+                    (frame.data[0] == OPERATIONAL) ||
+                    (frame.data[0] == STOPPED) ||
+                    (frame.data[0] == RESET_COMMUNICATION) ||
+                    (frame.data[0] == RESET_NODE))
+                {
+                  canopen_state=frame.data[0];
+                }
+              }
             }
-          }
-        }
-        break;
+            break;
 
-        case RPDO_0_MESSAGE:
-        receive_rpdo_message(canopen_state, 0,
-            frame, sync_messages_rx,
-            sync_timer, error_index_pointer,
-            c_rx_tx, c_application);
-        break;
-
-        case RPDO_1_MESSAGE:
-        receive_rpdo_message(canopen_state, 1,
-            frame, sync_messages_rx,
-            sync_timer, error_index_pointer,
-            c_rx_tx, c_application);
-        break;
-
-        case RPDO_2_MESSAGE:
-        receive_rpdo_message(canopen_state, 2,
-            frame, sync_messages_rx,
-            sync_timer, error_index_pointer,
-            c_rx_tx, c_application);
-        break;
-
-        case RPDO_3_MESSAGE:
-        receive_rpdo_message(canopen_state, 3,
-            frame, sync_messages_rx,
-            sync_timer, error_index_pointer,
-            c_rx_tx, c_application);
-        break;
-
-        case TPDO_0_MESSAGE:
-        receive_tpdo_rtr_request(frame, 0, sync_timer,
-            tpdo_inhibit_time_values, c_rx_tx); //TPDO RTR request
-        break;
-
-        case TPDO_1_MESSAGE:
-        receive_tpdo_rtr_request(frame, 1, sync_timer,
-            tpdo_inhibit_time_values, c_rx_tx); //TPDO RTR request
-        break;
-
-        case TPDO_2_MESSAGE:
-        receive_tpdo_rtr_request(frame, 2, sync_timer,
-            tpdo_inhibit_time_values, c_rx_tx); //TPDO RTR request
-        break;
-
-        case TPDO_3_MESSAGE:
-        receive_tpdo_rtr_request(frame, 3, sync_timer,
-            tpdo_inhibit_time_values, c_rx_tx); //TPDO RTR request
-        break;
-
-        case RSDO_MESSAGE:
-        if((canopen_state == PRE_OPERATIONAL) || (canopen_state == OPERATIONAL))
-        {
-          if(frame.dlc != SDO_MESSAGE_LENGTH)
-          {
-            emcy_send_emergency_message(c_rx_tx,
-                ERR_TYPE_COMMUNICATION_ERROR,
-                PROTOCOL_ERROR_GENERIC,
-                error_index_pointer,
-                canopen_state);
-          }
-          else
-          {
-            sdo_message_type = frame.data[0];
-            switch(sdo_message_type)
+            case RLSS_MESSAGE: // LSS messsages
+            if(frame.dlc != LSS_MESSAGE_LENGTH)
             {
-              case EXPEDITED_DWNLD_RQST_4BYTES: //expedited download
-              case EXPEDITED_DWNLD_RQST_3BYTES:
-              case EXPEDITED_DWNLD_RQST_2BYTES:
-              case EXPEDITED_DWNLD_RQST_1BYTE:
-              od_index = (frame.data[1]) | (frame.data[2]<<8);
-              od_sub_index = frame.data[3];
-              index = od_find_index(od_index);
-              if(index == -1)
+              emcy_send_emergency_message(c_rx_tx,
+                  ERR_TYPE_COMMUNICATION_ERROR,
+                  PROTOCOL_ERROR_GENERIC,
+                  error_index_pointer,
+                  canopen_state);
+            }
+            else
+            {
+              lss_state_machine(frame, lss_configuration_mode,c_rx_tx, canopen_state, error_index_pointer);
+            }
+            break;
+
+            case SYNC:
+            if(canopen_state == OPERATIONAL)
+            {
+              if(frame.dlc != SYNC_MESSAGE_LENGTH)
               {
                 emcy_send_emergency_message(c_rx_tx,
                     ERR_TYPE_COMMUNICATION_ERROR,
-                    SDO_NO_OBJECT_IN_OD,
+                    SYNC_DATA_LENGTH_ERROR,
                     error_index_pointer,
                     canopen_state);
               }
               else
               {
-                no_of_bytes = 4 - ((frame.data[0] >> 2) & 0x03); //number of bytes that do not have data in the can frame
-                data_length = od_find_data_length(index, od_sub_index);
-                data_buffer[0] = frame.data[4];
-                data_buffer[1] = frame.data[5];
-                data_buffer[2] = frame.data[6];
-                data_buffer[3] = frame.data[7];
-                if(no_of_bytes == data_length)
+                sync_window_timer:>sync_time_start;
+                pdo_number = 0;
+                while(pdo_number != CANOPEN_NUMBER_OF_RPDOS_SUPPORTED)
                 {
-                  if(od_find_access_of_index(index, od_sub_index) == RO) //READ ONLY
-
+                  unsigned rtr_check;
+                  rtr_check = pdo_find_cob_id(sync_timer[pdo_number].comm_parameter);
+                  if(rtr_check != -1)
                   {
-                    emcy_send_emergency_message(c_rx_tx,
-                        ERR_TYPE_COMMUNICATION_ERROR,
-                        SDO_ATTEMPR_TO_WRITE_RO_OD,
-                        error_index_pointer,
-                        canopen_state);
+                    rtr_check = ((rtr_check >> 30) &0x3);
+                    sync_pdo_data_transmit(pdo_number, rtr_check, sync_window_timer,
+                        sync_time_start, sync_time_current,
+                        sync_window_length, time_difference_sync,
+                        sync_timer, tpdo_inhibit_time_values,
+                        c_rx_tx);
+                    pdo_number++;
                   }
-                  else if(od_find_access_of_index(index, od_sub_index) == CONST) //CONSTANT Data type
+                }//tpdos
 
+                pdo_number = 0;
+                while(pdo_number != CANOPEN_NUMBER_OF_TPDOS_SUPPORTED)
+                {
+                  sync_pdo_data_receive(pdo_number,
+                      sync_messages_rx,
+                      sync_window_timer,
+                      sync_time_current,
+                      sync_time_start,
+                      sync_window_length,
+                      c_application);
+                  pdo_number++;
+                }//rpdos
+              }
+            }
+            break;
+
+            case NG_HEARTBEAT:
+            if(( canopen_state == PRE_OPERATIONAL) ||
+                ( canopen_state == OPERATIONAL) ||
+                ( canopen_state == STOPPED))
+            {
+              if(!heart_beat_active)
+              {
+                node_guard_timer:>ng_time;
+                if(frame.dlc != HEARTBEAT_MESSAGE_LENGTH)
+                {
+                  emcy_send_emergency_message(c_rx_tx,
+                      ERR_TYPE_COMMUNICATION_ERROR,
+                      PROTOCOL_ERROR_GENERIC,
+                      error_index_pointer, canopen_state);
+                }
+                else
+                {
+                  if(frame.remote == TRUE)
+                  nmt_send_nodeguard_message(c_rx_tx, frame, hb_toggle, canopen_state);
+                }
+              }
+            }
+            break;
+
+            case RSDO_MESSAGE:
+            if((canopen_state == PRE_OPERATIONAL) || (canopen_state == OPERATIONAL))
+            {
+              if(frame.dlc != SDO_MESSAGE_LENGTH)
+              {
+                emcy_send_emergency_message(c_rx_tx,
+                    ERR_TYPE_COMMUNICATION_ERROR,
+                    PROTOCOL_ERROR_GENERIC,
+                    error_index_pointer,
+                    canopen_state);
+              }
+              else
+              {
+                sdo_message_type = frame.data[0];
+                switch(sdo_message_type)
+                {
+                  case EXPEDITED_DWNLD_RQST_4BYTES: //expedited download
+                  case EXPEDITED_DWNLD_RQST_3BYTES:
+                  case EXPEDITED_DWNLD_RQST_2BYTES:
+                  case EXPEDITED_DWNLD_RQST_1BYTE:
+                  od_index = (frame.data[1]) | (frame.data[2]<<8);
+                  od_sub_index = frame.data[3];
+                  index = od_find_index(od_index);
+                  if(index == -1)
                   {
                     emcy_send_emergency_message(c_rx_tx,
                         ERR_TYPE_COMMUNICATION_ERROR,
-                        SDO_UNSUPPORTED_ACCESS_OD,
+                        SDO_NO_OBJECT_IN_OD,
                         error_index_pointer,
                         canopen_state);
                   }
                   else
                   {
-                    od_write_data(index, od_sub_index, data_buffer,data_length);
-                    sdo_send_download_response(od_index, od_sub_index,c_rx_tx);
-                  }
-                }
-                else
-                {
-                  emcy_send_emergency_message(c_rx_tx,
-                      ERR_TYPE_COMMUNICATION_ERROR,
-                      SDO_DATA_TYPE_DOES_NOT_MATCH,
-                      error_index_pointer,
-                      canopen_state);
-                }
-              }
-              break;
-
-              case NON_EXPEDITED_DWNLD_REQUEST: //non expedited download
-              case NON_EXPEDITED_DWNLD_SEGMENTED_REQUEST:
-              od_index = (frame.data[1]) | (frame.data[2]<<8);
-              od_sub_index = frame.data[3];
-              index = od_find_index(od_index);
-              if(index == -1)
-              {
-                emcy_send_emergency_message(c_rx_tx,
-                    ERR_TYPE_COMMUNICATION_ERROR,
-                    SDO_NO_OBJECT_IN_OD,
-                    error_index_pointer,
-                    canopen_state);
-              }
-              else
-              {
-                sdo_send_download_response(od_index, od_sub_index,c_rx_tx);
-                segmented_rx_last_frame = FALSE;
-                sdo_toggle=0;
-                count=0;
-                while(segmented_rx_last_frame == FALSE) //check if this is last segment or not
-
-                {
-                  timer_communication_timeout:> comm_timeout_time;
-                  select
-                  {
-                    case can_rx_frame(c_rx_tx,frame):
-                    if(((frame.data[0]>>4)&0x01) == sdo_toggle) //check for sdo toggle bit
+                    no_of_bytes = 4 - ((frame.data[0] >> 2) & 0x03); //number of bytes that do not have data in the can frame
+                    data_length = od_find_data_length(index, od_sub_index);
+                    data_buffer[0] = frame.data[4];
+                    data_buffer[1] = frame.data[5];
+                    data_buffer[2] = frame.data[6];
+                    data_buffer[3] = frame.data[7];
+                    if(no_of_bytes == data_length)
                     {
-                      if((frame.data[0]&0x01) == 1) //check if last segment or not
+                      if(od_find_access_of_index(index, od_sub_index) == RO) //READ ONLY
+
                       {
-                        char od_data_length=0;
-                        char temp_counter=0;
-                        segmented_rx_last_frame = TRUE;
-                        no_of_bytes = 7 - ((frame.data[0] >> 1) & 0x07); //find how many bytes have valid data in the frame
-                        while(temp_counter != no_of_bytes)
+                        emcy_send_emergency_message(c_rx_tx,
+                            ERR_TYPE_COMMUNICATION_ERROR,
+                            SDO_ATTEMPR_TO_WRITE_RO_OD,
+                            error_index_pointer,
+                            canopen_state);
+                      }
+                      else if(od_find_access_of_index(index, od_sub_index) == CONST) //CONSTANT Data type
+
+                      {
+                        emcy_send_emergency_message(c_rx_tx,
+                            ERR_TYPE_COMMUNICATION_ERROR,
+                            SDO_UNSUPPORTED_ACCESS_OD,
+                            error_index_pointer,
+                            canopen_state);
+                      }
+                      else
+                      {
+                        od_write_data(index, od_sub_index, data_buffer,data_length);
+                        sdo_send_download_response(od_index, od_sub_index,c_rx_tx);
+                      }
+                    }
+                    else
+                    {
+                      emcy_send_emergency_message(c_rx_tx,
+                          ERR_TYPE_COMMUNICATION_ERROR,
+                          SDO_DATA_TYPE_DOES_NOT_MATCH,
+                          error_index_pointer,
+                          canopen_state);
+                    }
+                  }
+                  break;
+
+                  case NON_EXPEDITED_DWNLD_REQUEST: //non expedited download
+                  case NON_EXPEDITED_DWNLD_SEGMENTED_REQUEST:
+                  od_index = (frame.data[1]) | (frame.data[2]<<8);
+                  od_sub_index = frame.data[3];
+                  index = od_find_index(od_index);
+                  if(index == -1)
+                  {
+                    emcy_send_emergency_message(c_rx_tx,
+                        ERR_TYPE_COMMUNICATION_ERROR,
+                        SDO_NO_OBJECT_IN_OD,
+                        error_index_pointer,
+                        canopen_state);
+                  }
+                  else
+                  {
+                    sdo_send_download_response(od_index, od_sub_index,c_rx_tx);
+                    segmented_rx_last_frame = FALSE;
+                    sdo_toggle=0;
+                    count=0;
+                    while(segmented_rx_last_frame == FALSE) //check if this is last segment or not
+                    {
+                      timer_communication_timeout:> comm_timeout_time;
+                      select
+                      {
+                        case can_rx_frame(c_rx_tx,frame):
+                        if(((frame.data[0]>>4)&0x01) == sdo_toggle) //check for sdo toggle bit
+
                         {
-                          data_buffer[count+temp_counter] = frame.data[temp_counter];
-                          temp_counter++;
-                        }
-                        od_data_length = od_find_data_length(index,od_sub_index);
-                        if(od_data_length == (count + temp_counter))
-                        {
-                          if(od_find_access_of_index(index, od_sub_index) == RO) //Check if Object is Read only
+                          if((frame.data[0]&0x01) == 1) //check if last segment or not
+
                           {
-                            emcy_send_emergency_message(c_rx_tx,
-                                ERR_TYPE_COMMUNICATION_ERROR,
-                                SDO_ATTEMPR_TO_WRITE_RO_OD,
-                                error_index_pointer,
-                                canopen_state);
-                          }
-                          else if(od_find_access_of_index(index, od_sub_index) == CONST) //Check if Object is CONSTANT
-                          {
-                            emcy_send_emergency_message(c_rx_tx,
-                                ERR_TYPE_COMMUNICATION_ERROR,
-                                SDO_UNSUPPORTED_ACCESS_OD,
-                                error_index_pointer,
-                                canopen_state);
+                            char od_data_length=0;
+                            char temp_counter=0;
+                            segmented_rx_last_frame = TRUE;
+                            no_of_bytes = 7 - ((frame.data[0] >> 1) & 0x07); //find how many bytes have valid data in the frame
+                            while(temp_counter != no_of_bytes)
+                            {
+                              data_buffer[count+temp_counter] = frame.data[temp_counter];
+                              temp_counter++;
+                            }
+                            od_data_length = od_find_data_length(index,od_sub_index);
+                            if(od_data_length == (count + temp_counter))
+                            {
+                              if(od_find_access_of_index(index, od_sub_index) == RO) //Check if Object is Read only
+                              {
+                                emcy_send_emergency_message(c_rx_tx,
+                                    ERR_TYPE_COMMUNICATION_ERROR,
+                                    SDO_ATTEMPR_TO_WRITE_RO_OD,
+                                    error_index_pointer,
+                                    canopen_state);
+                              }
+                              else if(od_find_access_of_index(index, od_sub_index) == CONST) //Check if Object is CONSTANT
+                              {
+                                emcy_send_emergency_message(c_rx_tx,
+                                    ERR_TYPE_COMMUNICATION_ERROR,
+                                    SDO_UNSUPPORTED_ACCESS_OD,
+                                    error_index_pointer,
+                                    canopen_state);
+                              }
+                              else
+                              {
+                                od_write_data(index, od_sub_index, data_buffer,data_length); //write data to object Dictionary
+                              }
+                            }
+                            else
+                            {
+                              emcy_send_emergency_message(c_rx_tx,
+                                  ERR_TYPE_COMMUNICATION_ERROR,
+                                  SDO_VALUE_RANGE_PARAMETER_EXCEEDED,
+                                  error_index_pointer,
+                                  canopen_state);
+                            }
                           }
                           else
                           {
-                            od_write_data(index, od_sub_index, data_buffer,data_length); //write data to object Dictionary
+                            data_buffer[0+count] = frame.data[1];
+                            data_buffer[1+count] = frame.data[2];
+                            data_buffer[2+count] = frame.data[3];
+                            data_buffer[3+count] = frame.data[4];
+                            data_buffer[4+count] = frame.data[5];
+                            data_buffer[5+count] = frame.data[6];
+                            data_buffer[6+count] = frame.data[7];
+                            count+= 7;
                           }
+                          sdo_download_segment_response(c_rx_tx, sdo_toggle);
+                          sdo_toggle=!sdo_toggle;
                         }
                         else
                         {
                           emcy_send_emergency_message(c_rx_tx,
                               ERR_TYPE_COMMUNICATION_ERROR,
-                              SDO_VALUE_RANGE_PARAMETER_EXCEEDED,
+                              SDO_TOGGLE_BIT_NOT_ALTERED,
                               error_index_pointer,
                               canopen_state);
+                          segmented_rx_last_frame = TRUE;
+                        }
+                        timer_communication_timeout:> comm_timeout_time;
+                        break;
+
+                        case timer_communication_timeout when timerafter(comm_timeout_time+ sdo_timeout_time_value):> void:
+                        timer_communication_timeout:> comm_timeout_time;
+                        emcy_send_emergency_message(c_rx_tx,
+                            ERR_TYPE_COMMUNICATION_ERROR,
+                            SDO_PROTOCOL_TIME_OUT,
+                            error_index_pointer,
+                            canopen_state);
+                        break;
+                      }//select
+                    }
+                  }
+                  break;
+
+                  case INITIATE_SDO_UPLOAD_REQUEST: //initiate sdo upload
+                  {
+                    char counter=0, number_of_segments;
+                    sdo_toggle=0;
+                    od_index = (frame.data[1]) | (frame.data[2]<<8);
+                    od_sub_index = frame.data[3];
+                    index = od_find_index(od_index);
+                    if(index != -1)
+                    {
+                      data_length = od_find_data_length(index, od_sub_index);
+                      if(data_length <= 4) //check if data to be uploaded les than 4 bytes
+                      {
+                        if(od_find_access_of_index(index, od_sub_index) == WO) //check OD access type
+                        {
+                          emcy_send_emergency_message(c_rx_tx,
+                              ERR_TYPE_COMMUNICATION_ERROR,
+                              SDO_ATTEMPT_TO_READ_WO_OD,
+                              error_index_pointer, canopen_state);
+                        }
+                        else
+                        {
+                          od_read_data(index, od_sub_index, data_buffer,data_length);
+                          sdo_upload_expedited_data(c_rx_tx, od_index, od_sub_index,data_length, data_buffer); //if data is less than 4 bytes do expedited transfer
                         }
                       }
-                      else
+                      if(data_length > 4) //if data is more than 4 bytes do segmented transfer
                       {
-                        data_buffer[0+count] = frame.data[1];
-                        data_buffer[1+count] = frame.data[2];
-                        data_buffer[2+count] = frame.data[3];
-                        data_buffer[3+count] = frame.data[4];
-                        data_buffer[4+count] = frame.data[5];
-                        data_buffer[5+count] = frame.data[6];
-                        data_buffer[6+count] = frame.data[7];
-                        count+= 7;
-                      }
-                      sdo_download_segment_response(c_rx_tx, sdo_toggle);
-                      sdo_toggle=!sdo_toggle;
-                    }
-                    else
-                    {
-                      emcy_send_emergency_message(c_rx_tx,
-                          ERR_TYPE_COMMUNICATION_ERROR,
-                          SDO_TOGGLE_BIT_NOT_ALTERED,
-                          error_index_pointer,
-                          canopen_state);
-                      segmented_rx_last_frame = TRUE;
-                    }
-                    timer_communication_timeout:> comm_timeout_time;
-                    break;
-
-                    case timer_communication_timeout when timerafter(comm_timeout_time+ sdo_timeout_time_value):> void:
-                    timer_communication_timeout:> comm_timeout_time;
-                    emcy_send_emergency_message(c_rx_tx,
-                        ERR_TYPE_COMMUNICATION_ERROR,
-                        SDO_PROTOCOL_TIME_OUT,
-                        error_index_pointer,
-                        canopen_state);
-                    break;
-                  }//select
-                }
-              }
-              break;
-
-              case INITIATE_SDO_UPLOAD_REQUEST: //initiate sdo upload
-              {
-                char counter=0, number_of_segments;
-                sdo_toggle=0;
-                od_index = (frame.data[1]) | (frame.data[2]<<8);
-                od_sub_index = frame.data[3];
-                index = od_find_index(od_index);
-                if(index != -1)
-                {
-                  data_length = od_find_data_length(index, od_sub_index);
-                  if(data_length <= 4) //check if data to be uploaded les than 4 bytes
-                  {
-                    if(od_find_access_of_index(index, od_sub_index) == WO) //check OD access type
-
-                    {
-                      emcy_send_emergency_message(c_rx_tx,
-                          ERR_TYPE_COMMUNICATION_ERROR,
-                          SDO_ATTEMPT_TO_READ_WO_OD,
-                          error_index_pointer, canopen_state);
-                    }
-                    else if(od_find_access_of_index(index, od_sub_index) == CONST) //check id OD access type is CONSTANT or not
-                    {
-                      emcy_send_emergency_message(c_rx_tx,
-                          ERR_TYPE_COMMUNICATION_ERROR,
-                          SDO_UNSUPPORTED_ACCESS_OD,
-                          error_index_pointer, canopen_state);
-                    }
-                    else
-                    {
-                      od_read_data(index, od_sub_index, data_buffer,data_length);
-                      sdo_upload_expedited_data(c_rx_tx, od_index, od_sub_index,data_length, data_buffer); //if data is less than 4 bytes do expedited transfer
-                    }
-                  }
-                  if(data_length > 4) //if data is more than 4 bytes do segmented transfer
-                  {
-                    if(od_find_access_of_index(index, od_sub_index) == WO) //check access type
-
-                    {
-                      emcy_send_emergency_message(c_rx_tx,
-                          ERR_TYPE_COMMUNICATION_ERROR,
-                          SDO_ATTEMPT_TO_READ_WO_OD,
-                          error_index_pointer, canopen_state);
-                    }
-                    else if(od_find_access_of_index(index, od_sub_index) == CONST) //check if data to be tx is CONSTANT or not
-                    {
-                      emcy_send_emergency_message(c_rx_tx,
-                          ERR_TYPE_COMMUNICATION_ERROR,
-                          SDO_UNSUPPORTED_ACCESS_OD,
-                          error_index_pointer, canopen_state);
-                    }
-                    else
-                    {
-                      od_read_data(index, od_sub_index, data_buffer,data_length);
-                      sdo_initiate_upload_response(c_rx_tx, od_index, od_sub_index, data_length);
-                      if(data_length % 7 == 0)
-                      number_of_segments = (data_length/7); //no. of segments = data length/7 as we can tx only 7 bytes of data in segmented tx.
-
-                      else
-                      number_of_segments = (data_length/7) + 1;
-                      while(counter != number_of_segments)
-                      {
-                        timer_communication_timeout:> comm_timeout_time;
-                        select
+                        if(od_find_access_of_index(index, od_sub_index) == WO) //check access type
                         {
-                          case can_rx_frame(c_rx_tx,frame):
-                          if(((frame.data[0]>>4)&0x01) == sdo_toggle) //check sdo toggle bit is correct or not
-
-                          {
-                            sdo_upload_segmented_data(c_rx_tx,od_index,od_sub_index,sdo_toggle,data_length,data_buffer,counter);
-                            sdo_toggle=!sdo_toggle;
-                            counter++;
-                          }
+                          emcy_send_emergency_message(c_rx_tx,
+                              ERR_TYPE_COMMUNICATION_ERROR,
+                              SDO_ATTEMPT_TO_READ_WO_OD,
+                              error_index_pointer, canopen_state);
+                        }
+                        else
+                        {
+                          od_read_data(index, od_sub_index, data_buffer,data_length);
+                          sdo_initiate_upload_response(c_rx_tx, od_index, od_sub_index, data_length);
+                          if(data_length % 7 == 0)
+                            number_of_segments = (data_length/7); //no. of segments = data length/7 as we can tx only 7 bytes of data in segmented tx.
                           else
+                            number_of_segments = (data_length/7) + 1;
+                          while(counter != number_of_segments)
                           {
-                            emcy_send_emergency_message(c_rx_tx, ERR_TYPE_COMMUNICATION_ERROR, SDO_TOGGLE_BIT_NOT_ALTERED, error_index_pointer, canopen_state);
-                          }
-                          timer_communication_timeout:> comm_timeout_time;
-                          break;
+                            timer_communication_timeout:> comm_timeout_time;
+                            select
+                            {
+                              case can_rx_frame(c_rx_tx,frame):
+                              if(((frame.data[0]>>4)&0x01) == sdo_toggle) //check sdo toggle bit is correct or not
 
-                          case timer_communication_timeout when timerafter(comm_timeout_time+ sdo_timeout_time_value):> void:
-                          timer_communication_timeout:>comm_timeout_time;
-                          emcy_send_emergency_message(c_rx_tx, ERR_TYPE_COMMUNICATION_ERROR, SDO_PROTOCOL_TIME_OUT, error_index_pointer, canopen_state);
-                          counter = number_of_segments;
-                          break;
-                        }//select
-                      }//while
+                              {
+                                sdo_upload_segmented_data(c_rx_tx,od_index,od_sub_index,sdo_toggle,data_length,data_buffer,counter);
+                                sdo_toggle=!sdo_toggle;
+                                counter++;
+                              }
+                              else
+                              {
+                                emcy_send_emergency_message(c_rx_tx, ERR_TYPE_COMMUNICATION_ERROR, SDO_TOGGLE_BIT_NOT_ALTERED, error_index_pointer, canopen_state);
+                              }
+                              timer_communication_timeout:> comm_timeout_time;
+                              break;
+
+                              case timer_communication_timeout when timerafter(comm_timeout_time+ sdo_timeout_time_value):> void:
+                              timer_communication_timeout:>comm_timeout_time;
+                              emcy_send_emergency_message(c_rx_tx, ERR_TYPE_COMMUNICATION_ERROR, SDO_PROTOCOL_TIME_OUT, error_index_pointer, canopen_state);
+                              counter = number_of_segments;
+                              break;
+                            }//select
+                          }//while
+                        }
+                      }
                     }
+                    break;
                   }
+                  default:
+                  emcy_send_emergency_message(c_rx_tx, ERR_TYPE_COMMUNICATION_ERROR, SDO_COMMAND_SPECIFIER_NOT_VALID, error_index_pointer, canopen_state);
+                  break;
                 }
                 break;
               }
-              default:
-              emcy_send_emergency_message(c_rx_tx, ERR_TYPE_COMMUNICATION_ERROR, SDO_COMMAND_SPECIFIER_NOT_VALID, error_index_pointer, canopen_state);
-              break;
             }
+            break;
+
+            default:
+            emcy_send_emergency_message(c_rx_tx, ERR_TYPE_COMMUNICATION_ERROR, PROTOCOL_ERROR_GENERIC, error_index_pointer, canopen_state);
             break;
           }
         }
         break;
-
-        default:
-        emcy_send_emergency_message(c_rx_tx, ERR_TYPE_COMMUNICATION_ERROR, PROTOCOL_ERROR_GENERIC, error_index_pointer, canopen_state);
-        break;
       }
-      break;
 
       case timer_pdo_event when timerafter(timer_pdo_event_time+10000):> void: //100 usec timer event
       {
@@ -607,7 +571,7 @@ void canopen_manager(chanend c_rx_tx, streaming chanend c_application)
           pdo_number++;
         }
         if(canopen_state == OPERATIONAL)
-        timer_interrupt_counter++;
+          timer_interrupt_counter++;
         if(timer_interrupt_counter == 10) //check if time is 1 msec
         {
           unsigned event_type;
@@ -794,12 +758,12 @@ static void lss_state_machine(can_frame frame,
   {
     case SWITCH_MODE_GLOBAL_COMMAND: //set state to lss configuration. DS 305 Standard
     if(frame.data[1] == 0x01)
-    lss_configuration_mode = !lss_configuration_mode;
+      lss_configuration_mode = !lss_configuration_mode;
     break;
 
     case INQUIRE_NODE_ID: //send lss node id
     if(lss_configuration_mode == TRUE)
-    lss_send_node_id(c_rx_tx);
+      lss_send_node_id(c_rx_tx);
     break;
 
     case CONFIGURE_NODE_ID: //configure node id
@@ -814,7 +778,6 @@ static void lss_state_machine(can_frame frame,
     if((lss_configuration_mode == TRUE) && (frame.data[1] == 0x00))
     {
       if( (frame.data[2] < 8) && (frame.data[2] > 0)) //check if received value is correct index of bit parameter table
-
       {
         new_baud_rate = bit_timing_table[(int)frame.data[2]]; //get bit time from bit time table
         lss_configure_bit_timing_response(c_rx_tx, TRUE);//success
