@@ -143,11 +143,11 @@ void canopen_manager(chanend c_rx_tx, streaming chanend c_application)
       case can_rx_frame(c_rx_tx, frame):
       {
         unsigned char temp_case;
-        if ((frame.id >= RPDO_0_MESSAGE) && (frame.id <= (RPDO_0_MESSAGE + 100
-            * (CANOPEN_NUMBER_OF_RPDOS_SUPPORTED))))
+        if ((frame.id >= RPDO_0_MESSAGE) && (frame.id <= (RPDO_0_MESSAGE + 0x100
+            * (CANOPEN_NUMBER_OF_RPDOS_SUPPORTED-1))))
         {
           receive_rpdo_message(canopen_state,
-                               ((frame.id - RPDO_0_MESSAGE) / 100),
+                               ((frame.id - RPDO_0_MESSAGE) >> 8),
                                frame,
                                sync_messages_rx,
                                sync_timer,
@@ -156,10 +156,10 @@ void canopen_manager(chanend c_rx_tx, streaming chanend c_application)
                                c_application);
         }
         else if ((frame.id >= TPDO_0_MESSAGE) && (frame.id <= (TPDO_0_MESSAGE
-            + 100 * (CANOPEN_NUMBER_OF_TPDOS_SUPPORTED))))
+            + 0x100 * (CANOPEN_NUMBER_OF_TPDOS_SUPPORTED-1))))
         {
           receive_tpdo_rtr_request(frame,
-                                   ((frame.id - TPDO_0_MESSAGE) / 100),
+                                   ((frame.id - TPDO_0_MESSAGE) >> 8),
                                    sync_timer,
                                    tpdo_inhibit_time_values,
                                    c_rx_tx); //TPDO RTR request
