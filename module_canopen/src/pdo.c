@@ -21,13 +21,20 @@
 /*---------------------------------------------------------------------------
  Find PDO transmission type from the object dictionary based on address
  ---------------------------------------------------------------------------*/
-char pdo_find_transmission_type(int address)
+int pdo_find_transmission_type(int address)
 {
   char od_sub_index = 2;
   int index = od_find_index(address);
   char data_buffer[2];
-  od_read_data(index, od_sub_index, data_buffer, 1);
-  return data_buffer[0];
+  if(index != -1)
+  {
+    od_read_data(index, od_sub_index, data_buffer, 1);
+    return data_buffer[0];
+  }
+  else
+  {
+    return -1;
+  }
 }
 
 /*---------------------------------------------------------------------------
@@ -39,9 +46,16 @@ unsigned pdo_find_event_type(int address)
   unsigned event_time;
   int index = od_find_index(address);
   char data_buffer[2];
-  od_read_data(index, od_sub_index, data_buffer, 2);
-  event_time  = data_buffer[0] | (data_buffer[1] << 8);
-  return event_time;
+  if(index != -1)
+  {
+    od_read_data(index, od_sub_index, data_buffer, 2);
+    event_time  = data_buffer[0] | (data_buffer[1] << 8);
+    return event_time;
+  }
+  else
+  {
+    return -1;
+  }
 }
 
 /*---------------------------------------------------------------------------
@@ -92,10 +106,17 @@ unsigned pdo_find_cob_id(int address)
   unsigned cob_id = 0x00;
   int index = od_find_index(address);
   char data_buffer[4];
-  od_read_data(index, od_sub_index, data_buffer, 4);
-  cob_id = ((data_buffer[3] << 8) | (data_buffer[2]));
-  cob_id = (cob_id << 16) | ((data_buffer[1] << 8) | (data_buffer[0]));
-  return cob_id;
+  if(index != -1)
+  {
+    od_read_data(index, od_sub_index, data_buffer, 4);
+    cob_id = ((data_buffer[3] << 8) | (data_buffer[2]));
+    cob_id = (cob_id << 16) | ((data_buffer[1] << 8) | (data_buffer[0]));
+    return cob_id;
+  }
+  else
+  {
+    return -1;
+  }
 }
 
 /*---------------------------------------------------------------------------
@@ -107,9 +128,16 @@ unsigned pdo_find_inhibit_time(int address)
   unsigned inhibit_time = 0x00;
   int index = od_find_index(address);
   char data_buffer[4];
-  od_read_data(index, od_sub_index, data_buffer, 2);
-  inhibit_time = ((data_buffer[1] << 8) | (data_buffer[0]));
-  return inhibit_time;
+  if(index != -1)
+  {
+    od_read_data(index, od_sub_index, data_buffer, 2);
+    inhibit_time = ((data_buffer[1] << 8) | (data_buffer[0]));
+    return inhibit_time;
+  }
+  else
+  {
+    return -1;
+  }
 }
 
 /*---------------------------------------------------------------------------

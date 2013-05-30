@@ -29,7 +29,7 @@
 void emcy_send_emergency_message(chanend c_rx_tx,
                             char error_type,
                             unsigned emergency_code,
-                            REFERENCE_PARAM(char, error_index_pointer),
+                            REFERENCE_PARAM(unsigned char, error_index_pointer),
                             REFERENCE_PARAM(char, canopen_state))
 {
   can_frame frame;
@@ -37,7 +37,7 @@ void emcy_send_emergency_message(chanend c_rx_tx,
   char max_error_entries, max_error_behaviour_entries;
   char error_exists = 0, counter = 0;
   unsigned error_code;
-  int index = od_find_index(0x1029);
+  int index = od_find_index(ERROR_BEHAVIOUR_OBJECT);
   if (index != -1)
   {
     od_read_data(index, 0, data_buffer, 1);
@@ -48,7 +48,7 @@ void emcy_send_emergency_message(chanend c_rx_tx,
     else if (data_buffer[0] == ERR_SWITCH_TO_STOPPED)
       canopen_state = STOPPED;
   }
-  index = od_find_index(0x1003);  //Error register
+  index = od_find_index(PRE_DEFINED_ERROR_FIELD_OBJECT);  //Error register
   if (index != -1)
   {
     od_read_data(index, 0, data_buffer, 1);
@@ -75,7 +75,7 @@ void emcy_send_emergency_message(chanend c_rx_tx,
       }
     }
   }
-  index = od_find_index(0x1003);
+  index = od_find_index(PRE_DEFINED_ERROR_FIELD_OBJECT);
   if (index != -1)
   {
     od_read_data(index, error_index_pointer, data_buffer, 1);
@@ -102,7 +102,7 @@ void emcy_send_emergency_message(chanend c_rx_tx,
  ---------------------------------------------------------------------------*/
 void emcy_reset_error_register()
 {
-  int index = od_find_index(0x1029);
+  int index = od_find_index(ERROR_BEHAVIOUR_OBJECT);
   char data_buffer[4] = {0, 0, 0, 0};
   char max_error_behaviour_entries, counter = 0;
   if (index == -1)

@@ -21,6 +21,7 @@ nested include files
 #include "canopen.h"
 #include "pdo.h"
 #include <xccompat.h>
+
 /*---------------------------------------------------------------------------
  Transmit SYNC PDO(TPDO) data from the object dictionary on to CAN network
  ---------------------------------------------------------------------------*/
@@ -126,17 +127,23 @@ void sync_pdo_data_transmit(char pdo_number,
   }
 }
 
-
 /*---------------------------------------------------------------------------
  Transmit SYNC PDO(TPDO) data from the object dictionary on to CAN network
  ---------------------------------------------------------------------------*/
-void sync_pdo_data_receive(char pdo_number, NULLABLE_ARRAY_OF(rx_sync_mesages, sync_messages_rx), timer sync_window_timer, unsigned sync_time_current, unsigned sync_time_start, unsigned sync_window_length, streaming chanend c_application)
+void sync_pdo_data_receive(char pdo_number,
+                           NULLABLE_ARRAY_OF(rx_sync_mesages, sync_messages_rx),
+                           timer sync_window_timer,
+                           unsigned sync_time_current,
+                           unsigned sync_time_start,
+                           unsigned sync_window_length,
+                           streaming chanend c_application)
 {
   unsigned time_difference_sync;
-  if((sync_messages_rx[pdo_number].rx_data_ready == TRUE) && (sync_messages_rx[pdo_number].sync_value == 0))
+  if ((sync_messages_rx[pdo_number].rx_data_ready == TRUE)
+      && (sync_messages_rx[pdo_number].sync_value == 0))
   {
     sync_window_timer:>sync_time_current;
-    if(sync_time_start < sync_time_current)
+    if (sync_time_start < sync_time_current)
     {
       time_difference_sync = sync_time_current - sync_time_start;
     }
@@ -144,22 +151,27 @@ void sync_pdo_data_receive(char pdo_number, NULLABLE_ARRAY_OF(rx_sync_mesages, s
     {
       time_difference_sync = sync_time_start - sync_time_current;
     }
-    if( time_difference_sync < sync_window_length)
+    if (time_difference_sync < sync_window_length)
     {
       sync_messages_rx[pdo_number].rx_data_ready = FALSE;
-      pdo_send_data_to_application(RPDO_0_MAPPING_PARAMETER+pdo_number, sync_messages_rx[pdo_number].data,sync_messages_rx[pdo_number].data_length, c_application);
+      pdo_send_data_to_application(RPDO_0_MAPPING_PARAMETER + pdo_number,
+                                   sync_messages_rx[pdo_number].data,
+                                   sync_messages_rx[pdo_number].data_length,
+                                   c_application);
     }
   }
   else
   {
-    if(sync_messages_rx[pdo_number].rx_data_ready == TRUE)
+    if (sync_messages_rx[pdo_number].rx_data_ready == TRUE)
     {
-      sync_messages_rx[pdo_number].sync_counter = sync_messages_rx[pdo_number].sync_counter+1; //increment sync counter
-      if(sync_messages_rx[pdo_number].sync_counter == sync_messages_rx[pdo_number].sync_value) //check if counter reached sync value
+      sync_messages_rx[pdo_number].sync_counter
+          = sync_messages_rx[pdo_number].sync_counter + 1; //increment sync counter
+      if (sync_messages_rx[pdo_number].sync_counter
+          == sync_messages_rx[pdo_number].sync_value) //check if counter reached sync value
 
       {
         sync_window_timer:>sync_time_current;
-        if(sync_time_start < sync_time_current)
+        if (sync_time_start < sync_time_current)
         {
           time_difference_sync = sync_time_current - sync_time_start;
         }
@@ -167,9 +179,12 @@ void sync_pdo_data_receive(char pdo_number, NULLABLE_ARRAY_OF(rx_sync_mesages, s
         {
           time_difference_sync = sync_time_start - sync_time_current;
         }
-        if( time_difference_sync < sync_window_length)
+        if (time_difference_sync < sync_window_length)
         {
-          pdo_send_data_to_application(RPDO_0_MAPPING_PARAMETER+pdo_number, sync_messages_rx[pdo_number].data,sync_messages_rx[pdo_number].data_length, c_application);
+          pdo_send_data_to_application(RPDO_0_MAPPING_PARAMETER + pdo_number,
+                                       sync_messages_rx[pdo_number].data,
+                                       sync_messages_rx[pdo_number].data_length,
+                                       c_application);
           sync_messages_rx[pdo_number].rx_data_ready = FALSE;
         }
       }

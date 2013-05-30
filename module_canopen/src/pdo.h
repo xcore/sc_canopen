@@ -156,7 +156,7 @@ void pdo_receive_application_data(char pdo_number,
 * \param address address of the pdo
 * \return pdo_tx_type returns transmit type of the pdo
 **/
-char pdo_find_transmission_type(int address);
+int pdo_find_transmission_type(int address);
 
 /*==========================================================================*/
 /**

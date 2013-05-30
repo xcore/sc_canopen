@@ -30,48 +30,57 @@ void pdo_transmit_data(unsigned comm_parameter,
   char data[8];
   can_frame frame;
   char counter = 0;
+  unsigned cob_id;
   char data_length = pdo_read_data_from_od(comm_parameter,
                                            mapping_parameter,
                                            data);
-  frame.id = pdo_find_cob_id(comm_parameter);
-  frame.extended = 0;
-  frame.remote = 0;
-  frame.dlc = data_length;
-  while(counter != 8)
+  cob_id = pdo_find_cob_id(comm_parameter);
+  if(cob_id != -1)
   {
-    if (counter < data_length)
-      frame.data[counter] = data[counter];
-    else
-      frame.data[counter] = 0;
-    counter++;
+    frame.id =
+    frame.extended = 0;
+    frame.remote = 0;
+    frame.dlc = data_length;
+    while(counter != 8)
+    {
+      if (counter < data_length)
+        frame.data[counter] = data[counter];
+      else
+        frame.data[counter] = 0;
+      counter++;
+    }
+    can_send_frame(c_rx_tx, frame);
   }
-  can_send_frame(c_rx_tx, frame);
 }
 
 /*---------------------------------------------------------------------------
  Receive Data from Application
  ---------------------------------------------------------------------------*/
 void pdo_receive_application_data(char pdo_number,
-                              char length,
-                              char data[],
-                              NULLABLE_ARRAY_OF(tpdo_inhibit_time, tpdo_inhibit_time_values),
-                              chanend c_rx_tx)
+                                  char length,
+                                  char data[],
+                                  NULLABLE_ARRAY_OF(tpdo_inhibit_time, tpdo_inhibit_time_values),
+                                  chanend c_rx_tx)
 {
   char tx_type;
   unsigned cob_id;
   pdo_write_data_to_od(TPDO_0_MAPPING_PARAMETER + pdo_number, data);
   tx_type = pdo_find_transmission_type(pdo_number
       + TPDO_0_COMMUNICATION_PARAMETER);
-  cob_id = pdo_find_cob_id(TPDO_0_MAPPING_PARAMETER + pdo_number);
-  if((cob_id >> 30) & 0x01 == 1) //check if RTR bit is set or not
+  if (tx_type != -1)
   {
-    if ((tx_type == 254) || (tx_type == 255))
+    cob_id = pdo_find_cob_id(TPDO_0_MAPPING_PARAMETER + pdo_number);
+    if ((cob_id >> 30) & 0x01 == 1) //check if RTR bit is set or not
     {
-      if(tpdo_inhibit_time_values[pdo_number].inhibit_time < tpdo_inhibit_time_values[pdo_number].inhibit_counter)
+      if ((tx_type == 254) || (tx_type == 255))
       {
-        pdo_transmit_data(TPDO_0_COMMUNICATION_PARAMETER + pdo_number,
-                        TPDO_0_MAPPING_PARAMETER + pdo_number,
-                        c_rx_tx);
+        if (tpdo_inhibit_time_values[pdo_number].inhibit_time
+            < tpdo_inhibit_time_values[pdo_number].inhibit_counter)
+        {
+          pdo_transmit_data(TPDO_0_COMMUNICATION_PARAMETER + pdo_number,
+                            TPDO_0_MAPPING_PARAMETER + pdo_number,
+                            c_rx_tx);
+        }
       }
     }
   }

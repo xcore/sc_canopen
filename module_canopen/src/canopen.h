@@ -76,7 +76,7 @@ enum node_guard_states
   NG_BOOT_UP         = 0x00, /**<CANOpen NMT Nodeguard response bootup state */
   NG_STOPPED         = 0x04, /**<CANOpen NMT Nodeguard response stopped state */
   NG_OPERATIONAL     = 0x05, /**<CANOpen NMT Nodeguard response operational state */
-  NG_PRE_OPERATIONAL = 0x7F /**<CANOpen NMT Nodeguard response pre operational state */
+  NG_PRE_OPERATIONAL = 0x7F  /**<CANOpen NMT Nodeguard response pre operational state */
 };
 
 
@@ -87,23 +87,23 @@ enum node_guard_states
 */
 enum cob_id
 {
-  NMT_MESSAGE        = 0,               /**<CANOpen COB-ID nmt state Message*/
+  NMT_MESSAGE        = 0,                       /**<CANOpen COB-ID nmt state Message*/
   SYNC               = 0x80 + CANOPEN_NODE_ID,  /**<CANOpen COB-ID sync Message */
-  TIME_STAMP         = 0x100,           /**<CANOpen COB-ID timestamp Message */
-  NG_HEARTBEAT       = 0x700,           /**<CANOpen COB-ID heartbeat / nodeguard Message */
+  TIME_STAMP         = 0x100,                   /**<CANOpen COB-ID timestamp Message */
+  NG_HEARTBEAT       = 0x700,                   /**<CANOpen COB-ID heartbeat / nodeguard Message */
   EMERGENCY_MESSAGE  = 0x80 + CANOPEN_NODE_ID,  /**<CANOpen COB-ID emergency Message */
-  TPDO_0_MESSAGE     = 0x180,           /**<CANOpen COB-ID transmit pdo 0 Message */
+  TPDO_0_MESSAGE     = 0x180,                   /**<CANOpen COB-ID transmit pdo 0 Message */
   RPDO_0_MESSAGE     = 0x200 + CANOPEN_NODE_ID, /**<CANOpen COB-ID receive pdo 0 Message */
-  TPDO_1_MESSAGE     = 0x280,           /**<CANOpen COB-ID transmit pdo 1 Message */
+  TPDO_1_MESSAGE     = 0x280,                   /**<CANOpen COB-ID transmit pdo 1 Message */
   RPDO_1_MESSAGE     = 0x300 + CANOPEN_NODE_ID, /**<CANOpen COB-ID receive pdo 1 Message */
-  TPDO_2_MESSAGE     = 0x380,           /**<CANOpen COB-ID transmit pdo 2 Message */
+  TPDO_2_MESSAGE     = 0x380,                   /**<CANOpen COB-ID transmit pdo 2 Message */
   RPDO_2_MESSAGE     = 0x400 + CANOPEN_NODE_ID, /**<CANOpen COB-ID receive pdo 2 Message */
-  TPDO_3_MESSAGE     = 0x480,           /**<CANOpen COB-ID transmit pdo 3 Message */
+  TPDO_3_MESSAGE     = 0x480,                   /**<CANOpen COB-ID transmit pdo 3 Message */
   RPDO_3_MESSAGE     = 0x500 + CANOPEN_NODE_ID, /**<CANOpen COB-ID receive pdo 3 Message */
   TSDO_MESSAGE       = 0x580 + CANOPEN_NODE_ID, /**<CANOpen COB-ID transmit sdo Message */
   RSDO_MESSAGE       = 0x600 + CANOPEN_NODE_ID, /**<CANOpen COB-ID receive sdo Message */
-  RLSS_MESSAGE       = 0x7E5,           /**<CANOpen COB-ID receive LSS Message */
-  TLSS_MESSAGE       = 0x7E4            /**<CANOpen COB-ID transmit LSS Message */
+  RLSS_MESSAGE       = 0x7E5,                   /**<CANOpen COB-ID receive LSS Message */
+  TLSS_MESSAGE       = 0x7E4                    /**<CANOpen COB-ID transmit LSS Message */
 };
 
 /*---------------------------------------------------------------------------

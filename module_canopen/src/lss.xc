@@ -1,25 +1,28 @@
 /**
-* The copyrights, all other intellectual and industrial
-* property rights are retained by XMOS and/or its licensors.
-* Terms and conditions covering the use of this code can
-* be found in the Xmos End User License Agreement.
-*
-* Copyright XMOS Ltd 2012
-*
-* In the case where this code is a modification of existing code
-* under a separate license, the separate license terms are shown
-* below. The modifications to the code are still covered by the
-* copyright notice above.
-*
-**/
+ * The copyrights, all other intellectual and industrial
+ * property rights are retained by XMOS and/or its licensors.
+ * Terms and conditions covering the use of this code can
+ * be found in the Xmos End User License Agreement.
+ *
+ * Copyright XMOS Ltd 2012
+ *
+ * In the case where this code is a modification of existing code
+ * under a separate license, the separate license terms are shown
+ * below. The modifications to the code are still covered by the
+ * copyright notice above.
+ *
+ **/
 
 /*---------------------------------------------------------------------------
  include files
  ---------------------------------------------------------------------------*/
+#include <xccompat.h>
 #include "canopen.h"
 #include "lss.h"
 #include "od.h"
 #include "can.h"
+#include "emcy.h"
+
 
 /*---------------------------------------------------------------------------
  Send LSS node ID to the LSS master
@@ -41,7 +44,6 @@ void lss_send_node_id(chanend c_rx_tx)
   frame.data[7] = 0;
   can_send_frame(c_rx_tx, frame);
 }
-
 
 /*---------------------------------------------------------------------------
  Configure LSS node id based on configure command send by the LSS master
@@ -66,7 +68,6 @@ void lss_configure_node_id_response(chanend c_rx_tx, char configuration_status)
   frame.data[7] = 0;
   can_send_frame(c_rx_tx, frame);
 }
-
 
 /*---------------------------------------------------------------------------
  Configure LSS bit time based on configure command send by the LSS master
@@ -93,12 +94,11 @@ void lss_configure_bit_timing_response(chanend c_rx_tx,
   can_send_frame(c_rx_tx, frame);
 }
 
-
 /*---------------------------------------------------------------------------
  Store LSS settings based on store command send by the LSS master
  ---------------------------------------------------------------------------*/
 void lss_store_config_settings_response(chanend c_rx_tx,
-                                         char configuration_status)
+                                        char configuration_status)
 {
   can_frame frame;
   frame.dlc = 8;
@@ -119,13 +119,15 @@ void lss_store_config_settings_response(chanend c_rx_tx,
   can_send_frame(c_rx_tx, frame);
 }
 
-
 /*---------------------------------------------------------------------------
  Send LSS Vendor ID based on LSS master Inquiry
  ---------------------------------------------------------------------------*/
-void lss_inquire_vendor_id_response(chanend c_rx_tx)
+void lss_inquire_vendor_id_response(chanend c_rx_tx,
+                                    REFERENCE_PARAM(char, canopen_state),
+                                    REFERENCE_PARAM(unsigned char,
+                                                    error_index_pointer))
 {
-  int index = od_find_index(0x1018);
+  int index = od_find_index(IDENTITY_OBJECT);
   char data_buffer[4];
   can_frame frame;
   if (index != -1)
@@ -145,15 +147,25 @@ void lss_inquire_vendor_id_response(chanend c_rx_tx)
     frame.data[7] = 0;
     can_send_frame(c_rx_tx, frame);
   }
+  else
+  {
+    emcy_send_emergency_message(c_rx_tx,
+                                ERR_TYPE_COMMUNICATION_ERROR,
+                                PROTOCOL_ERROR_GENERIC,
+                                error_index_pointer,
+                                canopen_state);
+  }
 }
-
 
 /*---------------------------------------------------------------------------
  Send LSS Product code based on LSS master Inquiry
  ---------------------------------------------------------------------------*/
-void lss_inquire_product_code(chanend c_rx_tx)
+void lss_inquire_product_code(chanend c_rx_tx,
+                              REFERENCE_PARAM(char, canopen_state),
+                              REFERENCE_PARAM(unsigned char,
+                                              error_index_pointer))
 {
-  int index = od_find_index(0x1018);
+  int index = od_find_index(IDENTITY_OBJECT);
   char data_buffer[4];
   can_frame frame;
   if (index != -1)
@@ -173,15 +185,25 @@ void lss_inquire_product_code(chanend c_rx_tx)
     frame.data[7] = 0;
     can_send_frame(c_rx_tx, frame);
   }
+  else
+  {
+    emcy_send_emergency_message(c_rx_tx,
+                                ERR_TYPE_COMMUNICATION_ERROR,
+                                PROTOCOL_ERROR_GENERIC,
+                                error_index_pointer,
+                                canopen_state);
+  }
 }
-
 
 /*---------------------------------------------------------------------------
  Send LSS Revision Number based on LSS master Inquiry
  ---------------------------------------------------------------------------*/
-void lss_inquire_revision_number(chanend c_rx_tx)
+void lss_inquire_revision_number(chanend c_rx_tx,
+                                 REFERENCE_PARAM(char, canopen_state),
+                                 REFERENCE_PARAM(unsigned char,
+                                                 error_index_pointer))
 {
-  int index = od_find_index(0x1018);
+  int index = od_find_index(IDENTITY_OBJECT);
   char data_buffer[4];
   can_frame frame;
   if (index != -1)
@@ -201,15 +223,25 @@ void lss_inquire_revision_number(chanend c_rx_tx)
     frame.data[7] = 0;
     can_send_frame(c_rx_tx, frame);
   }
+  else
+  {
+    emcy_send_emergency_message(c_rx_tx,
+                                ERR_TYPE_COMMUNICATION_ERROR,
+                                PROTOCOL_ERROR_GENERIC,
+                                error_index_pointer,
+                                canopen_state);
+  }
 }
-
 
 /*---------------------------------------------------------------------------
  Send LSS Serial Number based on LSS master Inquiry
  ---------------------------------------------------------------------------*/
-void lss_inquire_serial_number(chanend c_rx_tx)
+void lss_inquire_serial_number(chanend c_rx_tx,
+                               REFERENCE_PARAM(char, canopen_state),
+                               REFERENCE_PARAM(unsigned char,
+                                               error_index_pointer))
 {
-  int index = od_find_index(0x1018);
+  int index = od_find_index(IDENTITY_OBJECT);
   char data_buffer[4];
   can_frame frame;
   if (index != -1)
@@ -228,6 +260,14 @@ void lss_inquire_serial_number(chanend c_rx_tx)
     frame.data[6] = 0;
     frame.data[7] = 0;
     can_send_frame(c_rx_tx, frame);
+  }
+  else
+  {
+    emcy_send_emergency_message(c_rx_tx,
+                                ERR_TYPE_COMMUNICATION_ERROR,
+                                PROTOCOL_ERROR_GENERIC,
+                                error_index_pointer,
+                                canopen_state);
   }
 }
 

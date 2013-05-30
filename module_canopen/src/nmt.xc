@@ -111,7 +111,7 @@ void nmt_initialize(NULLABLE_ARRAY_OF(tx_sync_timer, sync_timer),
                 REFERENCE_PARAM(unsigned, producer_heart_beat),
                 REFERENCE_PARAM(char, heart_beat_active ))
 {
-  int index = od_find_index(0x1007);
+  int index = od_find_index(SYNC_WINDOW_LENGTH_OBJECT);
   unsigned event_type, inhibit_time;
   char data_buffer[8] = {0, 0, 0, 0, 0, 0, 0, 0}, counter = 0;
   if (index != -1)
@@ -119,16 +119,16 @@ void nmt_initialize(NULLABLE_ARRAY_OF(tx_sync_timer, sync_timer),
   sync_window_length = ((data_buffer[3] << 8) | (data_buffer[2]));
   sync_window_length = (sync_window_length << 16) | ((data_buffer[1] << 8)
       | (data_buffer[0]));
-  index = od_find_index(0x100C);
+  index = od_find_index(GUARD_TIME_OBJECT);
   if (index != -1)
     od_read_data(index, 0, data_buffer, 2);
   guard_time = ((data_buffer[1] << 8) | (data_buffer[0]));
 
-  index = od_find_index(0x100D);
+  index = od_find_index(LIFE_TIME_FACTOR_OBJECT);
   if (index != -1)
     od_read_data(index, 0, data_buffer, 1);
   life_time = data_buffer[0];
-  index = od_find_index(0x1017);
+  index = od_find_index(PRODUCER_HEARTBEAT_OBJECT);
   if (index != -1)
     od_read_data(index, 0, data_buffer, 2);
   producer_heart_beat = ((data_buffer[1] << 8) | (data_buffer[0]));
