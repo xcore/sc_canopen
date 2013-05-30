@@ -488,6 +488,13 @@ void canopen_manager(chanend c_rx_tx, streaming chanend c_application)
                               SDO_ATTEMPT_TO_READ_WO_OD,
                               error_index_pointer, canopen_state);
                         }
+                        else if(od_find_access_of_index(index, od_sub_index) == CONST) //check id OD access type is CONSTANT or not
+                        {
+                          emcy_send_emergency_message(c_rx_tx,
+                              ERR_TYPE_COMMUNICATION_ERROR,
+                              SDO_UNSUPPORTED_ACCESS_OD,
+                              error_index_pointer, canopen_state);
+                        }
                         else
                         {
                           od_read_data(index, od_sub_index, data_buffer,data_length);

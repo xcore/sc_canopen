@@ -139,7 +139,10 @@ void sdo_upload_segmented_data(chanend c_rx_tx,
     no_of_segments = (data_length / 7) + 1;
   if (segment_number == no_of_segments - 1)
   {
-    no_of_data_bytes = data_length % 7;
+    if(data_length != 7)
+      no_of_data_bytes = data_length % 7;
+    else
+      no_of_data_bytes = 7;
     while(counter != 7)
     {
       if (counter < no_of_data_bytes)

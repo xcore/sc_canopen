@@ -1,8 +1,8 @@
 [FileInfo]
-CreationTime=03:29PM
-CreationDate=05-28-2013
-ModificationTime=03:29PM
-ModificationDate=05-28-2013
+CreationTime=06:37PM
+CreationDate=05-30-2013
+ModificationTime=06:37PM
+ModificationDate=05-30-2013
 FileName=CO_EDS_401.eds
 EDSVersion=4.0
 
@@ -2206,7 +2206,7 @@ PDOMapping=0
 ParameterName=Manufacturer Device Name
 ObjectType=0x7
 DataType=0x0009
-AccessType=rw
+AccessType=const
 DefaultValue=XMOS CANOpen Node
 PDOMapping=0
 
@@ -2214,7 +2214,7 @@ PDOMapping=0
 ParameterName=Manufacturer Hardware Version
 ObjectType=0x7
 DataType=0x0009
-AccessType=const
+AccessType=wo
 DefaultValue=H:1.0.0
 PDOMapping=0
 
