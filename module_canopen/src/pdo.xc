@@ -37,7 +37,7 @@ void pdo_transmit_data(unsigned comm_parameter,
   cob_id = pdo_find_cob_id(comm_parameter);
   if(cob_id != -1)
   {
-    frame.id =
+    frame.id = cob_id;
     frame.extended = 0;
     frame.remote = 0;
     frame.dlc = data_length;
