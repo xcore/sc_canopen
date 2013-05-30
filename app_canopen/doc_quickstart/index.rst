@@ -28,8 +28,7 @@ To setup up the system:
    #. Switch on the power supply to the sliceKIT Core board.
    #. Install the CANdo application on a Windows machine (or any CAN bus master) and connect the CANdo dongle to that machine.
    #. Connect the XA-SK-ISBUS to the CANdo USB interface (or any CANbus master) via a DE-9 pass through cable.
-   #. Connect the CANdo analyzer cable (usb cable) to the host machine.
-   	 Within the CANdo application.
+   #. Connect the CANdo analyzer cable (usb cable) to the host machine.Within the CANdo application:
          #. Click the ``CAN Setup`` tab and set the baud rate to 500k.
          #. Click ``View -> Options`` then ensure the ``Display On `CAN View` Page`` is checked. Then click ``OK``.
          #. Switch to the ``CAN View`` tab.
