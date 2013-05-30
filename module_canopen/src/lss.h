@@ -109,6 +109,8 @@ void lss_store_config_settings_response(chanend c_rx_tx,
  * to the LSS master.
  *
  * \param c_rx_tx Channel connecting to can module
+ * \param canopen_state State of CANopen node
+ * \param error_index_pointer Pointer pointing to the error register
  * \return none
  **/
 void lss_inquire_vendor_id_response(chanend c_rx_tx,
@@ -122,6 +124,8 @@ void lss_inquire_vendor_id_response(chanend c_rx_tx,
  * to the LSS master.
  *
  * \param c_rx_tx Channel connecting to can module
+ * \param canopen_state State of CANopen node
+ * \param error_index_pointer Pointer pointing to the error register
  * \return none
  **/
 void lss_inquire_product_code(chanend c_rx_tx,
@@ -135,6 +139,8 @@ void lss_inquire_product_code(chanend c_rx_tx,
  * to the LSS master.
  *
  * \param c_rx_tx Channel connecting to can module
+ * \param canopen_state State of CANopen node
+ * \param error_index_pointer Pointer pointing to the error register
  * \return none
  **/
 void lss_inquire_revision_number(chanend c_rx_tx,
@@ -148,6 +154,8 @@ void lss_inquire_revision_number(chanend c_rx_tx,
  * to the LSS master.
  *
  * \param c_rx_tx Channel connecting to can module
+ * \param canopen_state State of CANopen node
+ * \param error_index_pointer Pointer pointing to the error register
  * \return none
  **/
 void lss_inquire_serial_number(chanend c_rx_tx,
