@@ -1,0 +1,132 @@
+-------------------------------------------------------------------------------
+-- Descriptive metadata
+-------------------------------------------------------------------------------
+
+componentName = "CANopen"
+componentFullName = ""
+alternativeNames = {}
+componentDescription = "Offers a CANopen slave component"
+componentVersion = "1v0"
+
+-------------------------------------------------------------------------------
+-- Parameter descriptions.
+-------------------------------------------------------------------------------
+derivedValues = {}
+
+configPoints =
+{
+  canopenNodeId =
+  {
+    short   = "NodeId",
+    long    = "NodeID of CANopen slave node",
+    help    = "",
+    type    = "int",
+    resourceUsageFlags = {"noeffect"},
+    min     = 0,
+    max     = 255,
+    default = 0
+  },
+  canopenTPDOsupported =
+  {
+    short   = "Number of TPDOs",
+    long    = "Total number of TPDOs supported by the CANopen node",
+    help    = "",
+    units   = "",
+    type    = "int",
+    resourceUsageFlags = {"noeffect"},
+    min     = 4,
+    max     = 10,
+    default = 4
+  },
+  canopenRPDOsupported =
+  {
+    short   = "Number of RPDOs",
+    long    = "Total number of RPDOs supported by the CANopen node",
+    help    = "",
+    units   = "",
+    type    = "int",
+    resourceUsageFlags = {"noeffect"},
+    min     = 4,
+    max     = 10,
+    default = 4
+  },
+ }
+
+ports = {
+  p_can_tx = {
+    short   = "Transmit",
+    long    = "CANopen Transmit data",
+    help    = "",
+    width   = 1
+  },
+  p_can_rx = {
+    short   = "Receive",
+    long    = "CANopen Receive Data",
+    help    = "",
+    width   = 1
+  }
+}
+
+
+channels = {
+   c_application = {
+      short = "Channel to the application",
+      long = "Channels between CANopen server and application",
+      help = "",
+   },
+   c_rx_tx = {
+         short = "Channel to the CAN component",
+         long = "Channels between CANopen server and CAN component",
+         help = "",
+   }
+   
+}
+
+
+function getConfigStatus()
+   local status = "Trusted Configuration"
+   local issues = {}
+   return status, issues
+end
+
+-------------------------------------------------------------------------------
+-- Source generation functions
+-------------------------------------------------------------------------------
+
+generatedCode = {
+   includes = {"canopen.h"},
+   includes = {"canopen_client.h"},
+   includes = {"can.h"},
+   includes = {"can_utils.h"},
+
+   globals = [[
+       can_ports can_${swblock.id}_resources = {
+         ${swblock.ports.p_can_rx},
+         ${swblock.ports.p_can_tx},
+         ${swblock.clocks[0]}
+       };
+  ]],
+
+      
+   body = [[
+   
+      canopen_manager(${swblock.chanends.c_rx_tx}, ${swblock.chanends.c_application});
+      can_server(can_${swblock.id}_resources, ${swblock.chanends.c_rx_tx});
+      application(${swblock.chanends.c_application});
+   ]]
+}
+
+
+api = {
+       'can_server'
+}
+      
+api = {
+   'canopen_client_send_data_to_canopen_stack',
+   'canopen_client_receive_data_from_canopen_stack'
+}
+
+files = {
+   ["module_canopen/canopen_conf_example.h"] = "src/canopen_conf.h",
+}
+
