@@ -18,12 +18,11 @@
  ---------------------------------------------------------------------------*/
 #include <platform.h>
 #include <xscope.h>
-#include "can.h"
-#include "can_utils.h"
-#include "canopen.h"
 #include <print.h>
-#include "i2c.h"
+
+#include "canopen.h"
 #include "canopen_client.h"
+#include "i2c.h"
 
 /*---------------------------------------------------------------------------
  Defines
@@ -62,18 +61,11 @@ void xscope_user_init(void)
 
 int main()
 {
-  chan c_rx_tx;
   streaming chan c_application;
   par
   {
-    on tile[0]:
-    canopen_manager(c_rx_tx, c_application);
-    on tile[0]:
-    {
-      shutdown <: 0;
-      can_server(p, c_rx_tx);
-    }
-    on tile[1] : application(c_application);
+    on tile[0]: canopen_manager(p, shutdown, c_application);
+    on tile[1]: application(c_application);
   }
   return 0;
 }

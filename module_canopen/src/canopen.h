@@ -21,6 +21,8 @@ nested include files
 ---------------------------------------------------------------------------*/
 
 #include "common.h"
+#include "can.h"
+#include <xccompat.h>
 
 /*---------------------------------------------------------------------------
 typedefs
@@ -121,7 +123,9 @@ prototypes
 * \param c_application Channel to communicate to application
 * \return none
 **/
-void canopen_manager(chanend c_rx_tx, streaming chanend c_application);
+void canopen_manager(REFERENCE_PARAM(can_ports, p),
+                     port shut,
+                     streaming chanend c_application);
 
 
 

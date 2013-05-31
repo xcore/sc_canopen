@@ -17,7 +17,6 @@
  include files
  ---------------------------------------------------------------------------*/
 #include "canopen.h"
-#include "can.h"
 #include "sdo.h"
 #include "pdo.h"
 #include "od.h"
@@ -25,21 +24,19 @@
 #include "nmt.h"
 #include "emcy.h"
 #include "sync.h"
-#include "common.h"
-#include <xccompat.h>
 
 /*---------------------------------------------------------------------------
  Function prototypes
  ---------------------------------------------------------------------------*/
 static void
-receive_rpdo_message(unsigned char canopen_state,
-                     char pdo_number,
-                     can_frame frame,
-                     NULLABLE_ARRAY_OF(rx_sync_mesages, sync_messages_rx),
-                     NULLABLE_ARRAY_OF(tx_sync_timer, sync_timer),
-                     REFERENCE_PARAM(char, error_index_pointer),
-                     chanend c_rx_tx,
-                     streaming chanend c_application);
+    receive_rpdo_message(unsigned char canopen_state,
+                         char pdo_number,
+                         can_frame frame,
+                         NULLABLE_ARRAY_OF(rx_sync_mesages, sync_messages_rx),
+                         NULLABLE_ARRAY_OF(tx_sync_timer, sync_timer),
+                         REFERENCE_PARAM(char, error_index_pointer),
+                         chanend c_rx_tx,
+                         streaming chanend c_application);
 
 static void
     receive_tpdo_rtr_request(can_frame frame,
@@ -49,17 +46,17 @@ static void
                              chanend c_rx_tx);
 
 static void
-lss_state_machine(can_frame frame,
-                  char lss_configuration_mode,
-                  chanend c_rx_tx,
-                  REFERENCE_PARAM(char, canopen_state),
-                  REFERENCE_PARAM(unsigned char, error_index_pointer));
+    lss_state_machine(can_frame frame,
+                      char lss_configuration_mode,
+                      chanend c_rx_tx,
+                      REFERENCE_PARAM(char, canopen_state),
+                      REFERENCE_PARAM(unsigned char, error_index_pointer));
 
 /*---------------------------------------------------------------------------
  CANOpen Manager communicates with CAN module and application core
  ---------------------------------------------------------------------------*/
 #pragma ordered
-void canopen_manager(chanend c_rx_tx, streaming chanend c_application)
+static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
 {
   can_frame frame;
   tx_sync_timer sync_timer[CANOPEN_NUMBER_OF_TPDOS_SUPPORTED];
@@ -143,8 +140,8 @@ void canopen_manager(chanend c_rx_tx, streaming chanend c_application)
       case can_rx_frame(c_rx_tx, frame):
       {
         unsigned char temp_case;
-        if ((frame.id >= RPDO_0_MESSAGE) && (frame.id <= (RPDO_0_MESSAGE + 0x100
-            * (CANOPEN_NUMBER_OF_RPDOS_SUPPORTED-1))))
+        if ((frame.id >= RPDO_0_MESSAGE) && (frame.id <= (RPDO_0_MESSAGE
+            + 0x100 * (CANOPEN_NUMBER_OF_RPDOS_SUPPORTED - 1))))
         {
           receive_rpdo_message(canopen_state,
                                ((frame.id - RPDO_0_MESSAGE) >> 8),
@@ -156,7 +153,7 @@ void canopen_manager(chanend c_rx_tx, streaming chanend c_application)
                                c_application);
         }
         else if ((frame.id >= TPDO_0_MESSAGE) && (frame.id <= (TPDO_0_MESSAGE
-            + 0x100 * (CANOPEN_NUMBER_OF_TPDOS_SUPPORTED-1))))
+            + 0x100 * (CANOPEN_NUMBER_OF_TPDOS_SUPPORTED - 1))))
         {
           receive_tpdo_rtr_request(frame,
                                    ((frame.id - TPDO_0_MESSAGE) >> 8),
@@ -377,6 +374,7 @@ void canopen_manager(chanend c_rx_tx, streaming chanend c_application)
                     sdo_toggle=0;
                     count=0;
                     while(segmented_rx_last_frame == FALSE) //check if this is last segment or not
+
                     {
                       timer_communication_timeout:> comm_timeout_time;
                       select
@@ -401,6 +399,7 @@ void canopen_manager(chanend c_rx_tx, streaming chanend c_application)
                             if(od_data_length == (count + temp_counter))
                             {
                               if(od_find_access_of_index(index, od_sub_index) == RO) //Check if Object is Read only
+
                               {
                                 emcy_send_emergency_message(c_rx_tx,
                                     ERR_TYPE_COMMUNICATION_ERROR,
@@ -409,6 +408,7 @@ void canopen_manager(chanend c_rx_tx, streaming chanend c_application)
                                     canopen_state);
                               }
                               else if(od_find_access_of_index(index, od_sub_index) == CONST) //Check if Object is CONSTANT
+
                               {
                                 emcy_send_emergency_message(c_rx_tx,
                                     ERR_TYPE_COMMUNICATION_ERROR,
@@ -470,6 +470,7 @@ void canopen_manager(chanend c_rx_tx, streaming chanend c_application)
                   break;
 
                   case INITIATE_SDO_UPLOAD_REQUEST: //initiate sdo upload
+
                   {
                     char counter=0, number_of_segments;
                     sdo_toggle=0;
@@ -480,8 +481,10 @@ void canopen_manager(chanend c_rx_tx, streaming chanend c_application)
                     {
                       data_length = od_find_data_length(index, od_sub_index);
                       if(data_length <= 4) //check if data to be uploaded les than 4 bytes
+
                       {
                         if(od_find_access_of_index(index, od_sub_index) == WO) //check OD access type
+
                         {
                           emcy_send_emergency_message(c_rx_tx,
                               ERR_TYPE_COMMUNICATION_ERROR,
@@ -489,6 +492,7 @@ void canopen_manager(chanend c_rx_tx, streaming chanend c_application)
                               error_index_pointer, canopen_state);
                         }
                         else if(od_find_access_of_index(index, od_sub_index) == CONST) //check id OD access type is CONSTANT or not
+
                         {
                           emcy_send_emergency_message(c_rx_tx,
                               ERR_TYPE_COMMUNICATION_ERROR,
@@ -502,8 +506,10 @@ void canopen_manager(chanend c_rx_tx, streaming chanend c_application)
                         }
                       }
                       if(data_length > 4) //if data is more than 4 bytes do segmented transfer
+
                       {
                         if(od_find_access_of_index(index, od_sub_index) == WO) //check access type
+
                         {
                           emcy_send_emergency_message(c_rx_tx,
                               ERR_TYPE_COMMUNICATION_ERROR,
@@ -515,9 +521,10 @@ void canopen_manager(chanend c_rx_tx, streaming chanend c_application)
                           od_read_data(index, od_sub_index, data_buffer,data_length);
                           sdo_initiate_upload_response(c_rx_tx, od_index, od_sub_index, data_length);
                           if(data_length % 7 == 0)
-                            number_of_segments = (data_length/7); //no. of segments = data length/7 as we can tx only 7 bytes of data in segmented tx.
+                          number_of_segments = (data_length/7); //no. of segments = data length/7 as we can tx only 7 bytes of data in segmented tx.
+
                           else
-                            number_of_segments = (data_length/7) + 1;
+                          number_of_segments = (data_length/7) + 1;
                           while(counter != number_of_segments)
                           {
                             timer_communication_timeout:> comm_timeout_time;
@@ -568,6 +575,7 @@ void canopen_manager(chanend c_rx_tx, streaming chanend c_application)
       }
 
       case timer_pdo_event when timerafter(timer_pdo_event_time+10000):> void: //100 usec timer event
+
       {
         char pdo_number=0;
         timer_pdo_event:> timer_pdo_event_time;
@@ -578,8 +586,9 @@ void canopen_manager(chanend c_rx_tx, streaming chanend c_application)
           pdo_number++;
         }
         if(canopen_state == OPERATIONAL)
-          timer_interrupt_counter++;
+        timer_interrupt_counter++;
         if(timer_interrupt_counter == 10) //check if time is 1 msec
+
         {
           unsigned event_type;
           pdo_number = 0;
@@ -763,14 +772,14 @@ static void lss_state_machine(can_frame frame,
                                                               BIT_RATE_10};
   switch(frame.data[0])
   {
-    case SWITCH_MODE_GLOBAL_COMMAND: //set state to lss configuration. DS 305 Standard
+case    SWITCH_MODE_GLOBAL_COMMAND: //set state to lss configuration. DS 305 Standard
     if(frame.data[1] == 0x01)
-      lss_configuration_mode = !lss_configuration_mode;
+    lss_configuration_mode = !lss_configuration_mode;
     break;
 
     case INQUIRE_NODE_ID: //send lss node id
     if(lss_configuration_mode == TRUE)
-      lss_send_node_id(c_rx_tx);
+    lss_send_node_id(c_rx_tx);
     break;
 
     case CONFIGURE_NODE_ID: //configure node id
@@ -785,6 +794,7 @@ static void lss_state_machine(can_frame frame,
     if((lss_configuration_mode == TRUE) && (frame.data[1] == 0x00))
     {
       if( (frame.data[2] < 8) && (frame.data[2] > 0)) //check if received value is correct index of bit parameter table
+
       {
         new_baud_rate = bit_timing_table[(int)frame.data[2]]; //get bit time from bit time table
         lss_configure_bit_timing_response(c_rx_tx, TRUE);//success
@@ -818,6 +828,21 @@ static void lss_state_machine(can_frame frame,
     case INQUIRE_SERIAL_NUMBER:
     lss_inquire_serial_number(c_rx_tx, canopen_state, error_index_pointer); //send serial number
     break;
+  }
+}
+
+void canopen_manager(REFERENCE_PARAM(can_ports, p),
+                     port shut,
+                     streaming chanend c_application)
+{
+  chan c_rx_tx;
+  par
+  {
+    {
+      shut <: 0;
+      can_server(p, c_rx_tx);
+    }
+    canopen_server(c_rx_tx, c_application);
   }
 }
 

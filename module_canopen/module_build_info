@@ -9,4 +9,8 @@
 #
 # You can also set MODULE_XCC_C_FLAGS, MODULE_XCC_XC_FLAGS etc..
 
+DEPENDENT_MODULES = module_can
+OPTIONAL_HEADERS += canopen_conf.h
+OPTIONAL_HEADERS += object_dictionary.h
+
 MODULE_XCC_XC_FLAGS = $(XCC_XC_FLAGS)
