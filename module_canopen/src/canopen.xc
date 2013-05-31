@@ -772,7 +772,7 @@ static void lss_state_machine(can_frame frame,
                                                               BIT_RATE_10};
   switch(frame.data[0])
   {
-case    SWITCH_MODE_GLOBAL_COMMAND: //set state to lss configuration. DS 305 Standard
+    case SWITCH_MODE_GLOBAL_COMMAND: //set state to lss configuration. DS 305 Standard
     if(frame.data[1] == 0x01)
     lss_configuration_mode = !lss_configuration_mode;
     break;
@@ -831,6 +831,9 @@ case    SWITCH_MODE_GLOBAL_COMMAND: //set state to lss configuration. DS 305 Sta
   }
 }
 
+/*---------------------------------------------------------------------------
+ Canopen manager runs canserver and canopen server
+ ---------------------------------------------------------------------------*/
 void canopen_manager(REFERENCE_PARAM(can_ports, p),
                      port shut,
                      streaming chanend c_application)
