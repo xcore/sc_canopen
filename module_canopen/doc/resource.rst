@@ -16,6 +16,6 @@ The memory and resource requirements for this module:
    +------------------+---------------+
    | Channels         | 2             |
    +------------------+---------------+
-   | Timers           | 11            |
+   | Timers           | 10            |
    +------------------+---------------+
 
