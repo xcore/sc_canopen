@@ -94,11 +94,7 @@ end
 -------------------------------------------------------------------------------
 
 generatedCode = {
-   includes = {"canopen.h"},
-   includes = {"canopen_client.h"},
-   includes = {"can.h"},
-   includes = {"can_utils.h"},
-
+   includes = {"can.h",can_utils.h","canopen.h","canopen_client.h"},
    globals = [[
        can_ports can_${swblock.id}_resources = {
          ${swblock.ports.p_can_rx},
@@ -128,5 +124,7 @@ api = {
 
 files = {
    ["module_canopen/canopen_conf_example.h"] = "src/canopen_conf.h",
+   ["module_canopen/object_dictionary_example.h"] = "src/object_dictionary.h",
+   ["module_canopen/can_conf_example.h"] = "src/can_conf.h",
 }
 
