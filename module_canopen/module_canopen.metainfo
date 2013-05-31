@@ -79,6 +79,7 @@ channels = {
    c_application = {
       short = "Channel to the application",
       long = "Channels between CANopen server and application",
+      type  = "streaming",
       help = "",
    },
    
@@ -106,12 +107,12 @@ generatedCode = {
          ${swblock.clocks[0]}
        };
        
-       port shutdown = ${swblock.ports.p_shutdown},;
+       port shutdown = ${swblock.ports.p_shutdown};
+       
+       static void application(streaming chanend ${swblock.chanends.c_application})
+       {
+       }
   ]],
-
-  static void application(${swblock.chanends.c_application})
-  {
-  }
       
    body = [[
    
@@ -122,8 +123,6 @@ generatedCode = {
 
 }
 
-
-api = {}
       
 api = {
 
