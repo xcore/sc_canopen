@@ -64,21 +64,23 @@ ports = {
     long    = "CANopen Receive Data",
     help    = "",
     width   = 1
-  }
+  },
+  p_shutdown = {
+    short   = "shutdown",
+    long    = "shutdown",
+    help    = "",
+    width   = 1
+  },
 }
 
 
 channels = {
+
    c_application = {
       short = "Channel to the application",
       long = "Channels between CANopen server and application",
       help = "",
    },
-   c_rx_tx = {
-         short = "Channel to the CAN component",
-         long = "Channels between CANopen server and CAN component",
-         help = "",
-   }
    
 }
 
@@ -94,37 +96,46 @@ end
 -------------------------------------------------------------------------------
 
 generatedCode = {
-   includes = {"can.h",can_utils.h","canopen.h","canopen_client.h"},
+
+   includes = {"canopen.h","canopen_client.h"},
+
    globals = [[
        can_ports can_${swblock.id}_resources = {
          ${swblock.ports.p_can_rx},
          ${swblock.ports.p_can_tx},
          ${swblock.clocks[0]}
        };
+       
+       port shutdown = ${swblock.ports.p_shutdown},;
   ]],
 
+  static void application(${swblock.chanends.c_application})
+  {
+  }
       
    body = [[
    
-      canopen_manager(${swblock.chanends.c_rx_tx}, ${swblock.chanends.c_application});
-      can_server(can_${swblock.id}_resources, ${swblock.chanends.c_rx_tx});
+      canopen_manager(can_${swblock.id}_resources, shutdown, ${swblock.chanends.c_application});
       application(${swblock.chanends.c_application});
+      
    ]]
+
 }
 
 
-api = {
-       'can_server'
-}
+api = {}
       
 api = {
+
    'canopen_client_send_data_to_canopen_stack',
    'canopen_client_receive_data_from_canopen_stack'
+   
 }
 
 files = {
+
    ["module_canopen/canopen_conf_example.h"] = "src/canopen_conf.h",
    ["module_canopen/object_dictionary_example.h"] = "src/object_dictionary.h",
-   ["module_canopen/can_conf_example.h"] = "src/can_conf.h",
+   
 }
 

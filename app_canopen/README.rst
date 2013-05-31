@@ -1,7 +1,7 @@
 CANopen Demo Application
 ========================
 
-:scope: Early Development
+:scope: Example
 :description: Application to demonstrate module_canopen on a single Slicekit core board
 :keywords: CANopen, demo
 :boards: XA-SKC-L2
