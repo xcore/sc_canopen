@@ -21,7 +21,7 @@
 /*---------------------------------------------------------------------------
  Send data to CANOpen stack from the application
  ---------------------------------------------------------------------------*/
-void canopen_client_send_data_to_canopen_stack(streaming chanend c_application,
+void canopen_client_send_data_to_stack(streaming chanend c_application,
                                                unsigned char pdo_number,
                                                unsigned char data_length,
                                                unsigned char data[])
@@ -39,7 +39,7 @@ void canopen_client_send_data_to_canopen_stack(streaming chanend c_application,
 /*---------------------------------------------------------------------------
  Receive application Data from the CANOpen stack
  ---------------------------------------------------------------------------*/
-void canopen_client_receive_data_from_canopen_stack(streaming chanend c_application,
+void canopen_client_receive_data_from_stack(streaming chanend c_application,
                                                     REFERENCE_PARAM(unsigned char, data_length),
                                                     NULLABLE_ARRAY_OF(unsigned char, data))
 {

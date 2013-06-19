@@ -77,7 +77,7 @@ void od_write_data(int index,
 
 /*==========================================================================*/
 /**
-* od_find_access_of_index is the function in read the accedss type of
+* od_find_access_of_index is the function to read the access type of
 * an object from the object dictionary based on index and subindex from the
 * object dictionary entry.
 *
@@ -86,5 +86,16 @@ void od_write_data(int index,
 * \return index returns index position in the object dictionary
 **/
 unsigned char od_find_access_of_index(int index, unsigned char od_sub_index);
+
+
+/*==========================================================================*/
+/**
+* od_find_no_of_si_entries is the function to read the no of sub-index of an
+* object from the object dictionary based on index
+*
+* \param index index of the object dictionary entry
+* \return si_entries returns no of subindexes of an object
+**/
+unsigned od_find_no_of_si_entries(int index);
 
 #endif /* od_h_ */

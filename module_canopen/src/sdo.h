@@ -147,4 +147,18 @@ void sdo_upload_segmented_data(chanend c_rx_tx,
                            char data_buffer[],
                            char segment_number);
 
+
+
+/*==========================================================================*/
+/**
+* send_sdo_abort_code is the function in order to send abort code to master
+*
+* \param index Index of Object
+* \param si sub index of object in the object dictionary
+* \param error SDO abort code
+* \param c_rx_tx Channel to communicate to CAN component
+* \return none
+**/
+void sdo_send_abort_code(int index, char si, unsigned error, chanend c_rx_tx);
+
 #endif /* sdo_h_ */

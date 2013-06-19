@@ -72,7 +72,7 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
   int od_index, index;
   unsigned char error_index_pointer = 0, timer_interrupt_counter = 0;
   char canopen_state = INITIALIZATION, sdo_message_type;
-  unsigned sdo_timeout_time_value = 2000000000; //sdo_timeout set to 20 seconds. just for tesing: TODO
+  unsigned sdo_timeout_time_value = 2000000000; //sdo_timeout set to 20 seconds. For tesing: TODO
   unsigned hb_time, producer_heart_beat, sync_window_length, sync_time_start,
       sync_time_current, ng_time, guard_time, life_time, comm_timeout_time,
       time_difference_sync, timer_pdo_event_time;
@@ -140,10 +140,12 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
       case can_rx_frame(c_rx_tx, frame):
       {
         unsigned char temp_case;
-        if ((frame.id >= RPDO_0_MESSAGE) && (frame.id <= (RPDO_0_MESSAGE
-            + 0x100 * (CANOPEN_NUMBER_OF_RPDOS_SUPPORTED - 1))))
+        if ((frame.id >= RPDO_0_MESSAGE) && (frame.id <= (RPDO_0_MESSAGE + MAX_NO_OF_PDOS)))
         {
-          receive_rpdo_message(canopen_state,
+          if ((frame.id >= RPDO_0_MESSAGE) && (frame.id <= (RPDO_0_MESSAGE
+            + 0x100 * (CANOPEN_NUMBER_OF_RPDOS_SUPPORTED - 1))))
+          {
+            receive_rpdo_message(canopen_state,
                                ((frame.id - RPDO_0_MESSAGE) >> 8),
                                frame,
                                sync_messages_rx,
@@ -151,6 +153,15 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                                error_index_pointer,
                                c_rx_tx,
                                c_application);
+          }
+          else
+          {
+            emcy_send_emergency_message(c_rx_tx,
+                ERR_TYPE_COMMUNICATION_ERROR,
+                COMMUNICATION_GENERIC_ERROR,
+                error_index_pointer,
+                canopen_state);
+          }
         }
         else if ((frame.id >= TPDO_0_MESSAGE) && (frame.id <= (TPDO_0_MESSAGE
             + 0x100 * (CANOPEN_NUMBER_OF_TPDOS_SUPPORTED - 1))))
@@ -165,6 +176,7 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
         {
           switch(frame.id)
           {
+            case NMT_MESSAGE_BROADCAST:
             case NMT_MESSAGE: //receive NMT message and change state accordingly
             if(frame.dlc != NMT_MESSAGE_LENGTH)
             {
@@ -177,7 +189,6 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
             else
             {
               if((frame.data[1] == 0) || (frame.data[1] == CANOPEN_NODE_ID)) //check if message is for this node or broadcast message
-
               {
                 if((frame.data[0] == INITIALIZATION) ||
                     (frame.data[0] == PRE_OPERATIONAL) ||
@@ -222,6 +233,7 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
               {
                 sync_window_timer:>sync_time_start;
                 pdo_number = 0;
+
                 while(pdo_number != CANOPEN_NUMBER_OF_RPDOS_SUPPORTED)
                 {
                   unsigned rtr_check;
@@ -303,11 +315,7 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                   index = od_find_index(od_index);
                   if(index == -1)
                   {
-                    emcy_send_emergency_message(c_rx_tx,
-                        ERR_TYPE_COMMUNICATION_ERROR,
-                        SDO_NO_OBJECT_IN_OD,
-                        error_index_pointer,
-                        canopen_state);
+                    sdo_send_abort_code(od_index, od_sub_index, SDO_NO_OBJECT_IN_OD, c_rx_tx);
                   }
                   else
                   {
@@ -320,22 +328,12 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                     if(no_of_bytes == data_length)
                     {
                       if(od_find_access_of_index(index, od_sub_index) == RO) //READ ONLY
-
                       {
-                        emcy_send_emergency_message(c_rx_tx,
-                            ERR_TYPE_COMMUNICATION_ERROR,
-                            SDO_ATTEMPR_TO_WRITE_RO_OD,
-                            error_index_pointer,
-                            canopen_state);
+                        sdo_send_abort_code(od_index, od_sub_index, SDO_ATTEMPR_TO_WRITE_RO_OD, c_rx_tx);
                       }
                       else if(od_find_access_of_index(index, od_sub_index) == CONST) //CONSTANT Data type
-
                       {
-                        emcy_send_emergency_message(c_rx_tx,
-                            ERR_TYPE_COMMUNICATION_ERROR,
-                            SDO_UNSUPPORTED_ACCESS_OD,
-                            error_index_pointer,
-                            canopen_state);
+                        sdo_send_abort_code(od_index, od_sub_index, SDO_UNSUPPORTED_ACCESS_OD, c_rx_tx);
                       }
                       else
                       {
@@ -345,11 +343,7 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                     }
                     else
                     {
-                      emcy_send_emergency_message(c_rx_tx,
-                          ERR_TYPE_COMMUNICATION_ERROR,
-                          SDO_DATA_TYPE_DOES_NOT_MATCH,
-                          error_index_pointer,
-                          canopen_state);
+                      sdo_send_abort_code(od_index, od_sub_index, SDO_DATA_TYPE_DOES_NOT_MATCH, c_rx_tx);
                     }
                   }
                   break;
@@ -361,11 +355,7 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                   index = od_find_index(od_index);
                   if(index == -1)
                   {
-                    emcy_send_emergency_message(c_rx_tx,
-                        ERR_TYPE_COMMUNICATION_ERROR,
-                        SDO_NO_OBJECT_IN_OD,
-                        error_index_pointer,
-                        canopen_state);
+                    sdo_send_abort_code(od_index, od_sub_index, SDO_NO_OBJECT_IN_OD, c_rx_tx);
                   }
                   else
                   {
@@ -374,17 +364,14 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                     sdo_toggle=0;
                     count=0;
                     while(segmented_rx_last_frame == FALSE) //check if this is last segment or not
-
                     {
                       timer_communication_timeout:> comm_timeout_time;
                       select
                       {
                         case can_rx_frame(c_rx_tx,frame):
                         if(((frame.data[0]>>4)&0x01) == sdo_toggle) //check for sdo toggle bit
-
                         {
                           if((frame.data[0]&0x01) == 1) //check if last segment or not
-
                           {
                             char od_data_length=0;
                             char temp_counter=0;
@@ -399,22 +386,12 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                             if(od_data_length == (count + temp_counter))
                             {
                               if(od_find_access_of_index(index, od_sub_index) == RO) //Check if Object is Read only
-
                               {
-                                emcy_send_emergency_message(c_rx_tx,
-                                    ERR_TYPE_COMMUNICATION_ERROR,
-                                    SDO_ATTEMPR_TO_WRITE_RO_OD,
-                                    error_index_pointer,
-                                    canopen_state);
+                                sdo_send_abort_code(od_index, od_sub_index, SDO_ATTEMPR_TO_WRITE_RO_OD, c_rx_tx);
                               }
                               else if(od_find_access_of_index(index, od_sub_index) == CONST) //Check if Object is CONSTANT
-
                               {
-                                emcy_send_emergency_message(c_rx_tx,
-                                    ERR_TYPE_COMMUNICATION_ERROR,
-                                    SDO_UNSUPPORTED_ACCESS_OD,
-                                    error_index_pointer,
-                                    canopen_state);
+                                sdo_send_abort_code(od_index, od_sub_index, SDO_UNSUPPORTED_ACCESS_OD, c_rx_tx);
                               }
                               else
                               {
@@ -423,11 +400,7 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                             }
                             else
                             {
-                              emcy_send_emergency_message(c_rx_tx,
-                                  ERR_TYPE_COMMUNICATION_ERROR,
-                                  SDO_VALUE_RANGE_PARAMETER_EXCEEDED,
-                                  error_index_pointer,
-                                  canopen_state);
+                              sdo_send_abort_code(od_index, od_sub_index, SDO_VALUE_RANGE_PARAMETER_EXCEEDED, c_rx_tx);
                             }
                           }
                           else
@@ -446,11 +419,7 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                         }
                         else
                         {
-                          emcy_send_emergency_message(c_rx_tx,
-                              ERR_TYPE_COMMUNICATION_ERROR,
-                              SDO_TOGGLE_BIT_NOT_ALTERED,
-                              error_index_pointer,
-                              canopen_state);
+                          sdo_send_abort_code(od_index, od_sub_index, SDO_TOGGLE_BIT_NOT_ALTERED, c_rx_tx);
                           segmented_rx_last_frame = TRUE;
                         }
                         timer_communication_timeout:> comm_timeout_time;
@@ -458,11 +427,7 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
 
                         case timer_communication_timeout when timerafter(comm_timeout_time+ sdo_timeout_time_value):> void:
                         timer_communication_timeout:> comm_timeout_time;
-                        emcy_send_emergency_message(c_rx_tx,
-                            ERR_TYPE_COMMUNICATION_ERROR,
-                            SDO_PROTOCOL_TIME_OUT,
-                            error_index_pointer,
-                            canopen_state);
+                        sdo_send_abort_code(od_index, od_sub_index, SDO_PROTOCOL_TIME_OUT, c_rx_tx);
                         break;
                       }//select
                     }
@@ -470,7 +435,6 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                   break;
 
                   case INITIATE_SDO_UPLOAD_REQUEST: //initiate sdo upload
-
                   {
                     char counter=0, number_of_segments;
                     sdo_toggle=0;
@@ -479,25 +443,14 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                     index = od_find_index(od_index);
                     if(index != -1)
                     {
+                      if(od_sub_index < od_find_no_of_si_entries(index))
+                      {
                       data_length = od_find_data_length(index, od_sub_index);
                       if(data_length <= 4) //check if data to be uploaded les than 4 bytes
-
                       {
                         if(od_find_access_of_index(index, od_sub_index) == WO) //check OD access type
-
                         {
-                          emcy_send_emergency_message(c_rx_tx,
-                              ERR_TYPE_COMMUNICATION_ERROR,
-                              SDO_ATTEMPT_TO_READ_WO_OD,
-                              error_index_pointer, canopen_state);
-                        }
-                        else if(od_find_access_of_index(index, od_sub_index) == CONST) //check id OD access type is CONSTANT or not
-
-                        {
-                          emcy_send_emergency_message(c_rx_tx,
-                              ERR_TYPE_COMMUNICATION_ERROR,
-                              SDO_UNSUPPORTED_ACCESS_OD,
-                              error_index_pointer, canopen_state);
+                            sdo_send_abort_code(od_index, od_sub_index, SDO_ATTEMPT_TO_READ_WO_OD, c_rx_tx);
                         }
                         else
                         {
@@ -506,15 +459,10 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                         }
                       }
                       if(data_length > 4) //if data is more than 4 bytes do segmented transfer
-
                       {
                         if(od_find_access_of_index(index, od_sub_index) == WO) //check access type
-
                         {
-                          emcy_send_emergency_message(c_rx_tx,
-                              ERR_TYPE_COMMUNICATION_ERROR,
-                              SDO_ATTEMPT_TO_READ_WO_OD,
-                              error_index_pointer, canopen_state);
+                            sdo_send_abort_code(od_index, od_sub_index, SDO_ATTEMPT_TO_READ_WO_OD, c_rx_tx);
                         }
                         else
                         {
@@ -522,7 +470,6 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                           sdo_initiate_upload_response(c_rx_tx, od_index, od_sub_index, data_length);
                           if(data_length % 7 == 0)
                           number_of_segments = (data_length/7); //no. of segments = data length/7 as we can tx only 7 bytes of data in segmented tx.
-
                           else
                           number_of_segments = (data_length/7) + 1;
                           while(counter != number_of_segments)
@@ -532,7 +479,6 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                             {
                               case can_rx_frame(c_rx_tx,frame):
                               if(((frame.data[0]>>4)&0x01) == sdo_toggle) //check sdo toggle bit is correct or not
-
                               {
                                 sdo_upload_segmented_data(c_rx_tx,od_index,od_sub_index,sdo_toggle,data_length,data_buffer,counter);
                                 sdo_toggle=!sdo_toggle;
@@ -540,14 +486,14 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                               }
                               else
                               {
-                                emcy_send_emergency_message(c_rx_tx, ERR_TYPE_COMMUNICATION_ERROR, SDO_TOGGLE_BIT_NOT_ALTERED, error_index_pointer, canopen_state);
+                                  sdo_send_abort_code(od_index, od_sub_index, SDO_TOGGLE_BIT_NOT_ALTERED, c_rx_tx);
                               }
                               timer_communication_timeout:> comm_timeout_time;
                               break;
 
                               case timer_communication_timeout when timerafter(comm_timeout_time+ sdo_timeout_time_value):> void:
                               timer_communication_timeout:>comm_timeout_time;
-                              emcy_send_emergency_message(c_rx_tx, ERR_TYPE_COMMUNICATION_ERROR, SDO_PROTOCOL_TIME_OUT, error_index_pointer, canopen_state);
+                                sdo_send_abort_code(od_index, od_sub_index, SDO_PROTOCOL_TIME_OUT, c_rx_tx);
                               counter = number_of_segments;
                               break;
                             }//select
@@ -555,13 +501,21 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                         }
                       }
                     }
+                      else
+                      {
+                        sdo_send_abort_code(od_index, od_sub_index, SDO_NO_SUB_INDEX_EXIST, c_rx_tx);
+                      }
+                    }
+                    else
+                    {
+                      sdo_send_abort_code(od_index, od_sub_index, SDO_NO_OBJECT_IN_OD, c_rx_tx);
+                    }
                     break;
                   }
                   default:
-                  emcy_send_emergency_message(c_rx_tx, ERR_TYPE_COMMUNICATION_ERROR, SDO_COMMAND_SPECIFIER_NOT_VALID, error_index_pointer, canopen_state);
+                  sdo_send_abort_code(od_index, od_sub_index, SDO_COMMAND_SPECIFIER_NOT_VALID, c_rx_tx);
                   break;
                 }
-                break;
               }
             }
             break;
@@ -575,7 +529,6 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
       }
 
       case timer_pdo_event when timerafter(timer_pdo_event_time+10000):> void: //100 usec timer event
-
       {
         char pdo_number=0;
         timer_pdo_event:> timer_pdo_event_time;
@@ -588,7 +541,6 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
         if(canopen_state == OPERATIONAL)
         timer_interrupt_counter++;
         if(timer_interrupt_counter == 10) //check if time is 1 msec
-
         {
           unsigned event_type;
           pdo_number = 0;
@@ -627,7 +579,8 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
       }
       break;
 
-      case !heart_beat_active => node_guard_timer when timerafter(ng_time + guard_time *100 * life_time):> ng_time:
+      case !heart_beat_active => node_guard_timer when timerafter(ng_time + guard_time *100 * life_time):> void:
+      node_guard_timer:> ng_time;
       if(( canopen_state == PRE_OPERATIONAL) ||
           ( canopen_state == OPERATIONAL) ||
           ( canopen_state == STOPPED))

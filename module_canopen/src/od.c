@@ -115,3 +115,11 @@ unsigned char od_find_access_of_index(int index, unsigned char od_sub_index)
       + od_sub_index);
   return access;
 }
+
+/*---------------------------------------------------------------------------
+ Find No of SI entries in the object dictionary of an object based on index
+ ---------------------------------------------------------------------------*/
+unsigned od_find_no_of_si_entries(int index)
+{
+  return object_dict[index].subindex_count;
+}

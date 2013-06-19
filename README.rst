@@ -1,7 +1,7 @@
 CANopen Component
 .................
 
-:Latest release: 1.0.0
+:Latest release: unreleased
 :Maintainer: xmos
 :Description: CANopen Component
 
@@ -14,7 +14,6 @@ Key Features
    * Supports LSS (Layer Service Settings) message types.
    * Includes object dictionary genertor script to generate object dictionary header file from EDS file.
    
-A demo appliction is included.
 
 Known Issues
 ============

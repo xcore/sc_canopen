@@ -24,7 +24,7 @@
 
 /*==========================================================================*/
 /**
- * canopen_client_send_data_to_canopen_stack is the function in order to send data to canopen
+ * canopen_client_send_data_to_stack is the function in order to send data to canopen
  * module.
  *
  * \param c_application channel to send data to the application
@@ -33,14 +33,14 @@
  * \param data data buffer which contains transmit data
  * \return none
  **/
-void canopen_client_send_data_to_canopen_stack(streaming chanend c_application,
+void canopen_client_send_data_to_stack(streaming chanend c_application,
                                                unsigned char pdo_number,
                                                unsigned char data_length,
                                                unsigned char data[]);
 
 /*==========================================================================*/
 /**
- * canopen_client_receive_data_from_canopen_stack is the function in order
+ * canopen_client_receive_data_from_stack is the function in order
  * to receive data from canopen module.
  *
  * \param c_application channel to receive data from the application
@@ -48,7 +48,7 @@ void canopen_client_send_data_to_canopen_stack(streaming chanend c_application,
  * \param data data buffer which contains receive data
  * \return none
  **/
-void canopen_client_receive_data_from_canopen_stack(streaming chanend c_application,
+void canopen_client_receive_data_from_stack(streaming chanend c_application,
                                                    REFERENCE_PARAM(unsigned char,
                                                                    data_length),
                                                    NULLABLE_ARRAY_OF(unsigned char,
