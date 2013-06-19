@@ -103,13 +103,13 @@ void application(streaming chanend c_application)
 
       {
         pdo_data[0] = 0xFF;
-        canopen_client_send_data_to_canopen_stack(c_application, 1, 1, pdo_data);
+        canopen_client_send_data_to_stack(c_application, 1, 1, pdo_data);
       }
       if(button_press_1 == BUTTON_PRESS_VALUE-1) //Button 2 is pressed
 
       {
         pdo_data[0] = 0xFF;
-        canopen_client_send_data_to_canopen_stack(c_application, 2, 1, pdo_data);
+        canopen_client_send_data_to_stack(c_application, 2, 1, pdo_data);
       }
       button=1;
       break;
@@ -118,7 +118,7 @@ void application(streaming chanend c_application)
       {
         char temp_data;
         char length,data[1];
-        canopen_client_receive_data_from_canopen_stack(c_application, length,data);
+        canopen_client_receive_data_from_stack(c_application, length,data);
         if((pdo_number >= 0) && (pdo_number <= 3))
         {
           p_led :> temp_data;
@@ -134,7 +134,7 @@ void application(streaming chanend c_application)
       adc_value=(data1[0]<<6)|(data1[1]>>2);
       pdo_data[0] = ((adc_value & 0xFF00)>>8);
       pdo_data[1] = (adc_value & 0xFF);
-      canopen_client_send_data_to_canopen_stack(c_application, 0, 2, pdo_data);
+      canopen_client_send_data_to_stack(c_application, 0, 2, pdo_data);
       break;
     }
   }
