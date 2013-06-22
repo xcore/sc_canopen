@@ -57,19 +57,25 @@ ports = {
     short   = "Transmit",
     long    = "CANopen Transmit data",
     help    = "",
-    width   = 1
+    width   = 1,
+    value = "XS1_PORT_1L",
+    enabled = not swblock.params.separate_mac,
   },
   p_can_rx = {
     short   = "Receive",
     long    = "CANopen Receive Data",
     help    = "",
-    width   = 1
+    width   = 1,
+    value = "XS1_PORT_1I",
+    enabled = not swblock.params.separate_mac,
   },
   p_shutdown = {
     short   = "shutdown",
     long    = "shutdown",
     help    = "",
-    width   = 1
+    width   = 4,
+    value = "XS1_PORT_4E",
+    enabled = not swblock.params.separate_mac,
   },
 }
 
@@ -80,7 +86,12 @@ channels = {
       short = "Channel to the application",
       long = "Channels between CANopen server and application",
       type  = "streaming",
-      help = "",
+      help = ""
+  },
+  c_rx_tx = {
+      short = "Channel to the CAN module",
+      long = "Channels between CANopen server and CAN module",
+      help = ""
    },
    
 }
@@ -115,8 +126,8 @@ generatedCode = {
   ]],
       
    body = [[
-   
-      canopen_manager(can_${swblock.id}_resources, shutdown, ${swblock.chanends.c_application});
+      can_server(can_ports,${swblock.chanends.c_rx_tx});
+      canopen_server(${swblock.chanends.c_rx_tx},${swblock.chanends.c_application});
       application(${swblock.chanends.c_application});
       
    ]]
@@ -125,10 +136,8 @@ generatedCode = {
 
       
 api = {
-
-   'canopen_client_send_data_to_canopen_stack',
-   'canopen_client_receive_data_from_canopen_stack'
-   
+   'canopen_client_send_data_to_stack',
+   'canopen_client_receive_data_from_stack'  
 }
 
 files = {

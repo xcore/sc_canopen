@@ -36,6 +36,9 @@ print '\n'
 NODE_ID = raw_input(" Enter Node ID of CANOpen Device : ")
 print '\n'
 
+FILE_NAME = raw_input(" Enter EDS fila name of CANOpen Device with extension as .eds : ")
+print '\n'
+
 data_types=['0x0001','0x0002','0x0005', '0x0003','0x0006','0x0010','0x0016','0x0004','0x0008','0x0007','0x0012','0x0018','0x0013','0x0019','0x0014','0x001a','0x000f','0x0015','0x0011','0x000d','0x00c','0x001b','0x000a','0x000b','0x0009']
 
 od_index = {}
@@ -52,7 +55,7 @@ for values in data_types:
   od_access[values]=[]
   od_data[values]=[]
 try:  
-  fp=open("CO_EDS_401.eds")
+  fp=open(FILE_NAME)
 except:
   print 'Error!, Name of file should be "CO_EDS_401.eds"\n'
 for line in fp:

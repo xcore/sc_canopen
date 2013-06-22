@@ -24,19 +24,21 @@
 #include "nmt.h"
 #include "emcy.h"
 #include "sync.h"
+#include <print.h>
+#include <xscope.h>
 
 /*---------------------------------------------------------------------------
  Function prototypes
  ---------------------------------------------------------------------------*/
 static void
-    receive_rpdo_message(unsigned char canopen_state,
-                         char pdo_number,
-                         can_frame frame,
-                         NULLABLE_ARRAY_OF(rx_sync_mesages, sync_messages_rx),
-                         NULLABLE_ARRAY_OF(tx_sync_timer, sync_timer),
-                         REFERENCE_PARAM(char, error_index_pointer),
-                         chanend c_rx_tx,
-                         streaming chanend c_application);
+receive_rpdo_message(unsigned char canopen_state,
+                     char pdo_number,
+                     can_frame frame,
+                     NULLABLE_ARRAY_OF(rx_sync_mesages, sync_messages_rx),
+                     NULLABLE_ARRAY_OF(tx_sync_timer, sync_timer),
+                     REFERENCE_PARAM(char, error_index_pointer),
+                     chanend c_rx_tx,
+                     streaming chanend c_application);
 
 static void
     receive_tpdo_rtr_request(can_frame frame,
@@ -46,17 +48,17 @@ static void
                              chanend c_rx_tx);
 
 static void
-    lss_state_machine(can_frame frame,
-                      char lss_configuration_mode,
-                      chanend c_rx_tx,
-                      REFERENCE_PARAM(char, canopen_state),
-                      REFERENCE_PARAM(unsigned char, error_index_pointer));
+lss_state_machine(can_frame frame,
+                  char lss_configuration_mode,
+                  chanend c_rx_tx,
+                  REFERENCE_PARAM(char, canopen_state),
+                  REFERENCE_PARAM(unsigned char, error_index_pointer));
 
 /*---------------------------------------------------------------------------
  CANOpen Manager communicates with CAN module and application core
  ---------------------------------------------------------------------------*/
 #pragma ordered
-static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
+void canopen_server(chanend c_rx_tx, streaming chanend c_application)
 {
   can_frame frame;
   tx_sync_timer sync_timer[CANOPEN_NUMBER_OF_TPDOS_SUPPORTED];
@@ -140,12 +142,10 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
       case can_rx_frame(c_rx_tx, frame):
       {
         unsigned char temp_case;
-        if ((frame.id >= RPDO_0_MESSAGE) && (frame.id <= (RPDO_0_MESSAGE + MAX_NO_OF_PDOS)))
-        {
-          if ((frame.id >= RPDO_0_MESSAGE) && (frame.id <= (RPDO_0_MESSAGE
+        if ((frame.id >= RPDO_0_MESSAGE) && (frame.id <= (RPDO_0_MESSAGE
             + 0x100 * (CANOPEN_NUMBER_OF_RPDOS_SUPPORTED - 1))))
-          {
-            receive_rpdo_message(canopen_state,
+        {
+          receive_rpdo_message(canopen_state,
                                ((frame.id - RPDO_0_MESSAGE) >> 8),
                                frame,
                                sync_messages_rx,
@@ -153,15 +153,6 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                                error_index_pointer,
                                c_rx_tx,
                                c_application);
-          }
-          else
-          {
-            emcy_send_emergency_message(c_rx_tx,
-                ERR_TYPE_COMMUNICATION_ERROR,
-                COMMUNICATION_GENERIC_ERROR,
-                error_index_pointer,
-                canopen_state);
-          }
         }
         else if ((frame.id >= TPDO_0_MESSAGE) && (frame.id <= (TPDO_0_MESSAGE
             + 0x100 * (CANOPEN_NUMBER_OF_TPDOS_SUPPORTED - 1))))
@@ -189,6 +180,7 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
             else
             {
               if((frame.data[1] == 0) || (frame.data[1] == CANOPEN_NODE_ID)) //check if message is for this node or broadcast message
+
               {
                 if((frame.data[0] == INITIALIZATION) ||
                     (frame.data[0] == PRE_OPERATIONAL) ||
@@ -291,6 +283,7 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
             break;
 
             case RSDO_MESSAGE:
+            printstrln("SDO");
             if((canopen_state == PRE_OPERATIONAL) || (canopen_state == OPERATIONAL))
             {
               if(frame.dlc != SDO_MESSAGE_LENGTH)
@@ -328,10 +321,12 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                     if(no_of_bytes == data_length)
                     {
                       if(od_find_access_of_index(index, od_sub_index) == RO) //READ ONLY
+
                       {
                         sdo_send_abort_code(od_index, od_sub_index, SDO_ATTEMPR_TO_WRITE_RO_OD, c_rx_tx);
                       }
                       else if(od_find_access_of_index(index, od_sub_index) == CONST) //CONSTANT Data type
+
                       {
                         sdo_send_abort_code(od_index, od_sub_index, SDO_UNSUPPORTED_ACCESS_OD, c_rx_tx);
                       }
@@ -364,14 +359,17 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                     sdo_toggle=0;
                     count=0;
                     while(segmented_rx_last_frame == FALSE) //check if this is last segment or not
+
                     {
                       timer_communication_timeout:> comm_timeout_time;
                       select
                       {
                         case can_rx_frame(c_rx_tx,frame):
                         if(((frame.data[0]>>4)&0x01) == sdo_toggle) //check for sdo toggle bit
+
                         {
                           if((frame.data[0]&0x01) == 1) //check if last segment or not
+
                           {
                             char od_data_length=0;
                             char temp_counter=0;
@@ -386,10 +384,12 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                             if(od_data_length == (count + temp_counter))
                             {
                               if(od_find_access_of_index(index, od_sub_index) == RO) //Check if Object is Read only
+
                               {
                                 sdo_send_abort_code(od_index, od_sub_index, SDO_ATTEMPR_TO_WRITE_RO_OD, c_rx_tx);
                               }
                               else if(od_find_access_of_index(index, od_sub_index) == CONST) //Check if Object is CONSTANT
+
                               {
                                 sdo_send_abort_code(od_index, od_sub_index, SDO_UNSUPPORTED_ACCESS_OD, c_rx_tx);
                               }
@@ -435,6 +435,7 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                   break;
 
                   case INITIATE_SDO_UPLOAD_REQUEST: //initiate sdo upload
+
                   {
                     char counter=0, number_of_segments;
                     sdo_toggle=0;
@@ -445,62 +446,68 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                     {
                       if(od_sub_index < od_find_no_of_si_entries(index))
                       {
-                      data_length = od_find_data_length(index, od_sub_index);
-                      if(data_length <= 4) //check if data to be uploaded les than 4 bytes
-                      {
-                        if(od_find_access_of_index(index, od_sub_index) == WO) //check OD access type
-                        {
-                            sdo_send_abort_code(od_index, od_sub_index, SDO_ATTEMPT_TO_READ_WO_OD, c_rx_tx);
-                        }
-                        else
-                        {
-                          od_read_data(index, od_sub_index, data_buffer,data_length);
-                          sdo_upload_expedited_data(c_rx_tx, od_index, od_sub_index,data_length, data_buffer); //if data is less than 4 bytes do expedited transfer
-                        }
-                      }
-                      if(data_length > 4) //if data is more than 4 bytes do segmented transfer
-                      {
-                        if(od_find_access_of_index(index, od_sub_index) == WO) //check access type
-                        {
-                            sdo_send_abort_code(od_index, od_sub_index, SDO_ATTEMPT_TO_READ_WO_OD, c_rx_tx);
-                        }
-                        else
-                        {
-                          od_read_data(index, od_sub_index, data_buffer,data_length);
-                          sdo_initiate_upload_response(c_rx_tx, od_index, od_sub_index, data_length);
-                          if(data_length % 7 == 0)
-                          number_of_segments = (data_length/7); //no. of segments = data length/7 as we can tx only 7 bytes of data in segmented tx.
-                          else
-                          number_of_segments = (data_length/7) + 1;
-                          while(counter != number_of_segments)
-                          {
-                            timer_communication_timeout:> comm_timeout_time;
-                            select
-                            {
-                              case can_rx_frame(c_rx_tx,frame):
-                              if(((frame.data[0]>>4)&0x01) == sdo_toggle) //check sdo toggle bit is correct or not
-                              {
-                                sdo_upload_segmented_data(c_rx_tx,od_index,od_sub_index,sdo_toggle,data_length,data_buffer,counter);
-                                sdo_toggle=!sdo_toggle;
-                                counter++;
-                              }
-                              else
-                              {
-                                  sdo_send_abort_code(od_index, od_sub_index, SDO_TOGGLE_BIT_NOT_ALTERED, c_rx_tx);
-                              }
-                              timer_communication_timeout:> comm_timeout_time;
-                              break;
+                        data_length = od_find_data_length(index, od_sub_index);
+                        if(data_length <= 4) //check if data to be uploaded les than 4 bytes
 
-                              case timer_communication_timeout when timerafter(comm_timeout_time+ sdo_timeout_time_value):> void:
-                              timer_communication_timeout:>comm_timeout_time;
+                        {
+                          if(od_find_access_of_index(index, od_sub_index) == WO) //check OD access type
+
+                          {
+                            sdo_send_abort_code(od_index, od_sub_index, SDO_ATTEMPT_TO_READ_WO_OD, c_rx_tx);
+                          }
+                          else
+                          {
+                            od_read_data(index, od_sub_index, data_buffer,data_length);
+                            sdo_upload_expedited_data(c_rx_tx, od_index, od_sub_index,data_length, data_buffer); //if data is less than 4 bytes do expedited transfer
+                          }
+                        }
+                        if(data_length > 4) //if data is more than 4 bytes do segmented transfer
+
+                        {
+                          if(od_find_access_of_index(index, od_sub_index) == WO) //check access type
+
+                          {
+                            sdo_send_abort_code(od_index, od_sub_index, SDO_ATTEMPT_TO_READ_WO_OD, c_rx_tx);
+                          }
+                          else
+                          {
+                            od_read_data(index, od_sub_index, data_buffer,data_length);
+                            sdo_initiate_upload_response(c_rx_tx, od_index, od_sub_index, data_length);
+                            if(data_length % 7 == 0)
+                            number_of_segments = (data_length/7); //no. of segments = data length/7 as we can tx only 7 bytes of data in segmented tx.
+
+                            else
+                            number_of_segments = (data_length/7) + 1;
+                            while(counter != number_of_segments)
+                            {
+                              timer_communication_timeout:> comm_timeout_time;
+                              select
+                              {
+                                case can_rx_frame(c_rx_tx,frame):
+                                if(((frame.data[0]>>4)&0x01) == sdo_toggle) //check sdo toggle bit is correct or not
+
+                                {
+                                  sdo_upload_segmented_data(c_rx_tx,od_index,od_sub_index,sdo_toggle,data_length,data_buffer,counter);
+                                  sdo_toggle=!sdo_toggle;
+                                  counter++;
+                                }
+                                else
+                                {
+                                  sdo_send_abort_code(od_index, od_sub_index, SDO_TOGGLE_BIT_NOT_ALTERED, c_rx_tx);
+                                }
+                                timer_communication_timeout:> comm_timeout_time;
+                                break;
+
+                                case timer_communication_timeout when timerafter(comm_timeout_time+ sdo_timeout_time_value):> void:
+                                timer_communication_timeout:>comm_timeout_time;
                                 sdo_send_abort_code(od_index, od_sub_index, SDO_PROTOCOL_TIME_OUT, c_rx_tx);
-                              counter = number_of_segments;
-                              break;
-                            }//select
-                          }//while
+                                counter = number_of_segments;
+                                break;
+                              }//select
+                            }//while
+                          }
                         }
                       }
-                    }
                       else
                       {
                         sdo_send_abort_code(od_index, od_sub_index, SDO_NO_SUB_INDEX_EXIST, c_rx_tx);
@@ -529,6 +536,7 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
       }
 
       case timer_pdo_event when timerafter(timer_pdo_event_time+10000):> void: //100 usec timer event
+
       {
         char pdo_number=0;
         timer_pdo_event:> timer_pdo_event_time;
@@ -541,6 +549,7 @@ static void canopen_server(chanend c_rx_tx, streaming chanend c_application)
         if(canopen_state == OPERATIONAL)
         timer_interrupt_counter++;
         if(timer_interrupt_counter == 10) //check if time is 1 msec
+
         {
           unsigned event_type;
           pdo_number = 0;
@@ -725,7 +734,7 @@ static void lss_state_machine(can_frame frame,
                                                               BIT_RATE_10};
   switch(frame.data[0])
   {
-    case SWITCH_MODE_GLOBAL_COMMAND: //set state to lss configuration. DS 305 Standard
+case    SWITCH_MODE_GLOBAL_COMMAND: //set state to lss configuration. DS 305 Standard
     if(frame.data[1] == 0x01)
     lss_configuration_mode = !lss_configuration_mode;
     break;
@@ -781,24 +790,6 @@ static void lss_state_machine(can_frame frame,
     case INQUIRE_SERIAL_NUMBER:
     lss_inquire_serial_number(c_rx_tx, canopen_state, error_index_pointer); //send serial number
     break;
-  }
-}
-
-/*---------------------------------------------------------------------------
- Canopen manager runs canserver and canopen server
- ---------------------------------------------------------------------------*/
-void canopen_manager(REFERENCE_PARAM(can_ports, p),
-                     port shut,
-                     streaming chanend c_application)
-{
-  chan c_rx_tx;
-  par
-  {
-    {
-      shut <: 0;
-      can_server(p, c_rx_tx);
-    }
-    canopen_server(c_rx_tx, c_application);
   }
 }
 

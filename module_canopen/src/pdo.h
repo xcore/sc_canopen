@@ -1,17 +1,3 @@
-/**
-* The copyrights, all other intellectual and industrial
-* property rights are retained by XMOS and/or its licensors.
-* Terms and conditions covering the use of this code can
-* be found in the Xmos End User License Agreement.
-*
-* Copyright XMOS Ltd 2012
-*
-* In the case where this code is a modification of existing code
-* under a separate license, the separate license terms are shown
-* below. The modifications to the code are still covered by the
-* copyright notice above.
-*
-**/
 
 #ifndef __pdo_h__
 #define __pdo_h__
@@ -98,7 +84,7 @@ prototypes
 * object dictionary.
 *
 * \param address index of pdo in the object dictionary
-* \return cobid returns cob id of pdo
+* \return returns cob id of pdo
 **/
 unsigned pdo_find_cob_id(int address);
 
@@ -154,7 +140,7 @@ void pdo_receive_application_data(char pdo_number,
 * pdo.
 *
 * \param address address of the pdo
-* \return pdo_tx_type returns transmit type of the pdo
+* \return returns transmit type of the pdo
 **/
 int pdo_find_transmission_type(int address);
 
@@ -182,7 +168,7 @@ void pdo_send_data_to_application(unsigned mapping_parameter,
 *
 * \param address address od pdo
 * \param data_buffer data to be written to the object dictionary
-* \return data_length length od data that is written to the object dictionary
+* \return length of data that is written to the object dictionary
 **/
 char pdo_write_data_to_od(int address, char data_buffer[]);
 
@@ -192,7 +178,7 @@ char pdo_write_data_to_od(int address, char data_buffer[]);
 * pdo.
 *
 * \param address address of the pdo
-* \return pdo_tx_type returns transmit type of the pdo
+* \return returns transmit type of the pdo
 **/
 unsigned pdo_find_event_type(int address);
 

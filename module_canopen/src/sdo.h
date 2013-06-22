@@ -1,17 +1,3 @@
-/**
-* The copyrights, all other intellectual and industrial
-* property rights are retained by XMOS and/or its licensors.
-* Terms and conditions covering the use of this code can
-* be found in the Xmos End User License Agreement.
-*
-* Copyright XMOS Ltd 2012
-*
-* In the case where this code is a modification of existing code
-* under a separate license, the separate license terms are shown
-* below. The modifications to the code are still covered by the
-* copyright notice above.
-*
-**/
 
 #ifndef __sdo_h__
 #define __sdo_h__
@@ -22,7 +8,7 @@ typedefs
 
 /**
 * \enum sdo_request_types
-* \brief CANOpen Condition values
+* \brief CANopen SDO Request types
 */
 enum sdo_request_types
 {
@@ -119,7 +105,7 @@ void sdo_download_segment_response(chanend c_rx_tx, char sdo_toggle);
 * \param c_rx_tx channel to communicate to the can module
 * \param od_index index of object the object dictionary
 * \param od_sub_index sub index of object in the object dictionary
-* \param data_length data length od object to be uploaded
+* \param data_length data length of object to be uploaded
 * \return none
 **/
 void sdo_initiate_upload_response(chanend c_rx_tx,

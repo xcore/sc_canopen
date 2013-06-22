@@ -62,13 +62,20 @@ void xscope_user_init(void)
 int main()
 {
   streaming chan c_application;
+  chan c_rx_tx;
   par
   {
-    on tile[0]: canopen_manager(p, shutdown, c_application);
+    on tile[0]:{
+          shutdown <: 0;
+          can_server(p, c_rx_tx);
+    }
+    on tile[0]: canopen_server(c_rx_tx, c_application);
     on tile[1]: application(c_application);
   }
   return 0;
 }
+
+
 
 /*---------------------------------------------------------------------------
  Application Core
