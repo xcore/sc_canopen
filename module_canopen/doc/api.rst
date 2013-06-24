@@ -162,14 +162,6 @@ to indicate the master that an error has occurred.
 
 CANopen functions
 -----------------
-This is the function that is called by the application. The Canopen Manager functions runs 
-CAN server and CANopen server in parallel as shown below
-
-.. literalinclude:: module_canopen/src/canopen.xc
-   :start-after: //::CANopen Manager
-   :end-before: //::CANopen Manager End
-
-.. doxygenfunction:: canopen_manager
 
 The CANopen manager receives Messages and based on COB-ID it descides the request type.
 Different type of message types supported are as shown below

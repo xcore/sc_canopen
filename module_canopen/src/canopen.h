@@ -105,21 +105,4 @@ prototypes
 ---------------------------------------------------------------------------*/
 void canopen_server(chanend c_rx_tx, streaming chanend c_application);
 
-/*==========================================================================*/
-/**
-* canopen manager is the top level function to transmit/receive device
-* values on the canbus. This function will send:
-* chanend : channel to communicate between canopen and modules like CAN
-* streaming chanend : channel to communicate between canopen module and application
-*
-* \param c_rx_tx Channel connecting to modules like CAN
-* \param c_application Channel to communicate to application
-* \return none
-**/
-void canopen_manager(REFERENCE_PARAM(can_ports, p),
-                     port shut,
-                     streaming chanend c_application);
-
-
-
 #endif
