@@ -95,7 +95,7 @@ unsigned pdo_find_cob_id(int address);
 *
 * \param comm_parameter pdo communication parameter
 * \param mapping_parameter pdo mapping parameter
-* \param c_rx_tx channel to communicate to the can module
+* \param c_rx_tx channel to communicate with bus module like CAN
 * \return none
 **/
 void pdo_transmit_data(unsigned comm_parameter,
@@ -124,7 +124,7 @@ char pdo_read_data_from_od(unsigned comm_parameter,
 * \param pdo_number pdo number
 * \param length pdo length of data bytes
 * \param data data buffer
-* \param c_rx_tx channel to communicate to can module
+* \param c_rx_tx channel to communicate with bus module like CAN
 * \param tpdo_inhibit_time_values structure with inhibit time values of TPDOs
 * \return none
 **/

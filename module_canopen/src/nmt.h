@@ -37,7 +37,7 @@ void nmt_initialize(NULLABLE_ARRAY_OF(tx_sync_timer, sync_timer),
 * nmt_send_heartbeat_message is the function to transmit heartbeat
 * messages on the canbus
 *
-* \param c_rx_tx Channel connecting to bus module like CAN
+* \param c_rx_tx channel to communicate with bus module like CAN
 * \param can_frame canframe to transmit on bus module like CAN
 * \param canopen_state current state of canopen node
 * \return none
@@ -51,7 +51,7 @@ void nmt_send_heartbeat_message(chanend c_rx_tx,
 * nmt_send_nodeguard_message is the function to transmit nodeguard
 * messages on the bus modules like CAN. This function will send:
 *
-* \param c_rx_tx Channel connecting to can module
+* \param c_rx_tx channel to communicate with bus module like CAN
 * \param can_frame canframe to transmit on bus moduels like CAN
 * \param toggle toggle bit that toggles with every node guard message received
 * \param state current state of canopen node
@@ -67,7 +67,7 @@ void nmt_send_nodeguard_message(chanend c_rx_tx,
 * nmt_send_boot_up_message is the function to transmit bootup
 * message on the bus modules like CAN after initialisation
 *
-* \param c_rx_tx Channel connecting to can module
+* \param c_rx_tx channel to communicate with bus module like CAN
 * \return none
 **/
 void nmt_send_boot_up_message(chanend c_rx_tx);

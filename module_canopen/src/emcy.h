@@ -93,7 +93,7 @@ void emcy_reset_error_register();
 * emcy_send_emergency_message is the function to transmit error messages
 * on the canopen network
 *
-* \param c_rx_tx Channel connecting to can module
+* \param c_rx_tx channel to communicate with bus module like CAN
 * \param error_type type of error occurred
 * \param emergency_code emergency code to be transmitted on to the network
 * \param error_index_pointer points to the current value of error register
