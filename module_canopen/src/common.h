@@ -11,7 +11,7 @@
  ---------------------------------------------------------------------------*/
 
 #ifndef CANOPEN_NODE_ID
-  #define CANOPEN_NODE_ID 0
+  #define CANOPEN_NODE_ID 1
 #endif
 
 #ifndef CANOPEN_NUMBER_OF_TPDOS_SUPPORTED

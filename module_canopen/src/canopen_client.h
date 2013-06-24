@@ -10,7 +10,7 @@
 
 /*==========================================================================*/
 /**
- * canopen_client_send_data_to_stack is the function in order to send data to canopen
+ * canopen_client_send_data_to_stack is the function to send data to canopen
  * module.
  *
  * \param c_application channel to send data to the application
@@ -26,7 +26,7 @@ void canopen_client_send_data_to_stack(streaming chanend c_application,
 
 /*==========================================================================*/
 /**
- * canopen_client_receive_data_from_stack is the function in order
+ * canopen_client_receive_data_from_stack is the function
  * to receive data from canopen module.
  *
  * \param c_application channel to receive data from the application

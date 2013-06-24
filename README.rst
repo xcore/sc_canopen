@@ -1,7 +1,7 @@
 CANopen Component
 .................
 
-:Latest release: unreleased
+:Latest release: Example
 :Maintainer: xmos
 :Description: CANopen Component
 

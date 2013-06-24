@@ -56,9 +56,10 @@ prototypes
 
 /*==========================================================================*/
 /**
-* sdo_upload_expedited_data is the function in order to upload expedited sdo data
+* sdo_upload_expedited_data is the function to send data to CANopen Master
+* for small transfer sizes (upto 4 bytes)
 *
-* \param c_rx_tx channel to communicate to the can module
+* \param c_rx_tx channel to communicate with bus module like CAN
 * \param od_index index of object the object dictionary
 * \param od_sub_index sub index of object in the object dictionary
 * \param data_length data length od object to be uploaded
@@ -73,12 +74,12 @@ void sdo_upload_expedited_data(chanend c_rx_tx,
 
 /*==========================================================================*/
 /**
-* sdo_send_download_response is the function in order to send download
-* resposne to the master
+* sdo_send_download_response is the function to send response to the master
+* on receipt of SDO data.
 *
 * \param od_index index of object the object dictionary
 * \param od_sub_index sub index of object in the object dictionary
-* \param c_rx_tx channel to communicate to the can module
+* \param c_rx_tx channel to communicate with bus module like CAN
 * \return none
 **/
 void sdo_send_download_response(int od_index,
@@ -87,7 +88,7 @@ void sdo_send_download_response(int od_index,
 
 /*==========================================================================*/
 /**
-* sdo_download_segment_response is the function in order to send download
+* sdo_download_segment_response is the function to send download
 * resposne to the master for segmented download
 *
 * \param c_rx_tx channel to communicate to the can module
@@ -99,7 +100,7 @@ void sdo_download_segment_response(chanend c_rx_tx, char sdo_toggle);
 
 /*==========================================================================*/
 /**
-* sdo_initiate_upload_response is the function in order to initiate upload
+* sdo_initiate_upload_response is the function to initiate upload
 * request to the master
 *
 * \param c_rx_tx channel to communicate to the can module
@@ -115,7 +116,7 @@ void sdo_initiate_upload_response(chanend c_rx_tx,
 
 /*==========================================================================*/
 /**
-* sdo_upload_segmented_data is the function in order to upload segmenetd data
+* sdo_upload_segmented_data is the function to upload segmenetd data
 *
 * \param c_rx_tx channel to communicate to the can module
 * \param od_index index of object the object dictionary
@@ -137,7 +138,7 @@ void sdo_upload_segmented_data(chanend c_rx_tx,
 
 /*==========================================================================*/
 /**
-* send_sdo_abort_code is the function in order to send abort code to master
+* send_sdo_abort_code is the function to send abort code to master
 *
 * \param index Index of Object
 * \param si sub index of object in the object dictionary

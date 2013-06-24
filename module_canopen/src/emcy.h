@@ -81,7 +81,7 @@ prototypes
 
 /*==========================================================================*/
 /**
-* emcy_reset_error_register is function in order to reset the error values and error registers
+* emcy_reset_error_register is function to reset the error values and error registers
 *
 * \param none
 * \return none
@@ -90,7 +90,7 @@ void emcy_reset_error_register();
 
 /*==========================================================================*/
 /**
-* emcy_send_emergency_message is the function in order to transmit error messages
+* emcy_send_emergency_message is the function to transmit error messages
 * on the canopen network
 *
 * \param c_rx_tx Channel connecting to can module

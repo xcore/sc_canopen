@@ -8,19 +8,19 @@ prototypes
 
 /*==========================================================================*/
 /**
-* od_find_data_length is the function in order to find the data length based
-* on index and sub index from the object dictionary.
+* od_find_data_length is the function to find the data length from the
+* object dictionary based on index and sub index.
 *
 * \param address index of the object dictionary entry
 * \param sub_index subindex of object dictionary entry
-* \return returns data length of particular object
+* \return returns data length of the object
 **/
 int od_find_data_length(int address, unsigned char sub_index);
 
 /*==========================================================================*/
 /**
-* od_find_index is the function in order to find the object index based
-* on address from the object dictionary.
+* od_find_index is the function to find the object position in the object
+* dictionary structure based on the address.
 *
 * \param address index of the object dictionary entry
 * \return index returns index position in the object dictionary
@@ -46,7 +46,7 @@ void od_read_data(int index,
 
 /*==========================================================================*/
 /**
-* od_write_data is the function in order to write data to the
+* od_write_data is the function to write data to the
 * object dictionary based on index, subindex and data length of the
 * object dictionary entry.
 *

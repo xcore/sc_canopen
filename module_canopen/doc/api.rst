@@ -72,9 +72,8 @@ These are the functions that are used for PDO communication
 
 .. doxygenfunction:: pdo_find_inhibit_time
 
-For Each PDO there will be a Communication parameter and Mapping pareameter.
-The communciation parameter defines how the communcation is done.
-Different types of communication types are as follows
+PDO Communication Types:
+++++++++++++++++++++++++
 
    +------------+-----------------------+
    | Value      | Communication Type    |

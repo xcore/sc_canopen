@@ -80,7 +80,7 @@ prototypes
 
 /*==========================================================================*/
 /**
-* pdo_find_cob_id is the function in order to find cob id of pdo from the
+* pdo_find_cob_id is the function to find cob id of pdo from the
 * object dictionary.
 *
 * \param address index of pdo in the object dictionary
@@ -90,7 +90,7 @@ unsigned pdo_find_cob_id(int address);
 
 /*==========================================================================*/
 /**
-* pdo_transmit_data is the function in order to transmit pdo data on to the
+* pdo_transmit_data is the function to transmit pdo data on to the
 * canbus.
 *
 * \param comm_parameter pdo communication parameter
@@ -104,7 +104,7 @@ void pdo_transmit_data(unsigned comm_parameter,
 
 /*==========================================================================*/
 /**
-* pdo_read_data_from_od is the function in order to read pdo data from the
+* pdo_read_data_from_od is the function to read pdo data from the
 * object dictionary.
 *
 * \param comm_parameter pdo communication parameter
@@ -163,7 +163,7 @@ void pdo_send_data_to_application(unsigned mapping_parameter,
 
 /*==========================================================================*/
 /**
-* pdo_write_data_to_od is the function in order to write pdo data to the
+* pdo_write_data_to_od is the function to write pdo data to the
 * object dictionary.
 *
 * \param address address od pdo

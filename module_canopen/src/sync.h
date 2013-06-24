@@ -8,7 +8,7 @@
 
 /*==========================================================================*/
 /**
- * sync_pdo_data_transmit is the function in order to transmit synchronous pdo
+ * sync_pdo_data_transmit is the function to transmit synchronous pdo
  * data.
  *
  * \param pdo_number PDO number
@@ -37,7 +37,7 @@ void sync_pdo_data_transmit(char pdo_number,
 
 /*==========================================================================*/
 /**
- * sync_pdo_data_receive is the function in order to receive synchronous pdo
+ * sync_pdo_data_receive is the function to receive synchronous pdo
  * data.
  *
  * \param pdo_number PDO number

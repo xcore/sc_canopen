@@ -109,7 +109,7 @@ end
 
 generatedCode = {
 
-   includes = {"canopen.h","canopen_client.h"},
+   includes = {"canopen.h","can_conf.h"},
 
    globals = [[
        can_ports can_${swblock.id}_resources = {
@@ -122,11 +122,13 @@ generatedCode = {
        
        static void application(streaming chanend ${swblock.chanends.c_application})
        {
+
        }
   ]],
       
    body = [[
-      can_server(can_ports,${swblock.chanends.c_rx_tx});
+
+  can_server(can_${swblock.id}_resources,${swblock.chanends.c_rx_tx});
       canopen_server(${swblock.chanends.c_rx_tx},${swblock.chanends.c_application});
       application(${swblock.chanends.c_application});
       
@@ -142,6 +144,7 @@ api = {
 
 files = {
 
+   ["module_canopen/can_conf_example.h"] = "src/can_conf.h",
    ["module_canopen/canopen_conf_example.h"] = "src/canopen_conf.h",
    ["module_canopen/object_dictionary_example.h"] = "src/object_dictionary.h",
    
