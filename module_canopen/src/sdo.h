@@ -91,7 +91,7 @@ void sdo_send_download_response(int od_index,
 * sdo_download_segment_response is the function to send download
 * resposne to the master for segmented download
 *
-* \param c_rx_tx channel to communicate to the can module
+* \param c_rx_tx channel to communicate with bus module like CAN
 * \param sdo_toggle toggle bit to check the toggle response
 * \return none
 **/
@@ -103,7 +103,7 @@ void sdo_download_segment_response(chanend c_rx_tx, char sdo_toggle);
 * sdo_initiate_upload_response is the function to initiate upload
 * request to the master
 *
-* \param c_rx_tx channel to communicate to the can module
+* \param c_rx_tx channel to communicate with bus module like CAN
 * \param od_index index of object the object dictionary
 * \param od_sub_index sub index of object in the object dictionary
 * \param data_length data length of object to be uploaded
@@ -118,7 +118,7 @@ void sdo_initiate_upload_response(chanend c_rx_tx,
 /**
 * sdo_upload_segmented_data is the function to upload segmenetd data
 *
-* \param c_rx_tx channel to communicate to the can module
+* \param c_rx_tx channel to communicate with bus module like CAN
 * \param od_index index of object the object dictionary
 * \param od_sub_index sub index of object in the object dictionary
 * \param sdo_toggle toggle bit for sdo segmenetd upload
@@ -144,7 +144,7 @@ void sdo_upload_segmented_data(chanend c_rx_tx,
 * \param index Index of Object
 * \param si sub index of object in the object dictionary
 * \param error SDO abort code
-* \param c_rx_tx Channel to communicate to CAN component
+* \param c_rx_tx channel to communicate with bus module like CAN
 * \return none
 **/
 void sdo_send_abort_code(int index, char si, unsigned error, chanend c_rx_tx);

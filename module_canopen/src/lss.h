@@ -49,7 +49,7 @@ enum lss_bit_rate
  * lss_send_node_id is the function to transmit current device node id
  * value on the canbus.
  *
- * \param c_rx_tx Channel connecting to can module
+ * \param c_rx_tx channel to communicate with bus module like CAN
  * \return none
  **/
 void lss_send_node_id(chanend c_rx_tx);
@@ -59,7 +59,7 @@ void lss_send_node_id(chanend c_rx_tx);
  * lss_configure_node_id_response is the function to configure current device node id
  * value based on LSS configure command.
  *
- * \param c_rx_tx Channel connecting to can module
+ * \param c_rx_tx channel to communicate with bus module like CAN
  * \param configuration_status current configuration status
  * \return none
  **/
@@ -70,7 +70,7 @@ void lss_configure_node_id_response(chanend c_rx_tx, char configuration_status);
  * lss_configure_bit_timing_response is the function to configure bit time of
  * can bus communication using LSS configure command.
  *
- * \param c_rx_tx Channel connecting to can module
+ * \param c_rx_tx channel to communicate with bus module like CAN
  * \param configuration_status current configuration status
  * \return none
  **/
@@ -82,7 +82,7 @@ void lss_configure_bit_timing_response(chanend c_rx_tx,
  * lss_store_config_setttings_response is the function to store the received
  * configuratioon settings received using LSS configure command.
  *
- * \param c_rx_tx Channel connecting to can module
+ * \param c_rx_tx channel to communicate with bus module like CAN
  * \param configuration_status current configuration status
  * \return none
  **/
@@ -94,7 +94,7 @@ void lss_store_config_settings_response(chanend c_rx_tx,
  * lss_inquire_vendor_id_response is the function to send vendor id
  * to the LSS master.
  *
- * \param c_rx_tx Channel connecting to can module
+ * \param c_rx_tx channel to communicate with bus module like CAN
  * \param canopen_state State of CANopen node
  * \param error_index_pointer Pointer pointing to the error register
  * \return none
@@ -109,7 +109,7 @@ void lss_inquire_vendor_id_response(chanend c_rx_tx,
  * lss_inquire_product_coode is the function to send product code id
  * to the LSS master.
  *
- * \param c_rx_tx Channel connecting to can module
+ * \param c_rx_tx channel to communicate with bus module like CAN
  * \param canopen_state State of CANopen node
  * \param error_index_pointer Pointer pointing to the error register
  * \return none
@@ -124,7 +124,7 @@ void lss_inquire_product_code(chanend c_rx_tx,
  * lss_inquire_revision_number is the function to send revision number
  * to the LSS master.
  *
- * \param c_rx_tx Channel connecting to can module
+ * \param c_rx_tx channel to communicate with bus module like CAN
  * \param canopen_state State of CANopen node
  * \param error_index_pointer Pointer pointing to the error register
  * \return none
@@ -139,7 +139,7 @@ void lss_inquire_revision_number(chanend c_rx_tx,
  * lss_inquire_serial_number is the function to send serial number
  * to the LSS master.
  *
- * \param c_rx_tx Channel connecting to can module
+ * \param c_rx_tx channel to communicate with bus module like CAN
  * \param canopen_state State of CANopen node
  * \param error_index_pointer Pointer pointing to the error register
  * \return none

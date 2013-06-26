@@ -20,7 +20,7 @@
  * \param time_difference_sync Time difference current time and sync start time
  * \param sync_timer Structure having sync timer values
  * \param tpdo_inhibit_time_values Structure having Inhibit time values
- * \param c_rx_tx Channel connecting to can module
+ * \param c_rx_tx channel to communicate with bus module like CAN
  * \return none
  **/
 void sync_pdo_data_transmit(char pdo_number,

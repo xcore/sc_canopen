@@ -36,7 +36,7 @@ print '\n'
 NODE_ID = raw_input(" Enter Node ID of CANOpen Device : ")
 print '\n'
 
-FILE_NAME = raw_input(" Enter EDS fila name of CANOpen Device with extension as .eds : ")
+FILE_NAME = raw_input(" Enter EDS file name of CANOpen Device with extension as .eds : ")
 print '\n'
 
 data_types=['0x0001','0x0002','0x0005', '0x0003','0x0006','0x0010','0x0016','0x0004','0x0008','0x0007','0x0012','0x0018','0x0013','0x0019','0x0014','0x001a','0x000f','0x0015','0x0011','0x000d','0x00c','0x001b','0x000a','0x000b','0x0009']

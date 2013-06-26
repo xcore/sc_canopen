@@ -118,18 +118,13 @@ SYNC messages
 
 .. doxygenfunction:: sync_pdo_data_receive
 
+
 LSS (Layer Service Settings)
 ----------------------------
 
 These are the functions that are used for LSS communication
 
 .. doxygenfunction:: lss_send_node_id
-
-.. doxygenfunction:: lss_configure_node_id_response
-
-.. doxygenfunction:: lss_configure_bit_timing_response
-
-.. doxygenfunction:: lss_store_config_settings_response
 
 .. doxygenfunction:: lss_inquire_vendor_id_response
 
