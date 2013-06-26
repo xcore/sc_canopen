@@ -38,7 +38,7 @@ void nmt_initialize(NULLABLE_ARRAY_OF(tx_sync_timer, sync_timer),
 * messages on the canbus
 *
 * \param c_rx_tx Channel connecting to bus module like CAN
-* \param can_frame canframe to transmit on bus module like CAN
+* \param frame canframe to transmit on bus module like CAN
 * \param canopen_state current state of canopen node
 * \return none
 **/
@@ -52,7 +52,7 @@ void nmt_send_heartbeat_message(chanend c_rx_tx,
 * messages on the bus modules like CAN. This function will send:
 *
 * \param c_rx_tx Channel connecting to can module
-* \param can_frame canframe to transmit on bus moduels like CAN
+* \param frame canframe to transmit on bus moduels like CAN
 * \param toggle toggle bit that toggles with every node guard message received
 * \param state current state of canopen node
 * \return none

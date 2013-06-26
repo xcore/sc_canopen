@@ -110,6 +110,7 @@ These are the functions that are used for NMT communication
 
 SYNC (Synchronous Data)
 -----------------------
+
 The functions are used to transmit or receive PDO data based on
 SYNC messages
 
@@ -119,6 +120,7 @@ SYNC messages
 
 LSS (Layer Service Settings)
 ----------------------------
+
 These are the functions that are used for LSS communication
 
 .. doxygenfunction:: lss_send_node_id

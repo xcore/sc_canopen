@@ -8,7 +8,7 @@ typedefs
 ---------------------------------------------------------------------------*/
 
 /**
-* \enum error_types
+* \enum error_type
 * \brief CANOpen Different types of errors
 */
 enum error_type
@@ -83,7 +83,6 @@ prototypes
 /**
 * emcy_reset_error_register is function to reset the error values and error registers
 *
-* \param none
 * \return none
 **/
 void emcy_reset_error_register();

@@ -122,6 +122,7 @@ void sdo_initiate_upload_response(chanend c_rx_tx,
 * \param od_index index of object the object dictionary
 * \param od_sub_index sub index of object in the object dictionary
 * \param sdo_toggle toggle bit for sdo segmenetd upload
+* \param data_length length of data to be uploaded
 * \param data_buffer data to be uploaded
 * \param segment_number data segment number
 * \return none

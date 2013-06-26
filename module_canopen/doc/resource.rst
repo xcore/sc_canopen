@@ -1,7 +1,7 @@
 Resource Usage
 ==============
 
-The memory and resource requirements for this module:
+The memory and resource requirements for this module are shown below.
 
    +------------------+---------------+
    | Resource         | Usage         |
