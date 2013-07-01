@@ -8,14 +8,14 @@ The memory and resource requirements for this module are shown below.
    +==================+===============+
    | Logical Cores    | 1             |
    +------------------+---------------+
-   | Code Memory      | 12012  bytes  |
+   | Code Memory      | 11872  bytes  |
    +------------------+---------------+
-   | Data Memory      | 4192  bytes   |
+   | Data Memory      | 4176  bytes   |
    +------------------+---------------+
    | Clocks           | 1             |
    +------------------+---------------+
    | Channels         | 2             |
    +------------------+---------------+
-   | Timers           | 5             |
+   | Timers           | 2             |
    +------------------+---------------+
 
