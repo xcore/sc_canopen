@@ -291,8 +291,8 @@ These are the functions that are called from the application and are included in
 
    **Parameters:**	
 
-        - **c_application �** channel to receive data from the application
-        - **data_length �** length of data
-        - **data �** data buffer which contains receive data
+        - **c_application -* channel to receive data from the application
+        - **data_length -* length of data
+        - **data -* data buffer which contains receive data
 
    **Returns:** - none
