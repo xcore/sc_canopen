@@ -100,7 +100,7 @@ SDO Abort codes are transmitted based on the error type.
 .. doxygenenum:: sdo_abort_codes
 
 
-PDO (Process Data Objects)
+Process Data Objects (PDO)
 --------------------------
 These are the functions that are used for PDO communication
 
@@ -159,7 +159,7 @@ Object Dictionary address for PDOs are as below
 .. doxygenenum:: pdo_parameters
      
      
-NMT (Network Management)
+Network Management (NMT)
 ------------------------
 These are the functions that are used for NMT communication
 
@@ -177,7 +177,7 @@ These are the functions that are used for NMT communication
         - **sync_timer -** sync timer to check if the sync communication is whith in synchronous window length
         - **pdo_event -** structure with Events of PDOs
         - **tpdo_inhibit_time_values -** Structure with Inhibit time value of TPDOs
-        - **sync_window_length –** synchronous window time
+        - **sync_window_length ï¿½** synchronous window time
         - **guard_time -** node guard time
         - **life_time -** lie time of node guard
         - **producer_heart_beat -** heartbeat time of the slave
@@ -186,8 +186,8 @@ These are the functions that are used for NMT communication
     **Returns:** - none
     
 
-SYNC (Synchronous Data)
------------------------
+Synchronization Data (SYNC)
+---------------------------
 
 The functions are used to transmit or receive PDO data based on
 SYNC messages
@@ -228,7 +228,7 @@ SYNC messages
    **Returns:** -  none
    
 
-LSS (Layer Service Settings)
+Layer Settings Service (LSS)
 ----------------------------
 
 These are the functions that are used for LSS communication
@@ -251,7 +251,7 @@ The following LSS command identifers are used to identify the type of LSS reques
 .. doxygenenum:: lss_commands
 
 
-EMCY (Emergency Messages)
+Emergency Messages (EMCY)
 -------------------------
 These are the functions that are used for EMCY message communication
 
@@ -291,8 +291,8 @@ These are the functions that are called from the application and are included in
 
    **Parameters:**	
 
-        - **c_application –** channel to receive data from the application
-        - **data_length –** length of data
-        - **data –** data buffer which contains receive data
+        - **c_application ï¿½** channel to receive data from the application
+        - **data_length ï¿½** length of data
+        - **data ï¿½** data buffer which contains receive data
 
    **Returns:** - none
