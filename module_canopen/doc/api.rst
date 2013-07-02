@@ -5,54 +5,7 @@ API
 
 .. _sec_conf_defines:
 
-Configuration Defines
----------------------
 
-#. The file ``can_conf.h`` must be provided in the application source code, and it must define:
-
-   PROP_SEG,
-   PHASE_SEG1,
-   PHASE_SEG2,
-   CAN_CLOCK_DIVIDE
-
-   information on configuration of these parameters are available in the API section of ``module_can``. Example configuration settings are shown below: 
-
-   .. literalinclude:: module_canopen/can_conf_example.h
-      :start-after: //::CAN Conf
-      :end-before: //::CAN Conf End
-
-#. The file ``canopen_conf.h`` must be provided in the application source code, it must define :
-
-   CANOPEN_NODE_ID,
-   HEARTBEAT_SUPPORTED,
-   CANOPEN_NUMBER_OF_TPDOS_SUPPORTED,
-   CANOPEN_NUMBER_OF_RPDOS_SUPPORTED,
-   CANOPEN_MAX_DATA_BUFFER_LENGTH
-
-   **CANOPEN_NODE_ID**
-      Node ID of CANopen Slave device.
-      
-   **HEARTBEAT_SUPPORTED**
-      Define this as 1 to select Heartbeat monitoring. If defined as 0, Node guard is implemented. 
-   
-   **CANOPEN_NUMBER_OF_TPDOS_SUPPORTED**
-      Number of transmit PDOs required by the application.
-      
-   **CANOPEN_NUMBER_OF_RPDOS_SUPPORTED**
-      Number of receive PDOs required by the application.
-   
-   **CANOPEN_MAX_DATA_BUFFER_LENGTH**
-      Maximum Data buffer length for data in object dictionary.
-      
-   Example configuration defines in canopen_conf.h file are as shown:
- 
-   .. literalinclude:: module_canopen/canopen_conf_example.h
-      :start-after: //::Conf
-      :end-before: //::Conf End
- 
-#. The file ``object_dictionary.h`` must be provided in the application source code. This file is generated automatically based on the Electronic Data Sheet(EDS) file. Details on how to genaret the ``object_dictionary.h`` file is available in the Programming section of the Document.
-
-  
 Object Dictionary 
 -----------------
 These are the functions that are called to read or write data to the object dictionary entries
