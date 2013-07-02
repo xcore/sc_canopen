@@ -3,6 +3,56 @@
 API
 ====
 
+.. _sec_conf_defines:
+
+Configuration Defines
+---------------------
+
+#. The file ``can_conf.h`` must be provided in the application source code, and it must define:
+
+   PROP_SEG,
+   PHASE_SEG1,
+   PHASE_SEG2,
+   CAN_CLOCK_DIVIDE
+
+   information on configuration of these parameters are available in the API section of ``module_can``. Example configuration settings are shown below: 
+
+   .. literalinclude:: module_canopen/can_conf_example.h
+      :start-after: //::CAN Conf
+      :end-before: //::CAN Conf End
+
+#. The file ``canopen_conf.h`` must be provided in the application source code, it must define :
+
+   CANOPEN_NODE_ID,
+   HEARTBEAT_SUPPORTED,
+   CANOPEN_NUMBER_OF_TPDOS_SUPPORTED,
+   CANOPEN_NUMBER_OF_RPDOS_SUPPORTED,
+   CANOPEN_MAX_DATA_BUFFER_LENGTH
+
+   **CANOPEN_NODE_ID**
+      Node ID of CANopen Slave device.
+      
+   **HEARTBEAT_SUPPORTED**
+      Define this as 1 to select Heartbeat monitoring. If defined as 0, Node guard is implemented. 
+   
+   **CANOPEN_NUMBER_OF_TPDOS_SUPPORTED**
+      Number of transmit PDOs required by the application.
+      
+   **CANOPEN_NUMBER_OF_RPDOS_SUPPORTED**
+      Number of receive PDOs required by the application.
+   
+   **CANOPEN_MAX_DATA_BUFFER_LENGTH**
+      Maximum Data buffer length for data in object dictionary.
+      
+   Example configuration defines in canopen_conf.h file are as shown:
+ 
+   .. literalinclude:: module_canopen/canopen_conf_example.h
+      :start-after: //::Conf
+      :end-before: //::Conf End
+ 
+#. The file ``object_dictionary.h`` must be provided in the application source code. This file is generated automatically based on the Electronic Data Sheet(EDS) file. Details on how to genaret the ``object_dictionary.h`` file is available in the Programming section of the Document.
+
+  
 Object Dictionary 
 -----------------
 These are the functions that are called to read or write data to the object dictionary entries
@@ -60,8 +110,6 @@ These are the functions that are used for PDO communication
 
 .. doxygenfunction:: pdo_read_data_from_od
 
-.. doxygenfunction:: pdo_receive_application_data
-
 .. doxygenfunction:: pdo_find_transmission_type
 
 .. doxygenfunction:: pdo_send_data_to_application
@@ -71,6 +119,21 @@ These are the functions that are used for PDO communication
 .. doxygenfunction:: pdo_find_event_type
 
 .. doxygenfunction:: pdo_find_inhibit_time
+
+*void* pdo_receive_application_data(char *pdo_number*, char *length*, char *data[]*, NULLABLE_ARRAY_OF(tpdo_inhibit_time, *tpdo_inhibit_time_values*), chanend *c_rx_tx*)
+
+    pdo_receive_application_data is the function to receive pdo data from the application.
+    
+   **Parameters:**   
+                - **pdo_number -** pdo number.
+                - **length -** pdo length of data bytes.
+                - **data -** data buffer.
+                - **c_rx_tx -** channel to communicate with bus module like CAN.
+                - **tpdo_inhibit_time_values -** structure with inhibit time values of TPDOs.
+
+   **Returns:** - none
+
+
 
 PDO Communication Types:
 ++++++++++++++++++++++++
@@ -100,13 +163,28 @@ NMT (Network Management)
 ------------------------
 These are the functions that are used for NMT communication
 
-.. doxygenfunction:: nmt_initialize
-
 .. doxygenfunction:: nmt_send_heartbeat_message
 
 .. doxygenfunction:: nmt_send_nodeguard_message
 
 .. doxygenfunction:: nmt_send_boot_up_message
+
+*void* nmt_initialize(NULLABLE_ARRAY_OF(tx_sync_timer, *sync_timer*), NULLABLE_ARRAY_OF(pdo_event_timer, *pdo_event*), NULLABLE_ARRAY_OF(tpdo_inhibit_time, *tpdo_inhibit_time_values*), unsigned *&sync_window_length*, unsigned *&guard_time*, unsigned *&life_time*, unsigned *&producer_heart_beat*, char *&heart_beat_active*)
+
+    nmt_initialize is the function to initialize the parameters of canopen slave using object dictionary entries.
+
+    **Parameters:**	
+        - **sync_timer -** sync timer to check if the sync communication is whith in synchronous window length
+        - **pdo_event -** structure with Events of PDOs
+        - **tpdo_inhibit_time_values -** Structure with Inhibit time value of TPDOs
+        - **sync_window_length –** synchronous window time
+        - **guard_time -** node guard time
+        - **life_time -** lie time of node guard
+        - **producer_heart_beat -** heartbeat time of the slave
+        - **heart_beat_active -** heartbeat active flag
+
+    **Returns:** - none
+    
 
 SYNC (Synchronous Data)
 -----------------------
@@ -114,10 +192,41 @@ SYNC (Synchronous Data)
 The functions are used to transmit or receive PDO data based on
 SYNC messages
 
-.. doxygenfunction:: sync_pdo_data_transmit
+*void* sync_pdo_data_transmit(char *pdo_number*, unsigned *rtr_check*, timer *sync_window_timer*, unsigned *sync_time_start*, unsigned *sync_time_current*, unsigned *sync_window_length*, unsigned *time_difference_sync*, NULLABLE_ARRAY_OF(tx_sync_timer, *sync_timer*), NULLABLE_ARRAY_OF(tpdo_inhibit_time, *tpdo_inhibit_time_values*), chanend *c_rx_tx*)
 
-.. doxygenfunction:: sync_pdo_data_receive
+    sync_pdo_data_transmit is the function to transmit synchronous pdo data.
+  
+   **Parameters:**	
 
+        - **pdo_number -** PDO number
+        - **rtr_check -** RTR bit check
+        - **sync_window_timer -** Timer moniters sync window time
+        - **sync_time_start -** time value when the sync transmission is started
+        - **sync_time_current -** Current sync time value
+        - **sync_window_length -** Sync. window length time
+        - **time_difference_sync -** Time difference current time and sync start time
+        - **sync_timer -** Structure having sync timer values
+        - **tpdo_inhibit_time_values -** Structure having Inhibit time values
+        - **c_rx_tx -** channel to communicate with bus module like CAN
+
+   **Returns:** - none
+
+*void* sync_pdo_data_receive(char *pdo_number*, NULLABLE_ARRAY_OF(rx_sync_mesages, *sync_messages_rx*), timer *sync_window_timer*, unsigned *sync_time_current*, unsigned *sync_time_start*, unsigned *sync_window_length*, streaming chanend *c_application*)
+
+    sync_pdo_data_receive is the function to receive synchronous pdo data.
+
+    **Parameters:**	
+
+        - **pdo_number -** PDO number
+        - **sync_messages_rx -** Structure containing information about receive types
+        - **sync_window_timer -** Timer monitors sync window time
+        - **sync_time_start -** time value when the sync transmission is started
+        - **sync_time_current -** Current sync time value
+        - **sync_window_length -** Sync. window length time
+        - **c_application -** Channel connecting to Application
+
+   **Returns:** -  none
+   
 
 LSS (Layer Service Settings)
 ----------------------------
@@ -165,7 +274,7 @@ Different type of message types supported are as shown below
 
 .. doxygenenum:: cob_id
 
-After rceiving the message based on COB-ID the canopen manager cheks if the received
+After rceiving the message based on COB-ID the canopen manager checks if the received
 message is of proper message length. Message length of different messages are below
 
 .. doxygenenum:: message_length
@@ -176,5 +285,14 @@ These are the functions that are called from the application and are included in
 
 .. doxygenfunction:: canopen_client_send_data_to_stack
 
-.. doxygenfunction:: canopen_client_receive_data_from_stack
+*void* canopen_client_receive_data_from_stack(streaming chanend *c_application*, unsigned char *&data_length*, NULLABLE_ARRAY_OF(unsigned char, *data*))
 
+    canopen_client_receive_data_from_stack is the function to receive data from canopen module.
+
+   **Parameters:**	
+
+        - **c_application –** channel to receive data from the application
+        - **data_length –** length of data
+        - **data –** data buffer which contains receive data
+
+   **Returns:** - none
