@@ -73,7 +73,7 @@ These are the functions that are used for PDO communication
 
 .. doxygenfunction:: pdo_find_inhibit_time
 
-*void* pdo_receive_application_data(char *pdo_number*, char *length*, char *data[]*, NULLABLE_ARRAY_OF(tpdo_inhibit_time, *tpdo_inhibit_time_values*), chanend *c_rx_tx*)
+void **pdo_receive_application_data** (char *pdo_number*, char *length*, char *data[]*, NULLABLE_ARRAY_OF(tpdo_inhibit_time, *tpdo_inhibit_time_values*), chanend *c_rx_tx*)
 
     pdo_receive_application_data is the function to receive pdo data from the application.
     
@@ -122,7 +122,7 @@ These are the functions that are used for NMT communication
 
 .. doxygenfunction:: nmt_send_boot_up_message
 
-*void* nmt_initialize(NULLABLE_ARRAY_OF(tx_sync_timer, *sync_timer*), NULLABLE_ARRAY_OF(pdo_event_timer, *pdo_event*), NULLABLE_ARRAY_OF(tpdo_inhibit_time, *tpdo_inhibit_time_values*), unsigned *&sync_window_length*, unsigned *&guard_time*, unsigned *&life_time*, unsigned *&producer_heart_beat*, char *&heart_beat_active*)
+void **nmt_initialize** (NULLABLE_ARRAY_OF(tx_sync_timer, *sync_timer*), NULLABLE_ARRAY_OF(pdo_event_timer, *pdo_event*), NULLABLE_ARRAY_OF(tpdo_inhibit_time, *tpdo_inhibit_time_values*), unsigned *&sync_window_length*, unsigned *&guard_time*, unsigned *&life_time*, unsigned *&producer_heart_beat*, char *&heart_beat_active*)
 
     nmt_initialize is the function to initialize the parameters of canopen slave using object dictionary entries.
 
@@ -145,7 +145,7 @@ Synchronization Data (SYNC)
 The functions are used to transmit or receive PDO data based on
 SYNC messages
 
-*void* sync_pdo_data_transmit(char *pdo_number*, unsigned *rtr_check*, timer *sync_window_timer*, unsigned *sync_time_start*, unsigned *sync_time_current*, unsigned *sync_window_length*, unsigned *time_difference_sync*, NULLABLE_ARRAY_OF(tx_sync_timer, *sync_timer*), NULLABLE_ARRAY_OF(tpdo_inhibit_time, *tpdo_inhibit_time_values*), chanend *c_rx_tx*)
+void **sync_pdo_data_transmit** (char *pdo_number*, unsigned *rtr_check*, timer *sync_window_timer*, unsigned *sync_time_start*, unsigned *sync_time_current*, unsigned *sync_window_length*, unsigned *time_difference_sync*, NULLABLE_ARRAY_OF(tx_sync_timer, *sync_timer*), NULLABLE_ARRAY_OF(tpdo_inhibit_time, *tpdo_inhibit_time_values*), chanend *c_rx_tx*)
 
     sync_pdo_data_transmit is the function to transmit synchronous pdo data.
   
@@ -164,7 +164,7 @@ SYNC messages
 
    **Returns:** - none
 
-*void* sync_pdo_data_receive(char *pdo_number*, NULLABLE_ARRAY_OF(rx_sync_mesages, *sync_messages_rx*), timer *sync_window_timer*, unsigned *sync_time_current*, unsigned *sync_time_start*, unsigned *sync_window_length*, streaming chanend *c_application*)
+void **sync_pdo_data_receive** (char *pdo_number*, NULLABLE_ARRAY_OF(rx_sync_mesages, *sync_messages_rx*), timer *sync_window_timer*, unsigned *sync_time_current*, unsigned *sync_time_start*, unsigned *sync_window_length*, streaming chanend *c_application*)
 
     sync_pdo_data_receive is the function to receive synchronous pdo data.
 
@@ -238,7 +238,7 @@ These are the functions that are called from the application and are included in
 
 .. doxygenfunction:: canopen_client_send_data_to_stack
 
-*void* canopen_client_receive_data_from_stack(streaming chanend *c_application*, unsigned char *&data_length*, NULLABLE_ARRAY_OF(unsigned char, *data*))
+void **canopen_client_receive_data_from_stack** (streaming chanend *c_application*, unsigned char *&data_length*, NULLABLE_ARRAY_OF(unsigned char, *data*))
 
     canopen_client_receive_data_from_stack is the function to receive data from canopen module.
 
