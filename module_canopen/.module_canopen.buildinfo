@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <allbuildresults>
-<buildresults component="module_canopen" packagename="xm-local-sc_canopen(7a408f9c)" packageversion="7a408f9c" toolsversion="latest">
+<buildresults component="module_canopen" packagename="xm-local-sc_canopen(3ec3495e)" packageversion="3ec3495e" toolsversion="latest">
 <buildresult>
 <configuration>
 <parameter id="canopenNodeId" value="0"/>

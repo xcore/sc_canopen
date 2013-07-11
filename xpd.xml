@@ -18,8 +18,8 @@
         <uri>https://github.com/xcore/sc_util.git</uri>
     </dependency>
     <description>canopen</description>
-    <exclude_dir>app_canopen</exclude_dir>
     <docdir>module_canopen/doc</docdir>
+    <exclude_dir>app_canopen</exclude_dir>
     <location>https://github.com/xcore/sc_canopen.git</location>
     <name>sc_canopen</name>
     <maintainer>sethuchandan</maintainer>
