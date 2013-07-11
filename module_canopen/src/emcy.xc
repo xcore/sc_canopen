@@ -84,7 +84,7 @@ void emcy_send_emergency_message(chanend c_rx_tx,
   frame.dlc = 8;
   frame.extended = 0;
   frame.remote = 0;
-  frame.id = EMERGENCY_MESSAGE;
+  frame.id = EMERGENCY_MESSAGE + CANOPEN_NODE_ID;
   frame.data[0] = (emergency_code >> 8);
   frame.data[1] = emergency_code & 0xFF;
   frame.data[2] = data_buffer[0];
@@ -105,7 +105,7 @@ void emcy_reset_error_register()
   int index = od_find_index(ERROR_BEHAVIOUR_OBJECT);
   char data_buffer[4] = {0, 0, 0, 0};
   char max_error_behaviour_entries, counter = 0;
-  if (index == -1)
+  if (index != -1)
   {
     od_read_data(index, 0, data_buffer, 1);
     max_error_behaviour_entries = data_buffer[0];

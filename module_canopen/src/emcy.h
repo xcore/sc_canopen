@@ -1,27 +1,10 @@
-/**
-* The copyrights, all other intellectual and industrial
-* property rights are retained by XMOS and/or its licensors.
-* Terms and conditions covering the use of this code can
-* be found in the Xmos End User License Agreement.
-*
-* Copyright XMOS Ltd 2012
-*
-* In the case where this code is a modification of existing code
-* under a separate license, the separate license terms are shown
-* below. The modifications to the code are still covered by the
-* copyright notice above.
-*
-**/
+
 #ifndef __emcy_h__
 #define __emcy_h__
 
 
-/*---------------------------------------------------------------------------
-typedefs
----------------------------------------------------------------------------*/
-
 /**
-* \enum error_types
+* \enum error_type
 * \brief CANOpen Different types of errors
 */
 enum error_type
@@ -88,25 +71,21 @@ enum error_behaviour_states
 };
 
 
-/*---------------------------------------------------------------------------
-prototypes
----------------------------------------------------------------------------*/
 
 /*==========================================================================*/
 /**
-* emcy_reset_error_register is function in order to reset the error values and error registers
+* emcy_reset_error_register is function to reset the error values and error registers
 *
-* \param none
 * \return none
 **/
 void emcy_reset_error_register();
 
 /*==========================================================================*/
 /**
-* emcy_send_emergency_message is the function in order to transmit error messages
+* emcy_send_emergency_message is the function to transmit error messages
 * on the canopen network
 *
-* \param c_rx_tx Channel connecting to can module
+* \param c_rx_tx channel to communicate with bus module like CAN
 * \param error_type type of error occurred
 * \param emergency_code emergency code to be transmitted on to the network
 * \param error_index_pointer points to the current value of error register

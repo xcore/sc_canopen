@@ -13,9 +13,7 @@
 *
 **/
 
-/*---------------------------------------------------------------------------
- include files
- ---------------------------------------------------------------------------*/
+
 #include "object_dictionary.h"
 
 /*---------------------------------------------------------------------------
@@ -114,4 +112,12 @@ unsigned char od_find_access_of_index(int index, unsigned char od_sub_index)
   access = *((unsigned char *) (object_dict[index].access_pointer)
       + od_sub_index);
   return access;
+}
+
+/*---------------------------------------------------------------------------
+ Find No of SI entries in the object dictionary of an object based on index
+ ---------------------------------------------------------------------------*/
+unsigned od_find_no_of_si_entries(int index)
+{
+  return object_dict[index].subindex_count;
 }

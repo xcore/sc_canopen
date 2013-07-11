@@ -1,32 +1,13 @@
-/**
-* The copyrights, all other intellectual and industrial
-* property rights are retained by XMOS and/or its licensors.
-* Terms and conditions covering the use of this code can
-* be found in the Xmos End User License Agreement.
-*
-* Copyright XMOS Ltd 2012
-*
-* In the case where this code is a modification of existing code
-* under a separate license, the separate license terms are shown
-* below. The modifications to the code are still covered by the
-* copyright notice above.
-*
-**/
 
 #ifndef __can_open_h__
 #define __can_open_h__
-
-/*---------------------------------------------------------------------------
-nested include files
----------------------------------------------------------------------------*/
 
 #include "common.h"
 #include "can.h"
 #include <xccompat.h>
 
-/*---------------------------------------------------------------------------
-typedefs
----------------------------------------------------------------------------*/
+#define MAX_NO_OF_PDOS 512
+
 
 /**
 * \enum condition_values
@@ -89,44 +70,27 @@ enum node_guard_states
 */
 enum cob_id
 {
-  NMT_MESSAGE        = 0 + CANOPEN_NODE_ID,     /**<CANOpen COB-ID nmt state Message*/
-  SYNC               = 0x80 + CANOPEN_NODE_ID,  /**<CANOpen COB-ID sync Message */
-  TIME_STAMP         = 0x100 + CANOPEN_NODE_ID, /**<CANOpen COB-ID timestamp Message */
-  NG_HEARTBEAT       = 0x700 + CANOPEN_NODE_ID, /**<CANOpen COB-ID heartbeat / nodeguard Message */
-  EMERGENCY_MESSAGE  = 0x80 + CANOPEN_NODE_ID,  /**<CANOpen COB-ID emergency Message */
-  TPDO_0_MESSAGE     = 0x180 + CANOPEN_NODE_ID, /**<CANOpen COB-ID transmit pdo 0 Message */
-  RPDO_0_MESSAGE     = 0x200 + CANOPEN_NODE_ID, /**<CANOpen COB-ID receive pdo 0 Message */
-  TPDO_1_MESSAGE     = 0x280 + CANOPEN_NODE_ID, /**<CANOpen COB-ID transmit pdo 1 Message */
-  RPDO_1_MESSAGE     = 0x300 + CANOPEN_NODE_ID, /**<CANOpen COB-ID receive pdo 1 Message */
-  TPDO_2_MESSAGE     = 0x380 + CANOPEN_NODE_ID, /**<CANOpen COB-ID transmit pdo 2 Message */
-  RPDO_2_MESSAGE     = 0x400 + CANOPEN_NODE_ID, /**<CANOpen COB-ID receive pdo 2 Message */
-  TPDO_3_MESSAGE     = 0x480 + CANOPEN_NODE_ID, /**<CANOpen COB-ID transmit pdo 3 Message */
-  RPDO_3_MESSAGE     = 0x500 + CANOPEN_NODE_ID, /**<CANOpen COB-ID receive pdo 3 Message */
-  TSDO_MESSAGE       = 0x580 + CANOPEN_NODE_ID, /**<CANOpen COB-ID transmit sdo Message */
-  RSDO_MESSAGE       = 0x600 + CANOPEN_NODE_ID, /**<CANOpen COB-ID receive sdo Message */
-  RLSS_MESSAGE       = 0x7E5 + CANOPEN_NODE_ID, /**<CANOpen COB-ID receive LSS Message */
-  TLSS_MESSAGE       = 0x7E4                    /**<CANOpen COB-ID transmit LSS Message */
+  NMT_MESSAGE           = 0     + CANOPEN_NODE_ID, /**<CANOpen COB-ID nmt state Message*/
+  NMT_MESSAGE_BROADCAST = 0,                       /**<CANOpen COB-ID nmt Broadcast Message*/
+  SYNC                  = 0x80  + CANOPEN_NODE_ID, /**<CANOpen COB-ID sync Message */
+  TIME_STAMP            = 0x100 + CANOPEN_NODE_ID, /**<CANOpen COB-ID timestamp Message */
+  NG_HEARTBEAT          = 0x700 + CANOPEN_NODE_ID, /**<CANOpen COB-ID heartbeat / nodeguard Message */
+  EMERGENCY_MESSAGE     = 0x80,                    /**<CANOpen COB-ID emergency Message */
+  TPDO_0_MESSAGE        = 0x180 + CANOPEN_NODE_ID, /**<CANOpen COB-ID transmit pdo 0 Message */
+  RPDO_0_MESSAGE        = 0x200 + CANOPEN_NODE_ID, /**<CANOpen COB-ID receive pdo 0 Message */
+  TPDO_1_MESSAGE        = 0x280 + CANOPEN_NODE_ID, /**<CANOpen COB-ID transmit pdo 1 Message */
+  RPDO_1_MESSAGE        = 0x300 + CANOPEN_NODE_ID, /**<CANOpen COB-ID receive pdo 1 Message */
+  TPDO_2_MESSAGE        = 0x380 + CANOPEN_NODE_ID, /**<CANOpen COB-ID transmit pdo 2 Message */
+  RPDO_2_MESSAGE        = 0x400 + CANOPEN_NODE_ID, /**<CANOpen COB-ID receive pdo 2 Message */
+  TPDO_3_MESSAGE        = 0x480 + CANOPEN_NODE_ID, /**<CANOpen COB-ID transmit pdo 3 Message */
+  RPDO_3_MESSAGE        = 0x500 + CANOPEN_NODE_ID, /**<CANOpen COB-ID receive pdo 3 Message */
+  TSDO_MESSAGE          = 0x580 + CANOPEN_NODE_ID, /**<CANOpen COB-ID transmit sdo Message */
+  RSDO_MESSAGE          = 0x600 + CANOPEN_NODE_ID, /**<CANOpen COB-ID receive sdo Message */
+  RLSS_MESSAGE          = 0x7E5 + CANOPEN_NODE_ID, /**<CANOpen COB-ID receive LSS Message */
+  TLSS_MESSAGE          = 0x7E4                    /**<CANOpen COB-ID transmit LSS Message */
 };
 
-/*---------------------------------------------------------------------------
-prototypes
----------------------------------------------------------------------------*/
 
-/*==========================================================================*/
-/**
-* canopen manager is the top level function in order to transmit/receive device
-* values on the canbus. This function will send:
-* chanend : channel to communicate between canopen and can modules
-* streaming chanend : channel to communicate between canopen module and application
-*
-* \param c_rx_tx Channel connecting to can module
-* \param c_application Channel to communicate to application
-* \return none
-**/
-void canopen_manager(REFERENCE_PARAM(can_ports, p),
-                     port shut,
-                     streaming chanend c_application);
-
-
+void canopen_server(chanend c_rx_tx, streaming chanend c_application);
 
 #endif

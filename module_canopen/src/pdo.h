@@ -1,25 +1,8 @@
-/**
-* The copyrights, all other intellectual and industrial
-* property rights are retained by XMOS and/or its licensors.
-* Terms and conditions covering the use of this code can
-* be found in the Xmos End User License Agreement.
-*
-* Copyright XMOS Ltd 2012
-*
-* In the case where this code is a modification of existing code
-* under a separate license, the separate license terms are shown
-* below. The modifications to the code are still covered by the
-* copyright notice above.
-*
-**/
 
 #ifndef __pdo_h__
 #define __pdo_h__
 
 #include <xccompat.h>
-/*---------------------------------------------------------------------------
-typedefs
----------------------------------------------------------------------------*/
 
 /**
 * \enum pdo_parameters
@@ -88,28 +71,25 @@ typedef struct tpdo_inhibit_time
     unsigned inhibit_counter; /**<  CANOpen TPDO inhibit time counter */
 }tpdo_inhibit_time;
 
-/*---------------------------------------------------------------------------
-prototypes
----------------------------------------------------------------------------*/
 
 /*==========================================================================*/
 /**
-* pdo_find_cob_id is the function in order to find cob id of pdo from the
+* pdo_find_cob_id is the function to find cob id of pdo from the
 * object dictionary.
 *
 * \param address index of pdo in the object dictionary
-* \return cobid returns cob id of pdo
+* \return returns cob id of pdo
 **/
 unsigned pdo_find_cob_id(int address);
 
 /*==========================================================================*/
 /**
-* pdo_transmit_data is the function in order to transmit pdo data on to the
+* pdo_transmit_data is the function to transmit pdo data on to the
 * canbus.
 *
 * \param comm_parameter pdo communication parameter
 * \param mapping_parameter pdo mapping parameter
-* \param c_rx_tx channel to communicate to the can module
+* \param c_rx_tx channel to communicate with bus module like CAN
 * \return none
 **/
 void pdo_transmit_data(unsigned comm_parameter,
@@ -118,7 +98,7 @@ void pdo_transmit_data(unsigned comm_parameter,
 
 /*==========================================================================*/
 /**
-* pdo_read_data_from_od is the function in order to read pdo data from the
+* pdo_read_data_from_od is the function to read pdo data from the
 * object dictionary.
 *
 * \param comm_parameter pdo communication parameter
@@ -138,7 +118,7 @@ char pdo_read_data_from_od(unsigned comm_parameter,
 * \param pdo_number pdo number
 * \param length pdo length of data bytes
 * \param data data buffer
-* \param c_rx_tx channel to communicate to can module
+* \param c_rx_tx channel to communicate with bus module like CAN
 * \param tpdo_inhibit_time_values structure with inhibit time values of TPDOs
 * \return none
 **/
@@ -154,7 +134,7 @@ void pdo_receive_application_data(char pdo_number,
 * pdo.
 *
 * \param address address of the pdo
-* \return pdo_tx_type returns transmit type of the pdo
+* \return returns transmit type of the pdo
 **/
 int pdo_find_transmission_type(int address);
 
@@ -177,12 +157,12 @@ void pdo_send_data_to_application(unsigned mapping_parameter,
 
 /*==========================================================================*/
 /**
-* pdo_write_data_to_od is the function in order to write pdo data to the
+* pdo_write_data_to_od is the function to write pdo data to the
 * object dictionary.
 *
 * \param address address od pdo
 * \param data_buffer data to be written to the object dictionary
-* \return data_length length od data that is written to the object dictionary
+* \return length of data that is written to the object dictionary
 **/
 char pdo_write_data_to_od(int address, char data_buffer[]);
 
@@ -192,7 +172,7 @@ char pdo_write_data_to_od(int address, char data_buffer[]);
 * pdo.
 *
 * \param address address of the pdo
-* \return pdo_tx_type returns transmit type of the pdo
+* \return returns transmit type of the pdo
 **/
 unsigned pdo_find_event_type(int address);
 

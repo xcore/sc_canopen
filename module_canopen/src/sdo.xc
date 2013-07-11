@@ -172,3 +172,23 @@ void sdo_upload_segmented_data(chanend c_rx_tx,
   can_send_frame(c_rx_tx, frame);
 }
 
+/*---------------------------------------------------------------------------
+ Transmit SDO Abort code
+ ---------------------------------------------------------------------------*/
+void sdo_send_abort_code(int index, char si, unsigned error, chanend c_rx_tx)
+{
+  can_frame frame;
+  frame.dlc = 8;
+  frame.extended = 0;
+  frame.remote = 0;
+  frame.id = TSDO_MESSAGE ;
+  frame.data[0] = EMERGENCY_MESSAGE;
+  frame.data[1] = index & 0xFF;
+  frame.data[2] = ((index >> 8) & 0xFF);
+  frame.data[3] = si;
+  frame.data[4] = (error & 0xFF);
+  frame.data[5] = ((error >> 8) & 0xFF);
+  frame.data[6] = ((error >> 16) & 0xFF);
+  frame.data[7] = ((error >> 24) & 0xFF);
+  can_send_frame(c_rx_tx, frame);
+}

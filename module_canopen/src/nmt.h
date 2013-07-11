@@ -1,32 +1,15 @@
-/**
-* The copyrights, all other intellectual and industrial
-* property rights are retained by XMOS and/or its licensors.
-* Terms and conditions covering the use of this code can
-* be found in the Xmos End User License Agreement.
-*
-* Copyright XMOS Ltd 2012
-*
-* In the case where this code is a modification of existing code
-* under a separate license, the separate license terms are shown
-* below. The modifications to the code are still covered by the
-* copyright notice above.
-*
-**/
 
 #ifndef __nmt_h__
 #define __nmt_h__
 
 
-/*---------------------------------------------------------------------------
-prototypes
----------------------------------------------------------------------------*/
-
 /*==========================================================================*/
 /**
-* nmt_initialize is the function in order to initialize the parameters of canopen
-* slave using object dictionary entry
+* nmt_initialize is the function to initialize the parameters of canopen
+* slave using object dictionary entries
 *
-* \param sync_timer Channel connecting to can module
+* \param sync_timer sync timer to check if the sync communication is
+*   whith in synchronous window length
 * \param pdo_event structure with Events of PDOs
 * \param tpdo_inhibit_time_values Structure with Inhibit time value of TPDOs
 * \param sync_window_length synchronous window time
@@ -47,11 +30,11 @@ void nmt_initialize(NULLABLE_ARRAY_OF(tx_sync_timer, sync_timer),
 
 /*==========================================================================*/
 /**
-* nmt_send_heartbeat_message is the function in order to transmit heartbeat
+* nmt_send_heartbeat_message is the function to transmit heartbeat
 * messages on the canbus
 *
-* \param c_rx_tx Channel connecting to can module
-* \param can_frame canframe to transmit on canbus
+* \param c_rx_tx Channel connecting to bus module like CAN
+* \param frame canframe to transmit on bus module like CAN
 * \param canopen_state current state of canopen node
 * \return none
 **/
@@ -61,11 +44,11 @@ void nmt_send_heartbeat_message(chanend c_rx_tx,
 
 /*==========================================================================*/
 /**
-* nmt_send_nodeguard_message is the function in order to transmit nodeguard
-* messages on the canbus. This function will send:
+* nmt_send_nodeguard_message is the function to transmit nodeguard
+* messages on the bus modules like CAN. This function will send:
 *
-* \param c_rx_tx Channel connecting to can module
-* \param can_frame canframe to transmit on canbus
+* \param c_rx_tx channel to communicate with bus module like CAN
+* \param frame canframe to transmit on bus moduels like CAN
 * \param toggle toggle bit that toggles with every node guard message received
 * \param state current state of canopen node
 * \return none
@@ -77,10 +60,10 @@ void nmt_send_nodeguard_message(chanend c_rx_tx,
 
 /*==========================================================================*/
 /**
-* nmt_send_boot_up_message is the function in order to transmit bootup
-* message on the canbus after initialisation
+* nmt_send_boot_up_message is the function to transmit bootup
+* message on the bus modules like CAN after initialisation
 *
-* \param c_rx_tx Channel connecting to can module
+* \param c_rx_tx channel to communicate with bus module like CAN
 * \return none
 **/
 void nmt_send_boot_up_message(chanend c_rx_tx);

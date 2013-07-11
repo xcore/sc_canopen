@@ -55,7 +55,6 @@ void sync_pdo_data_transmit(char pdo_number,
       }
       if ((time_difference_sync < sync_window_length) || (sync_window_length
           == 0)) //check if tx is in sync window length
-
       {
         if ((tpdo_inhibit_time_values[pdo_number].inhibit_time
             < tpdo_inhibit_time_values[pdo_number].inhibit_counter)

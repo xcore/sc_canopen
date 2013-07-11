@@ -1,28 +1,11 @@
-/**
- * The copyrights, all other intellectual and industrial
- * property rights are retained by XMOS and/or its licensors.
- * Terms and conditions covering the use of this code can
- * be found in the Xmos End User License Agreement.
- *
- * Copyright XMOS Ltd 2012
- *
- * In the case where this code is a modification of existing code
- * under a separate license, the separate license terms are shown
- * below. The modifications to the code are still covered by the
- * copyright notice above.
- *
- **/
 
 #ifndef __sync_h__
 #define __sync_h__
 
-/*---------------------------------------------------------------------------
- prototypes
- ---------------------------------------------------------------------------*/
 
 /*==========================================================================*/
 /**
- * sync_pdo_data_transmit is the function in order to transmit synchronous pdo
+ * sync_pdo_data_transmit is the function to transmit synchronous pdo
  * data.
  *
  * \param pdo_number PDO number
@@ -34,7 +17,7 @@
  * \param time_difference_sync Time difference current time and sync start time
  * \param sync_timer Structure having sync timer values
  * \param tpdo_inhibit_time_values Structure having Inhibit time values
- * \param c_rx_tx Channel connecting to can module
+ * \param c_rx_tx channel to communicate with bus module like CAN
  * \return none
  **/
 void sync_pdo_data_transmit(char pdo_number,
@@ -51,7 +34,7 @@ void sync_pdo_data_transmit(char pdo_number,
 
 /*==========================================================================*/
 /**
- * sync_pdo_data_receive is the function in order to receive synchronous pdo
+ * sync_pdo_data_receive is the function to receive synchronous pdo
  * data.
  *
  * \param pdo_number PDO number

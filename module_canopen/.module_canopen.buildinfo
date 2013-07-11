@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<allbuildresults>
+<buildresults component="module_canopen" packagename="xm-local-sc_canopen(a2c3eed6)" packageversion="a2c3eed6" toolsversion="latest">
+<buildresult>
+<configuration>
+<parameter id="canopenNodeId" value="0"/>
+<parameter id="canopenTPDOsupported" value="4"/>
+<parameter id="canopenRPDOsupported" value="4"/>
+</configuration>
+<resourceusage>
+<resourceusageitem id="cores" value="1"/>
+<resourceusageitem id="memory" value="0"/>
+<resourceusageitem id="codememory" value="11872"/>
+<resourceusageitem id="datamemory" value="4176"/>
+<resourceusageitem id="ports1bit" value="0"/>
+<resourceusageitem id="ports4bit" value="0"/>
+<resourceusageitem id="ports8bit" value="0"/>
+<resourceusageitem id="ports16bit" value="0"/>
+<resourceusageitem id="ports32bit" value="0"/>
+<resourceusageitem id="clocks" value="1"/>
+<resourceusageitem id="chanends" value="2"/>
+<resourceusageitem id="timers" value="2"/>
+</resourceusage>
+</buildresult>
+</buildresults>
+</allbuildresults>
