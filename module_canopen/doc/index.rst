@@ -1,5 +1,5 @@
-CANopen Component
-=================
+CANopen Component Documentation
+===============================
 
 .. toctree::
 
