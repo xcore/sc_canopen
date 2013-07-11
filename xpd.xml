@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <xpd>
     <components>
-        <component name = "CANopen module" type = "component" buildresults_path = "module_canopen/.module_canopen.buildinfo" scope = "Early Development" path = "module_canopen" metainfo_path = "module_canopen/module_canopen.metainfo" local = "false" id = "module_canopen" description = "CANopen module">
-            <board>XP-SKC-L2</board>
+        <component name = "CANopen Stack Component Documentation" type = "component" buildresults_path = "module_canopen/.module_canopen.buildinfo" scope = "Early Development" path = "module_canopen" metainfo_path = "module_canopen/module_canopen.metainfo" local = "false" id = "module_canopen" description = "CANopen Slave Stack">
+            <board>XA-SK-ISBUS</board>
             <componentDependency>module_mutual_thread_comm</componentDependency>
             <componentDependency>module_can</componentDependency>
             <keyword>CANopen</keyword>
@@ -29,7 +29,8 @@
     <name>sc_canopen</name>
     <maintainer>sethuchandan</maintainer>
     <partnumber>XM-003373-DH</partnumber>
-    <release parenthash = "5566f2c6c83d248c273849dae9b82263564397a8" version = "0.0.1beta0"></release>
+    <release parenthash = "5566f2c6c83d248c273849dae9b82263564397a8" version = "0.0.1beta0" githash = "23f2fc9e269ac271dd1eeb4bc22051faf14fee45"></release>
+    <release parenthash = "57b8ded7589761775eacf7c2df91c0fc79e65db7" version = "0.0.1beta1"></release>
     <subpartnumber>XM-003374-SM</subpartnumber>
     <vendor>xmos</vendor>
     <xcore_repo>sc_canopen.git</xcore_repo>
