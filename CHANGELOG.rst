@@ -1,12 +1,6 @@
-<Insert Repo name> Change Log
-=============================
+sc_canopen Change Log
+=================
 
-1.1.0
------
-  * Bullet points of features
-  * Another point
-  * ...
-
-1.0.0
+0.0.1
 -----
   * Initial Version
