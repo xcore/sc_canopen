@@ -29,6 +29,7 @@
     <name>sc_canopen</name>
     <maintainer>sethuchandan</maintainer>
     <partnumber>XM-003373-DH</partnumber>
+    <release parenthash = "5566f2c6c83d248c273849dae9b82263564397a8" version = "0.0.1beta0"></release>
     <subpartnumber>XM-003374-SM</subpartnumber>
     <vendor>xmos</vendor>
     <xcore_repo>sc_canopen.git</xcore_repo>

@@ -1,9 +1,9 @@
 CANopen Component
 .................
 
-:Latest release: Example
-:Maintainer: xmos
-:Description: CANopen Component
+:Latest release: 0.0.1beta0
+:Maintainer: sethuchandan
+:Description: canopen
 
 
 Key Features
@@ -28,7 +28,7 @@ Issues may be submitted via the Issues tab in this github repo. Response to any 
 Required software (dependencies)
 ================================
 
+  * sc_i2c (https://github.com/xcore/sc_i2c.git)
+  * sc_util (https://github.com/xcore/sc_util.git)
   * sc_can (git://github.com/xcore/sc_can.git)
-  * sc_i2c (git://github.com/xcore/sc_i2c.git)
-  * sc_util (git://github.com/xcore/sc_util.git)
-  
+
