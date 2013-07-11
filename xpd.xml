@@ -17,6 +17,11 @@
         <githash>6d6b92f618f55d5378e56831b5930bf384c88a01</githash>
         <uri>https://github.com/xcore/sc_util.git</uri>
     </dependency>
+    <dependency repo = "sc_can">
+        <githash>549b00b0c64ad2cd2d9e5a095ceeabbb96b5b5d9</githash>
+        <uri>git://github.com/xcore/sc_can.git</uri>
+        <version>1.0.1rc0</version>
+    </dependency>
     <description>canopen</description>
     <docdir>module_canopen/doc</docdir>
     <exclude_dir>app_canopen</exclude_dir>
@@ -24,6 +29,7 @@
     <name>sc_canopen</name>
     <maintainer>sethuchandan</maintainer>
     <partnumber>XM-003373-DH</partnumber>
+    <release parenthash = "5566f2c6c83d248c273849dae9b82263564397a8" version = "0.0.1beta0"></release>
     <subpartnumber>XM-003374-SM</subpartnumber>
     <vendor>xmos</vendor>
     <xcore_repo>sc_canopen.git</xcore_repo>
