@@ -2,6 +2,8 @@ SPHINX_PROJECT_NAME=CANopen Component
 VERSION=1v0
 DOXYGEN_DIRS= ../../module_canopen/src
 SOURCE_INCLUDE_DIRS= ../../module_canopen/src
+SOURCE_INCLUDE_DIRS += ../../module_canopen
+
 XDOC_DIR ?= ../../../xdoc
 include $(XDOC_DIR)/Makefile.inc
 

@@ -78,11 +78,15 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
   unsigned hb_time, producer_heart_beat, sync_window_length, sync_time_start,
       sync_time_current, ng_time, guard_time, life_time, comm_timeout_time,
       time_difference_sync, timer_pdo_event_time;
-  timer heart_beat_timer, sync_window_timer, node_guard_timer,
-      timer_communication_timeout, timer_pdo_event;
+  timer sync_window_timer, timer_pdo_event;
 
+#if HEARTBEAT_SUPPORTED
+  timer heart_beat_timer;
   heart_beat_timer :> hb_time;
+#else
+  timer node_guard_timer;
   node_guard_timer:> ng_time;
+#endif
   timer_pdo_event:> timer_pdo_event_time;
 
   while(1)
@@ -107,8 +111,11 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
       timer_interrupt_counter = 0;
       hb_toggle = 0;
       app_counter = 0;
+#if HEARTBEAT_SUPPORTED
       heart_beat_timer :> hb_time;
+#else
       node_guard_timer:> ng_time;
+#endif
       timer_pdo_event:> timer_pdo_event_time;
       lss_configuration_mode = FALSE;
       nmt_initialize(sync_timer,
@@ -265,7 +272,9 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
             {
               if(!heart_beat_active)
               {
+#if !HEARTBEAT_SUPPORTED
                 node_guard_timer:>ng_time;
+#endif
                 if(frame.dlc != HEARTBEAT_MESSAGE_LENGTH)
                 {
                   emcy_send_emergency_message(c_rx_tx,
@@ -286,6 +295,7 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
             printstrln("SDO");
             if((canopen_state == PRE_OPERATIONAL) || (canopen_state == OPERATIONAL))
             {
+              timer timer_communication_timeout;
               if(frame.dlc != SDO_MESSAGE_LENGTH)
               {
                 emcy_send_emergency_message(c_rx_tx,
@@ -435,7 +445,6 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                   break;
 
                   case INITIATE_SDO_UPLOAD_REQUEST: //initiate sdo upload
-
                   {
                     char counter=0, number_of_segments;
                     sdo_toggle=0;
@@ -536,7 +545,6 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
       }
 
       case timer_pdo_event when timerafter(timer_pdo_event_time+10000):> void: //100 usec timer event
-
       {
         char pdo_number=0;
         timer_pdo_event:> timer_pdo_event_time;
@@ -549,7 +557,6 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
         if(canopen_state == OPERATIONAL)
         timer_interrupt_counter++;
         if(timer_interrupt_counter == 10) //check if time is 1 msec
-
         {
           unsigned event_type;
           pdo_number = 0;
@@ -578,6 +585,7 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
       }
       break;
 
+#if HEARTBEAT_SUPPORTED
       case heart_beat_active => heart_beat_timer when timerafter(hb_time+producer_heart_beat * 100):> void:
       heart_beat_timer:> hb_time;
       if(( canopen_state == PRE_OPERATIONAL) ||
@@ -587,7 +595,7 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
         nmt_send_heartbeat_message(c_rx_tx, frame, canopen_state);
       }
       break;
-
+#else
       case !heart_beat_active => node_guard_timer when timerafter(ng_time + guard_time *100 * life_time):> void:
       node_guard_timer:> ng_time;
       if(( canopen_state == PRE_OPERATIONAL) ||
@@ -600,7 +608,7 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
             error_index_pointer, canopen_state);
       }
       break;
-
+#endif
       case c_application:> app_tpdo_number: //receives data from the application
       if(canopen_state == OPERATIONAL)
       {

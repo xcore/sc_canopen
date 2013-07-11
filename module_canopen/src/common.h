@@ -6,12 +6,13 @@
   #include "canopen_conf.h"
 #endif
 
-/*---------------------------------------------------------------------------
- constants
- ---------------------------------------------------------------------------*/
 
 #ifndef CANOPEN_NODE_ID
   #define CANOPEN_NODE_ID 1
+#endif
+
+#ifndef HEARTBEAT_SUPPORTED
+  #define HEARTBEAT_SUPPORTED 1
 #endif
 
 #ifndef CANOPEN_NUMBER_OF_TPDOS_SUPPORTED
