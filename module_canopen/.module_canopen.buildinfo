@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <allbuildresults>
-<buildresults component="module_canopen" packagename="xm-local-sc_canopen(a00e1f9e)" packageversion="a00e1f9e" toolsversion="latest">
+<buildresults component="module_canopen" packagename="xm-local-sc_canopen(7a408f9c)" packageversion="7a408f9c" toolsversion="latest">
 <buildresult>
 <configuration>
 <parameter id="canopenNodeId" value="0"/>
@@ -10,8 +10,8 @@
 <resourceusage>
 <resourceusageitem id="cores" value="1"/>
 <resourceusageitem id="memory" value="0"/>
-<resourceusageitem id="codememory" value="12004"/>
-<resourceusageitem id="datamemory" value="4192"/>
+<resourceusageitem id="codememory" value="11872"/>
+<resourceusageitem id="datamemory" value="4176"/>
 <resourceusageitem id="ports1bit" value="0"/>
 <resourceusageitem id="ports4bit" value="0"/>
 <resourceusageitem id="ports8bit" value="0"/>
@@ -19,7 +19,7 @@
 <resourceusageitem id="ports32bit" value="0"/>
 <resourceusageitem id="clocks" value="1"/>
 <resourceusageitem id="chanends" value="2"/>
-<resourceusageitem id="timers" value="5"/>
+<resourceusageitem id="timers" value="2"/>
 </resourceusage>
 </buildresult>
 </buildresults>
