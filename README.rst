@@ -1,7 +1,7 @@
 CANopen Component
 .................
 
-:Latest release: 0.0.1beta1
+:Latest release: 1.0.0rc0
 :Maintainer: sethuchandan
 :Description: canopen
 

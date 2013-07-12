@@ -32,6 +32,7 @@
     <partnumber>XM-003373-DH</partnumber>
     <release parenthash = "5566f2c6c83d248c273849dae9b82263564397a8" version = "0.0.1beta0" githash = "23f2fc9e269ac271dd1eeb4bc22051faf14fee45"></release>
     <release parenthash = "57b8ded7589761775eacf7c2df91c0fc79e65db7" version = "0.0.1beta1" githash = "c0d549bc17c6337f5c2b2b72295a25003813f26b"></release>
+    <release parenthash = "d469c61bb64bfb9434f1d8fc7526ed355001800b" version = "1.0.0rc0"></release>
     <subpartnumber>XM-003374-SM</subpartnumber>
     <vendor>xmos</vendor>
     <xcore_repo>sc_canopen.git</xcore_repo>
