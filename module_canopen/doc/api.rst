@@ -7,7 +7,7 @@ API
 
 Client functions
 ----------------
-These are the functions that are called from the application and are included in ``canopen_client.h``.
+These functions may be called from user application code and are included in ``canopen_client.h``.
 
 .. doxygenfunction:: canopen_client_send_data_to_stack
 
