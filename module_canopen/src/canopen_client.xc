@@ -31,7 +31,7 @@ void canopen_client_send_data_to_stack(streaming chanend c_application,
   c_application<: data_length;
   while(counter != data_length)
   {
-    c_application<: data[counter];
+    c_application<: data[(int)counter];
     counter++;
   }
 }
@@ -47,7 +47,7 @@ void canopen_client_receive_data_from_stack(streaming chanend c_application,
   c_application:> data_length;
   while(counter != data_length)
   {
-    c_application:> data[counter];
+    c_application:> data[(int)counter];
     counter++;
   }
 }

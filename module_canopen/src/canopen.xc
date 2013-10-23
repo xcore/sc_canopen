@@ -24,8 +24,6 @@
 #include "nmt.h"
 #include "emcy.h"
 #include "sync.h"
-#include <print.h>
-#include <xscope.h>
 
 /*---------------------------------------------------------------------------
  Function prototypes
@@ -54,6 +52,7 @@ lss_state_machine(can_frame frame,
                   REFERENCE_PARAM(char, canopen_state),
                   REFERENCE_PARAM(unsigned char, error_index_pointer));
 
+
 /*---------------------------------------------------------------------------
  CANOpen Manager communicates with CAN module and application core
  ---------------------------------------------------------------------------*/
@@ -65,15 +64,14 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
   rx_sync_mesages sync_messages_rx[CANOPEN_NUMBER_OF_RPDOS_SUPPORTED];
   pdo_event_timer pdo_event[CANOPEN_NUMBER_OF_TPDOS_SUPPORTED];
   tpdo_inhibit_time tpdo_inhibit_time_values[CANOPEN_NUMBER_OF_TPDOS_SUPPORTED];
-  char app_tpdo_number, app_length, app_data[8], app_counter = 0,
-      lss_configuration_mode = FALSE;
+  char app_tpdo_number, app_length, app_data[8], app_counter = 0, lss_configuration_mode = FALSE;
   char hb_toggle = 0, od_sub_index, data_length, sdo_toggle;
   char data_buffer[CANOPEN_MAX_DATA_BUFFER_LENGTH], no_of_bytes,
       segmented_rx_last_frame, count, pdo_number = 0;
   char heart_beat_active;
   int od_index, index;
   unsigned char error_index_pointer = 0, timer_interrupt_counter = 0;
-  char canopen_state = INITIALIZATION, sdo_message_type;
+  char canopen_state = INITIALIZATION, sdo_message_type, state_changed=1;
   unsigned sdo_timeout_time_value = 2000000000; //sdo_timeout set to 20 seconds. For tesing: TODO
   unsigned hb_time, producer_heart_beat, sync_window_length, sync_time_start,
       sync_time_current, ng_time, guard_time, life_time, comm_timeout_time,
@@ -105,12 +103,42 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
       canopen_state = PRE_OPERATIONAL;
       sync_window_length = sync_window_length * 1000; //converting sync window length time in to milliseconds
     }
+    else if(canopen_state == STOPPED)
+    {
+      char counter_value=0;
+      while(counter_value < CANOPEN_NUMBER_OF_TPDOS_SUPPORTED)
+      {
+        sync_timer[(int)counter_value].sync_counter=0;
+        counter_value++;
+      }
+      counter_value=0;
+      while(counter_value < CANOPEN_NUMBER_OF_RPDOS_SUPPORTED)
+      {
+        sync_messages_rx[(int)counter_value].sync_counter=0;
+        counter_value++;
+      }
+    }
+    else if(canopen_state == OPERATIONAL)
+    {
+      if(state_changed)
+      {
+        data_buffer[0]=0x00;
+        data_buffer[1]=0x01;
+        od_write_data(od_find_index(0x1800), 5, data_buffer,2);
+        od_write_data(od_find_index(0x1801), 5, data_buffer,2);
+        od_write_data(od_find_index(0x1802), 5, data_buffer,2);
+        od_write_data(od_find_index(0x1803), 5, data_buffer,2);
+        state_changed=0;
+      }
+    }
     else if (canopen_state == RESET_NODE) //Node resets and goes to pre operation state
     {
       error_index_pointer = 0;
       timer_interrupt_counter = 0;
       hb_toggle = 0;
       app_counter = 0;
+      nmt_reset_registers();
+      nmt_send_boot_up_message(c_rx_tx);
 #if HEARTBEAT_SUPPORTED
       heart_beat_timer :> hb_time;
 #else
@@ -144,13 +172,15 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
       canopen_state = PRE_OPERATIONAL;
       sync_window_length = sync_window_length * 1000; //converting sync window length time in to milliseconds
     }
+	#pragma fallthrough
     select
     {
       case can_rx_frame(c_rx_tx, frame):
       {
         unsigned char temp_case;
-        if ((frame.id >= RPDO_0_MESSAGE) && (frame.id <= (RPDO_0_MESSAGE
-            + 0x100 * (CANOPEN_NUMBER_OF_RPDOS_SUPPORTED - 1))))
+        if( ((frame.id - RPDO_0_MESSAGE)%0x100 == 0) && (((frame.id - RPDO_0_MESSAGE)/0x100) >= 0) && (((frame.id - RPDO_0_MESSAGE)/0x100) < CANOPEN_NUMBER_OF_RPDOS_SUPPORTED))
+        {
+          if(canopen_state == OPERATIONAL)
         {
           receive_rpdo_message(canopen_state,
                                ((frame.id - RPDO_0_MESSAGE) >> 8),
@@ -161,8 +191,10 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                                c_rx_tx,
                                c_application);
         }
-        else if ((frame.id >= TPDO_0_MESSAGE) && (frame.id <= (TPDO_0_MESSAGE
-            + 0x100 * (CANOPEN_NUMBER_OF_TPDOS_SUPPORTED - 1))))
+        }
+        else if( ((frame.id - TPDO_0_MESSAGE)%0x100 == 0) && (((frame.id - TPDO_0_MESSAGE)/0x100) >= 0) && (((frame.id - TPDO_0_MESSAGE)/0x100) < CANOPEN_NUMBER_OF_TPDOS_SUPPORTED))
+          {
+          if(canopen_state == OPERATIONAL)
         {
           receive_tpdo_rtr_request(frame,
                                    ((frame.id - TPDO_0_MESSAGE) >> 8),
@@ -170,13 +202,24 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                                    tpdo_inhibit_time_values,
                                    c_rx_tx); //TPDO RTR request
         }
+        }
+        else if((frame.id == NG_HEARTBEAT) && (frame.remote == 1))
+        {
+          frame.dlc = 2;
+          frame.extended = 0;
+          frame.remote = 0;
+          nmt_send_nodeguard_message(c_rx_tx,
+                                      frame,
+                                      hb_toggle,
+                                      canopen_state);
+        }
         else
         {
           switch(frame.id)
           {
             case NMT_MESSAGE_BROADCAST:
             case NMT_MESSAGE: //receive NMT message and change state accordingly
-            if(frame.dlc != NMT_MESSAGE_LENGTH)
+            if((frame.dlc != NMT_MESSAGE_LENGTH) && (frame.remote != 1))
             {
               emcy_send_emergency_message(c_rx_tx,
                   ERR_TYPE_COMMUNICATION_ERROR,
@@ -196,7 +239,12 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                     (frame.data[0] == RESET_COMMUNICATION) ||
                     (frame.data[0] == RESET_NODE))
                 {
+                  if(canopen_state != frame.data[0])
+                  {
+                    state_changed=1;
                   canopen_state=frame.data[0];
+                    nmt_send_heartbeat_message(c_rx_tx, frame, canopen_state); //TODO:Added
+                  }
                 }
               }
             }
@@ -236,7 +284,7 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                 while(pdo_number != CANOPEN_NUMBER_OF_RPDOS_SUPPORTED)
                 {
                   unsigned rtr_check;
-                  rtr_check = pdo_find_cob_id(sync_timer[pdo_number].comm_parameter);
+                  rtr_check = pdo_find_cob_id(sync_timer[(int)pdo_number].comm_parameter);
                   if(rtr_check != -1)
                   {
                     rtr_check = ((rtr_check >> 30) &0x3);
@@ -292,7 +340,6 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
             break;
 
             case RSDO_MESSAGE:
-            printstrln("SDO");
             if((canopen_state == PRE_OPERATIONAL) || (canopen_state == OPERATIONAL))
             {
               timer timer_communication_timeout;
@@ -369,17 +416,14 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                     sdo_toggle=0;
                     count=0;
                     while(segmented_rx_last_frame == FALSE) //check if this is last segment or not
-
                     {
                       timer_communication_timeout:> comm_timeout_time;
                       select
                       {
                         case can_rx_frame(c_rx_tx,frame):
                         if(((frame.data[0]>>4)&0x01) == sdo_toggle) //check for sdo toggle bit
-
                         {
                           if((frame.data[0]&0x01) == 1) //check if last segment or not
-
                           {
                             char od_data_length=0;
                             char temp_counter=0;
@@ -387,19 +431,17 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                             no_of_bytes = 7 - ((frame.data[0] >> 1) & 0x07); //find how many bytes have valid data in the frame
                             while(temp_counter != no_of_bytes)
                             {
-                              data_buffer[count+temp_counter] = frame.data[temp_counter];
+                              data_buffer[count+temp_counter] = frame.data[(int)temp_counter];
                               temp_counter++;
                             }
                             od_data_length = od_find_data_length(index,od_sub_index);
                             if(od_data_length == (count + temp_counter))
                             {
                               if(od_find_access_of_index(index, od_sub_index) == RO) //Check if Object is Read only
-
                               {
                                 sdo_send_abort_code(od_index, od_sub_index, SDO_ATTEMPR_TO_WRITE_RO_OD, c_rx_tx);
                               }
                               else if(od_find_access_of_index(index, od_sub_index) == CONST) //Check if Object is CONSTANT
-
                               {
                                 sdo_send_abort_code(od_index, od_sub_index, SDO_UNSUPPORTED_ACCESS_OD, c_rx_tx);
                               }
@@ -407,6 +449,14 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                               {
                                 od_write_data(index, od_sub_index, data_buffer,data_length); //write data to object Dictionary
                               }
+                              nmt_initialize(sync_timer,
+                                                  pdo_event,
+                                                  tpdo_inhibit_time_values,
+                                                  sync_window_length,
+                                                  guard_time,
+                                                  life_time,
+                                                  producer_heart_beat,
+                                                  heart_beat_active); //TODO: added
                             }
                             else
                             {
@@ -457,10 +507,8 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                       {
                         data_length = od_find_data_length(index, od_sub_index);
                         if(data_length <= 4) //check if data to be uploaded les than 4 bytes
-
                         {
                           if(od_find_access_of_index(index, od_sub_index) == WO) //check OD access type
-
                           {
                             sdo_send_abort_code(od_index, od_sub_index, SDO_ATTEMPT_TO_READ_WO_OD, c_rx_tx);
                           }
@@ -534,6 +582,23 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
                 }
               }
             }
+            else
+            {
+              if(canopen_state != STOPPED)
+              {
+                od_index = (frame.data[1]) | (frame.data[2]<<8);
+                od_sub_index = frame.data[3];
+                sdo_send_abort_code(od_index, od_sub_index, SDO_GENERAL_ERROR, c_rx_tx);
+              }
+              else
+              {
+                emcy_send_emergency_message(c_rx_tx,
+                                 ERR_TYPE_COMMUNICATION_ERROR,
+                                 PROTOCOL_ERROR_GENERIC,
+                                 error_index_pointer,
+                                 canopen_state);
+              }
+            }
             break;
 
             default:
@@ -550,8 +615,8 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
         timer_pdo_event:> timer_pdo_event_time;
         while(pdo_number != CANOPEN_NUMBER_OF_TPDOS_SUPPORTED)
         {
-          if(tpdo_inhibit_time_values[pdo_number].inhibit_time != 0)
-          tpdo_inhibit_time_values[pdo_number].inhibit_counter+=100;
+          if(tpdo_inhibit_time_values[(int)pdo_number].inhibit_time != 0)
+          tpdo_inhibit_time_values[(int)pdo_number].inhibit_counter+=100;
           pdo_number++;
         }
         if(canopen_state == OPERATIONAL)
@@ -563,19 +628,19 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
           timer_interrupt_counter=0;
           while(pdo_number != CANOPEN_NUMBER_OF_TPDOS_SUPPORTED)
           {
-            if(pdo_event[pdo_number].event_type != 0)
+            if(pdo_event[(int)pdo_number].event_type != 0)
             {
-              pdo_event[pdo_number].counter++;
-              if(pdo_event[pdo_number].counter == pdo_event[pdo_number].event_type)
+              pdo_event[(int)pdo_number].counter++;
+              if(pdo_event[(int)pdo_number].counter == pdo_event[(int)pdo_number].event_type)
               {
-                if(tpdo_inhibit_time_values[pdo_number].inhibit_time ==
-                    tpdo_inhibit_time_values[pdo_number].inhibit_counter)
+                if(tpdo_inhibit_time_values[(int)pdo_number].inhibit_time ==
+                    tpdo_inhibit_time_values[(int)pdo_number].inhibit_counter)
                 {
                   pdo_transmit_data(TPDO_0_COMMUNICATION_PARAMETER + pdo_number,
                       TPDO_0_MAPPING_PARAMETER + pdo_number,
                       c_rx_tx);
-                  pdo_event[pdo_number].counter = 0;
-                  tpdo_inhibit_time_values[pdo_number].inhibit_counter = 0;
+                  pdo_event[(int)pdo_number].counter = 0;
+                  tpdo_inhibit_time_values[(int)pdo_number].inhibit_counter = 0;
                 }
               }
             }
@@ -616,7 +681,7 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
         app_counter=0;
         while(app_counter != app_length)
         {
-          c_application:> app_data[app_counter];
+          c_application:> app_data[(int)app_counter];
           app_counter++;
         }
         pdo_receive_application_data(app_tpdo_number,
@@ -624,7 +689,7 @@ void canopen_server(chanend c_rx_tx, streaming chanend c_application)
             app_data,
             tpdo_inhibit_time_values,
             c_rx_tx);
-        sync_timer[app_tpdo_number].tx_data_ready = TRUE;
+        sync_timer[(int)app_tpdo_number].tx_data_ready = TRUE;
       }
       break;
     } //Select
@@ -668,22 +733,22 @@ static void receive_rpdo_message(unsigned char canopen_state,
                                        frame.data,
                                        frame.dlc,
                                        c_application);
-          sync_messages_rx[pdo_number].rx_data_ready = FALSE;
+          sync_messages_rx[(int)pdo_number].rx_data_ready = FALSE;
         }
         else
         {
-          sync_messages_rx[pdo_number].data_length = pdo_rx_length;
-          sync_messages_rx[pdo_number].data[0] = frame.data[0];
-          sync_messages_rx[pdo_number].data[1] = frame.data[1];
-          sync_messages_rx[pdo_number].data[2] = frame.data[2];
-          sync_messages_rx[pdo_number].data[3] = frame.data[3];
-          sync_messages_rx[pdo_number].data[4] = frame.data[4];
-          sync_messages_rx[pdo_number].data[5] = frame.data[5];
-          sync_messages_rx[pdo_number].data[6] = frame.data[6];
-          sync_messages_rx[pdo_number].data[7] = frame.data[7];
-          sync_messages_rx[pdo_number].sync_value = rpdo_tx_type;
-          sync_messages_rx[pdo_number].sync_counter = 0;
-          sync_messages_rx[pdo_number].rx_data_ready = TRUE;
+          sync_messages_rx[(int)pdo_number].data_length = pdo_rx_length;
+          sync_messages_rx[(int)pdo_number].data[0] = frame.data[0];
+          sync_messages_rx[(int)pdo_number].data[1] = frame.data[1];
+          sync_messages_rx[(int)pdo_number].data[2] = frame.data[2];
+          sync_messages_rx[(int)pdo_number].data[3] = frame.data[3];
+          sync_messages_rx[(int)pdo_number].data[4] = frame.data[4];
+          sync_messages_rx[(int)pdo_number].data[5] = frame.data[5];
+          sync_messages_rx[(int)pdo_number].data[6] = frame.data[6];
+          sync_messages_rx[(int)pdo_number].data[7] = frame.data[7];
+          sync_messages_rx[(int)pdo_number].sync_value = rpdo_tx_type;
+          sync_messages_rx[(int)pdo_number].sync_counter = 0;
+          sync_messages_rx[(int)pdo_number].rx_data_ready = TRUE;
         }
       }
     }
@@ -701,21 +766,9 @@ static void receive_tpdo_rtr_request(can_frame frame,
 {
   if (frame.remote == TRUE)
   {
-    if (sync_timer[pdo_number].sync_value == 253)
-    {
-      if (tpdo_inhibit_time_values[pdo_number].inhibit_time
-          < tpdo_inhibit_time_values[pdo_number].inhibit_counter)
-      {
         pdo_transmit_data(TPDO_0_COMMUNICATION_PARAMETER + pdo_number,
                           TPDO_0_MAPPING_PARAMETER + pdo_number,
                           c_rx_tx);
-        tpdo_inhibit_time_values[pdo_number].inhibit_counter = 0;
-      }
-    }
-    else if (sync_timer[pdo_number].sync_value == 252)
-    {
-      sync_timer[pdo_number].tx_data_ready = TRUE;
-    }
   }
 }
 
@@ -764,7 +817,6 @@ case    SWITCH_MODE_GLOBAL_COMMAND: //set state to lss configuration. DS 305 Sta
     if((lss_configuration_mode == TRUE) && (frame.data[1] == 0x00))
     {
       if( (frame.data[2] < 8) && (frame.data[2] > 0)) //check if received value is correct index of bit parameter table
-
       {
         new_baud_rate = bit_timing_table[(int)frame.data[2]]; //get bit time from bit time table
         lss_configure_bit_timing_response(c_rx_tx, TRUE);//success

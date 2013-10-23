@@ -72,7 +72,7 @@ enum cob_id
 {
   NMT_MESSAGE           = 0     + CANOPEN_NODE_ID, /**<CANOpen COB-ID nmt state Message*/
   NMT_MESSAGE_BROADCAST = 0,                       /**<CANOpen COB-ID nmt Broadcast Message*/
-  SYNC                  = 0x80  + CANOPEN_NODE_ID, /**<CANOpen COB-ID sync Message */
+  SYNC                  = 0x80,                    /**<CANOpen COB-ID sync Message */
   TIME_STAMP            = 0x100 + CANOPEN_NODE_ID, /**<CANOpen COB-ID timestamp Message */
   NG_HEARTBEAT          = 0x700 + CANOPEN_NODE_ID, /**<CANOpen COB-ID heartbeat / nodeguard Message */
   EMERGENCY_MESSAGE     = 0x80,                    /**<CANOpen COB-ID emergency Message */

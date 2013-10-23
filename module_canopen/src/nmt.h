@@ -68,5 +68,14 @@ void nmt_send_nodeguard_message(chanend c_rx_tx,
 **/
 void nmt_send_boot_up_message(chanend c_rx_tx);
 
+/*==========================================================================*/
+/**
+* nmt_reset_registers is the function to reset all the object dictionary
+*entires to defalut values
+*
+* \param c_rx_tx channel to communicate with bus module like CAN
+* \return none
+**/
+void nmt_reset_registers();
 
 #endif /* nmt_h_ */

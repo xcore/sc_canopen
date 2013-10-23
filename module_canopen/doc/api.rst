@@ -13,7 +13,7 @@ These functions may be called from user application code and are included in ``c
 
 void **canopen_client_receive_data_from_stack** (streaming chanend *c_application*, unsigned char *&data_length*, NULLABLE_ARRAY_OF(unsigned char, *data*))
 
-    canopen_client_receive_data_from_stack is the function to receive data from canopen module.
+    canopen_client_receive_data_from_stack is the function to receive data from CANopen module.
 
    **Parameters:**	
 

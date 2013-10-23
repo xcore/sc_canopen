@@ -77,8 +77,8 @@ void od_read_data(int index,
   char count = 0;
   while(data_length != count)
   {
-    data_buffer[count]
-        = *((unsigned char *) (*(object_dict[index].subindex_data
+    data_buffer[(int)count]
+        = *((unsigned char *) (*(object_dict[(int)index].subindex_data
             + od_sub_index)) + count);
     count++;
   }
@@ -97,7 +97,7 @@ void od_write_data(int index,
   while(data_length != count)
   {
     *((unsigned char *) (*(object_dict[index].subindex_data + od_sub_index))
-        + count) = data_buffer[count];
+        + count) = data_buffer[(int)count];
     count++;
   }
 }

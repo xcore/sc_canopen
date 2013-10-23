@@ -36,6 +36,8 @@
 enum obj_dictionary
 {
   PRE_DEFINED_ERROR_FIELD_OBJECT = 0x1003, /**<CANOpen predefined error field object */
+  COB_ID_SYNC                    = 0x1005, /**<CANOpen SYNC COB-ID object */
+  COMMUNICATION_CYCLE_PERIOD     = 0x1006, /**<CANOpen Communication Cycle period object */
   SYNC_WINDOW_LENGTH_OBJECT      = 0x1007, /**<CANOpen syn window length time object */
   GUARD_TIME_OBJECT              = 0x100C, /**<CANOpen guard time object */
   LIFE_TIME_FACTOR_OBJECT        = 0x100D, /**<CANOpen life time factor object */

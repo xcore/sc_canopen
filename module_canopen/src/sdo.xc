@@ -43,7 +43,7 @@ void sdo_upload_expedited_data(chanend c_rx_tx,
     while(count != 4)
     {
       if (count < data_length)
-        frame.data[count + 4] = data_buffer[count];
+        frame.data[count + 4] = data_buffer[(int)count];
       else
         frame.data[count + 4] = 0;
       count++;

@@ -75,19 +75,19 @@ char pdo_write_data_to_od(int address, char data_buffer[])
     if (data_length == 8)
     {
       temp_index = od_find_index(address);
-      od_write_data(temp_index, sub_index, &data_buffer[data_counter], 1);
+      od_write_data(temp_index, sub_index, &data_buffer[(int)data_counter], 1);
       data_counter++;
     }
     else if (data_length == 16)
     {
       temp_index = od_find_index(address);
-      od_write_data(temp_index, sub_index, &data_buffer[data_counter], 2);
+      od_write_data(temp_index, sub_index, &data_buffer[(int)data_counter], 2);
       data_counter += 2;
     }
     if (data_length == 32)
     {
       temp_index = od_find_index(address);
-      od_write_data(temp_index, sub_index, &data_buffer[data_counter], 4);
+      od_write_data(temp_index, sub_index, &data_buffer[(int)data_counter], 4);
       data_counter += 4;
     }
   }
@@ -161,19 +161,19 @@ char pdo_read_data_from_od(unsigned comm_parameter,
     if (data_length == 8)
     {
       temp_index = od_find_index(mapping_parameter);
-      od_read_data(temp_index, sub_index, &data_buffer[data_counter], 1);
+      od_read_data(temp_index, sub_index, &data_buffer[(int)data_counter], 1);
       data_counter++;
     }
     else if (data_length == 16)
     {
       temp_index = od_find_index(mapping_parameter);
-      od_read_data(temp_index, sub_index, &data_buffer[data_counter], 2);
+      od_read_data(temp_index, sub_index, &data_buffer[(int)data_counter], 2);
       data_counter += 2;
     }
     if (data_length == 32)
     {
       temp_index = od_find_index(mapping_parameter);
-      od_read_data(temp_index, sub_index, &data_buffer[data_counter], 4);
+      od_read_data(temp_index, sub_index, &data_buffer[(int)data_counter], 4);
       data_counter += 4;
     }
   }
