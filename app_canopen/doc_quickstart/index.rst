@@ -1,4 +1,4 @@
-CANopen Quickstart Guide
+﻿CANopen Quickstart Guide
 ===========================
 
 .. _sliceKIT_CANopen_Quickstart:
@@ -16,12 +16,12 @@ This simple demonstration of CANopen Component in xTIMEcomposer Studio uses the 
 Hardware Setup
 ++++++++++++++
 
-The XP-SKC-L2 sliceKIT Core board has four slots with edge connectors: ``SQUARE``, ``CIRCLE``, ``TRIANGLE`` and ``STAR``. 
+The XP-SKC-L16 sliceKIT Core board has four slots with edge connectors: ``SQUARE``, ``CIRCLE``, ``TRIANGLE`` and ``STAR``. 
 
 To setup up the system:
 
-   #. Connect XA-SK-ISBUS sliceCARD to the XP-SKC-L2 sliceKIT Core board using the connector marked with the ``TRIANGLE``.
-   #. Connect XA-SK-GPIO sliceCARD to the XP-SKC-L2 sliceKIT Core board using the connector marked with the ``SQUARE``.
+   #. Connect XA-SK-ISBUS sliceCARD to the XP-SKC-L16 sliceKIT Core board using the connector marked with the ``TRIANGLE``.
+   #. Connect XA-SK-GPIO sliceCARD to the XP-SKC-L16 sliceKIT Core board using the connector marked with the ``SQUARE``.
    #. Connect the XTAG Adapter to sliceKIT Core board, and connect XTAG-2 to the Adapter. 
    #. Connect the XTAG-2 to host PC. Note that the USB cable is not provided with the sliceKIT starter kit.
    #. Set the ``XMOS LINK`` to ``ON`` on the XTAG Adapter.
